@@ -503,13 +503,18 @@
             <p class="section-sub">Upload your PDF resume and get an instant score, detailed feedback, and ATS compatibility check</p>
 
             <div class="resume-demo">
-                {% if not analysis %}
-                <div class="resume-upload-area">
+               
+              {% if not analysis %}
+                <form method="POST" enctype="multipart/form-data" class="resume-upload-area" onclick="document.getElementById('resume-file-input').click();">
+                    {% csrf_token %}
                     <div class="upload-big-icon">📄</div>
                     <div class="upload-title">Drop your Resume PDF here</div>
                     <p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Our AI will analyze it and give you a score out of 100 with detailed feedback</p>
-                    <button class="btn-primary">Upload Resume</button>
-                </div>
+                    
+                    <input type="file" name="resume_file" id="resume-file-input" accept=".pdf,.doc,.docx" style="display:none;" onchange="this.form.submit();">
+                    
+                    <button type="button" class="btn-primary">Select File</button>
+                </form>
                 {% else %}
                 <div class="analysis-result" style="border-top:1px solid var(--border);padding-top:32px;">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
@@ -519,9 +524,10 @@
                     </div>
 
                     <div class="score-display">
-                        <div class="score-circle" style="background: conic-gradient(var(--accent) 0deg, var(--accent) {{ analysis.overall_score }}deg, var(--border) 0deg);">
+                        <div class="score-circle" style="background: conic-gradient(var(--accent) 0deg, var(--accent) {{ analysis.score_deg }}deg, var(--border) {{ analysis.score_deg }}deg);">
                             <div class="score-num">{{ analysis.overall_score }}</div>
                         </div>
+                      
                         <div class="score-label">Analyzed at: {{ analysis.analyzed_at|date:"M d, Y" }}</div>
                     </div>
 

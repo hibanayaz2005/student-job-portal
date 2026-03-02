@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 import json
@@ -9,6 +9,10 @@ from django.utils import timezone
 from datetime import timedelta
 from resume.models import ResumeAnalysis
 
+
+import random  # Make sure this is here!
+
+<div class="score-circle" style="background: conic-gradient(var(--accent) 0deg, var(--accent) {{ analysis.score_deg }}deg, var(--border) {{ analysis.score_deg }}deg);">
 # Inside your home view:
 now = timezone.now()
 upcoming_deadlines = Job.objects.filter(
