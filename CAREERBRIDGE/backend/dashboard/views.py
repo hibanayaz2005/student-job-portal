@@ -5,7 +5,29 @@ import json
 
 from jobs.models import Job, Application
 from courses.models import Course
+from django.utils import timezone
+from datetime import timedelta
+from resume.models import ResumeAnalysis
 
+# Inside your home view:
+now = timezone.now()
+upcoming_deadlines = Job.objects.filter(
+    deadline__gte=now, 
+    deadline__lte=now + timedelta(days=2) # Alert for deadlines in next 48 hours
+)
+
+
+ # Assuming your resume model name
+
+def home(request):
+    has_resume = False
+    if request.user.is_authenticated:
+        has_resume = Resume.objects.filter(user=request.user).exists()
+    
+    return render(request, 'dashboard/home.html', {
+        'has_resume': has_resume,
+        # ... other context ...
+    })
 
 def home(request):
     User = get_user_model()
@@ -47,6 +69,7 @@ def home(request):
         'job_values': json.dumps(job_values),
         'recent_apps': recent_apps,
         'user': request.user,
+        'upcoming_deadlines': upcoming_deadlines,
     }
 
     return render(request, 'dashboard/home.html', context)
