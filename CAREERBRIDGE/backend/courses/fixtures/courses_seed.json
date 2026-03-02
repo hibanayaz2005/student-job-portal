@@ -1,0 +1,122 @@
+[
+  {
+    "model": "courses.course",
+    "pk": 1,
+    "fields": {
+      "title": "Introduction to Business Management (BBA)",
+      "provider": "YouTube · SimpleLearn",
+      "provider_url": "https://www.youtube.com/watch?v=business101",
+      "category": "BBA",
+      "target_years": [1,2,3,4],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 2,
+    "fields": {
+      "title": "Corporate Finance Basics (BCOM)",
+      "provider": "Coursera · University of Pennsylvania",
+      "provider_url": "https://www.coursera.org/learn/corporate-finance-basics",
+      "category": "BCOM",
+      "target_years": [2,3,4],
+      "is_free": false
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 3,
+    "fields": {
+      "title": "Programming Fundamentals (BCA)",
+      "provider": "freeCodeCamp",
+      "provider_url": "https://www.freecodecamp.org/learn",
+      "category": "BCA",
+      "target_years": [1,2,3],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 4,
+    "fields": {
+      "title": "Advanced Database Systems (MCA)",
+      "provider": "NPTEL",
+      "provider_url": "https://nptel.ac.in/courses/database-systems",
+      "category": "MCA",
+      "target_years": [1,2,3],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 5,
+    "fields": {
+      "title": "Advanced Machine Learning (M.Tech)",
+      "provider": "Coursera · DeepLearning.AI",
+      "provider_url": "https://www.coursera.org/specializations/machine-learning",
+      "category": "MTECH",
+      "target_years": [1,2],
+      "is_free": false
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 6,
+    "fields": {
+      "title": "Physics: PUC Level — Mechanics",
+      "provider": "Khan Academy",
+      "provider_url": "https://www.khanacademy.org/science/physics",
+      "category": "PUC",
+      "target_years": [0],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 7,
+    "fields": {
+      "title": "Accounting Fundamentals (BCOM)",
+      "provider": "Alison",
+      "provider_url": "https://alison.com/course/accounting-fundamentals",
+      "category": "BCOM",
+      "target_years": [1,2,3,4],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 8,
+    "fields": {
+      "title": "Web Development Bootcamp (BCA)",
+      "provider": "Udemy",
+      "provider_url": "https://www.udemy.com/course/web-development-bootcamp/",
+      "category": "BCA",
+      "target_years": [2,3],
+      "is_free": false
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 9,
+    "fields": {
+      "title": "Data Structures & Algorithms (MCA/MTECH)",
+      "provider": "NPTEL",
+      "provider_url": "https://nptel.ac.in/courses/dsa",
+      "category": "MTECH",
+      "target_years": [1,2],
+      "is_free": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 10,
+    "fields": {
+      "title": "Business Communication (BBA/BCOM)",
+      "provider": "edX",
+      "provider_url": "https://www.edx.org/course/business-communication",
+      "category": "BBA",
+      "target_years": [1,2,3,4],
+      "is_free": false
+    }
+  }
+]
