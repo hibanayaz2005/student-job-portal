@@ -1,7 +1,11 @@
-import React from 'react';
-import JobCard from '../components/JobCard';
+export default Home;import React from 'react';
+import Navbar from '../components/Navbar';
+import HowItWorks from '../components/HowItWorks';
 import Verification from '../components/Verification';
+import JobCard from '../components/JobCard';
 import Courses from '../components/Courses';
+import ResumeScorer from '../components/ResumeScorer';
+import DashboardPreview from '../components/DashboardPreview';
 
 const Home = () => {
   const jobs = [
@@ -10,32 +14,40 @@ const Home = () => {
   ];
 
   return (
-    <main>
-        <Verification />
-        <Courses />
-      <section className="hero">
-        <div className="hero-inner">
-          <div className="hero-badge">India's First Verified Student Job Portal</div>
-          <h1>Jobs That Match<br/>
-            <span className="cyan">Your Year.</span> <span className="purple">Your Potential.</span>
-          </h1>
-          <p className="hero-sub">Verified with Aadhaar + College ID. Employers reach you based on your college year, branch, and skills.</p>
-          <div className="hero-btns">
-            <button className="btn-primary">Start as Student</button>
-            <button className="btn-secondary">Post a Job</button>
+    <div className="app-container">
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <section className="hero">
+          <div className="hero-inner">
+            <div className="hero-badge">India's First Verified Student Job Portal</div>
+            <h1>Jobs That Match<br/><span className="cyan">Your Year.</span> <span className="purple">Your Potential.</span></h1>
+            <p className="hero-sub">Verified with Aadhaar + College ID. Employers reach you based on your year.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section-pad" id="jobs">
-        <div className="container">
-          <h2 className="section-title">Opportunities For You</h2>
-          <div className="jobs-grid">
-            {jobs.map(job => <JobCard key={job.id} job={job} />)}
+        <HowItWorks />
+        <Verification />
+
+        <section className="section-pad" id="jobs">
+          <div className="container">
+            <h2 className="section-title">Opportunities For You</h2>
+            <div className="jobs-grid">
+              {jobs.map(job => <JobCard key={job.id} job={job} />)}
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        <Courses />
+        <ResumeScorer />
+        <DashboardPreview />
+      </main>
+      
+      <footer>
+        <div className="footer-logo">CareerBridge</div>
+        <p>Built with Django + React • © 2026</p>
+      </footer>
+    </div>
   );
 };
 
