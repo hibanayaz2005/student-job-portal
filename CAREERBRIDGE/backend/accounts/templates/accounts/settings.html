@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Settings — CareerBridge</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6fb; display:flex; align-items:center; justify-content:center; height:100vh; }
+    .card { background:white; padding:24px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08); width:480px; }
+    .input { width:100%; padding:10px; margin-bottom:12px; border:1px solid #ddd; border-radius:6px; }
+    .btn { background:#06b6d4; color:#000; padding:10px 14px; border-radius:6px; border:none; font-weight:700; cursor:pointer; width:100%; }
+    .error { color:#ef4444; margin-bottom:10px; }
+    .success { color:#10b981; margin-bottom:10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3 style="margin-bottom:12px;">Account settings</h3>
+    {% if role == 'student' and user.student_profile %}
+      <p>Profile completeness: {{ user.student_profile.completion_percentage }}%</p>
+    {% elif role == 'employer' and user.employer_profile %}
+      <p>Profile completeness: {{ user.employer_profile.completion_percentage }}%</p>
+    {% endif %}
+    {% if messages %}
+      {% for m in messages %}
+        <div class="{% if m.tags %}{{ m.tags }}{% endif %}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <input class="input" name="email" placeholder="Email" value="{{ user.email }}" />
+      <input class="input" name="phone" placeholder="Phone" value="{{ user.phone }}" />
+
+      {% if role == 'student' %}
+        <h4>Student profile</h4>
+        <input class="input" name="college_name" placeholder="College name" value="{{ user.student_profile.college_name }}" />
+        <input class="input" name="branch" placeholder="Branch" value="{{ user.student_profile.branch }}" />
+        <input class="input" name="year_of_study" placeholder="Year of study" value="{{ user.student_profile.year_of_study }}" />
+        <input class="input" name="graduation_year" placeholder="Graduation year" value="{{ user.student_profile.graduation_year }}" />
+        <input class="input" name="skills" placeholder="Skills (comma-separated)" value="{{ user.student_profile.skills|join:', ' }}" />
+        <input class="input" name="certifications" placeholder="Certifications (comma-separated)" value="{{ user.student_profile.certifications|join:', ' }}" />
+        <input class="input" name="linkedin_url" placeholder="LinkedIn URL" value="{{ user.student_profile.linkedin_url }}" />
+        <p>Aptitude test: {% if user.student_profile.aptitude_passed %}<strong style="color:var(--accent3);">Passed</strong>{% else %}<strong style="color:var(--warn);">Not completed</strong>{% endif %}</p>
+        <p>Resume score: {{ user.student_profile.resume_score|default:'n/a' }}</p>
+        <p>Verified: {{ user.student_profile.is_verified }}</p>
+      {% elif role == 'employer' %}
+        <h4>Employer profile</h4>
+        <input class="input" name="company_name" placeholder="Company name" value="{{ user.employer_profile.company_name }}" />
+        <input class="input" name="company_website" placeholder="Website" value="{{ user.employer_profile.company_website }}" />
+        <input class="input" name="industry" placeholder="Industry" value="{{ user.employer_profile.industry }}" />
+        <p>Verified: {{ user.employer_profile.is_verified }}</p>
+      {% endif %}
+
+      <button class="btn" type="submit">Save changes</button>
+    </form>
+    <p style="font-size:13px;color:#666;margin-top:12px;"><a href="/">Back to dashboard</a></p>
+  </div>
+</body>
+</html>
