@@ -3,6 +3,7 @@ from django.db import models
 class Job(models.Model):
     # 1. Foreign key (from your first definition)
     employer = models.ForeignKey('accounts.EmployerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    deadline = models.DateTimeField(null=True, blank=True)
     
     # 2. All other fields (from your second definition)
     job_type = models.CharField(max_length=50, choices=[('FT', 'Full-time'), ('PT', 'Part-time')])
