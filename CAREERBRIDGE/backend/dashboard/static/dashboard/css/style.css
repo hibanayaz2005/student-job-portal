@@ -1,4 +1,125 @@
-body { background: #f6f9fc; }
-.stat-card { border-radius: 12px; }
-.stat-card .card-body { padding: 1.75rem; }
-.navbar-brand { font-weight: 700; }
+/* 1. Global Performance Boost */
+* {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+}
+
+/* 2. Optimized Modal (No Blur = No Lag) */
+#video-modal {
+    position: fixed;
+    inset: 0;
+    display: none; /* Controlled by JS */
+    flex-direction: column;
+    z-index: 2000;
+    background: #0a0e1a; /* Solid background for GPU efficiency */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* 3. Smooth Sidebar Scroll */
+.course-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    overflow-y: auto;
+}
+
+/* 4. Prevent Layout Shift */
+#video-frame {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    contain: strict;
+}
+
+/* ===== PERSONAL GUIDANCE - OPTIMIZED PREMIUM ===== */
+
+.guidance-section {
+  background: radial-gradient(circle at 20% 20%, #0f1c2e 0%, #0b1220 40%, #070d18 100%);
+  position: relative;
+}
+
+.guidance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+  margin-top: 60px;
+}
+
+.guidance-card {
+  background: linear-gradient(145deg, #101728, #0c1220);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 26px;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  position: relative;
+  will-change: transform;
+}
+
+.guidance-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: 0 18px 40px rgba(0, 229, 255, 0.12);
+}
+
+/* Top Accent Line */
+.guidance-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.guidance-card:hover::before {
+  opacity: 1;
+}
+
+.guidance-icon {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 22px;
+  margin-bottom: 18px;
+  color: #000;
+}
+
+.guidance-title {
+  font-family: var(--font-head);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.guidance-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.guidance-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: #000;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.guidance-btn:hover {
+  background: #00c4d4;
+  transform: translateY(-2px);
+}
