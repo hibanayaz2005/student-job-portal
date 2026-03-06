@@ -1,0 +1,1062 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CareerBridge — Student Career Flow</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --surface2: #1a2235;
+            --border: #1e2d45;
+            --accent: #00e5ff;
+            --accent2: #7c3aed;
+            --accent3: #10b981;
+            --warn: #f59e0b;
+            --text: #e8edf5;
+            --muted: #6b7a99;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.15), transparent 70%);
+            filter: blur(120px);
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15), transparent 70%);
+            filter: blur(120px);
+            z-index: -1;
+        }
+
+        /* AUTH MODAL OVERLAY */
+        #auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* LAYOUT */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 60px;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .logo span {
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 24px;
+        }
+
+        .section-header {
+            margin-bottom: 48px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        /* CARDS & GRIDS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* VERIFICATION */
+        .verify-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-ver {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent3);
+            border: 1px solid var(--accent3);
+        }
+
+        /* BTNS & INPUTS */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #3af3ff);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .guidance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .guidance-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: 0.3s;
+        }
+
+        .guidance-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-6px);
+        }
+
+        .guidance-icon {
+            font-size: 32px;
+            margin-bottom: 14px;
+        }
+
+        .guidance-title {
+            font-family: var(--font-head);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .guidance-desc {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .guidance-btn {
+            background: var(--accent2);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .guidance-btn:hover {
+            background: #8b5cf6;
+        }
+
+        section {
+            margin-bottom: 120px;
+        }
+
+        /* --- NEW ADVANCED RESUME AI CSS --- */
+        .score-display {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) 0deg, var(--accent) 0deg, var(--border) 0deg);
+            /* Starts at 0 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            position: relative;
+            transition: background 1s ease-out;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 50%;
+            background: var(--surface);
+        }
+
+        .score-num {
+            position: relative;
+            z-index: 1;
+            font-family: var(--font-head);
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .score-item {
+            background: var(--surface2);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .score-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .score-item-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .score-item-val {
+            font-family: var(--font-head);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 1s ease;
+        }
+
+        .fill-high {
+            background: var(--accent3);
+        }
+
+        .fill-med {
+            background: var(--warn);
+        }
+
+        .fill-low {
+            background: #ef4444;
+        }
+
+        .score-feedback {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .improvements {
+            margin-top: 32px;
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+        }
+
+        .improvements h4 {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #a78bfa;
+        }
+
+        .improvement-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: flex-start;
+            font-size: 14px;
+        }
+
+        .improvement-item::before {
+            content: '→';
+            color: #a78bfa;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .ats-box {
+            margin-top: 24px;
+            background: rgba(239, 68, 68, 0.06);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .ats-box h5 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #f87171;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ats-issue {
+            font-size: 13px;
+            color: var(--muted);
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .ats-issue::before {
+            content: '⚠';
+            color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <h2 style="font-family: var(--font-head); margin-bottom: 8px;">Welcome to CareerBridge</h2>
+            <p style="color: var(--muted); margin-bottom: 24px;">Please login to access the student portal</p>
+            <input type="text" placeholder="College Email ID" />
+
+            <input type="password" id="password" name="password" placeholder="Password" required minlength="8"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$"
+                title="Password must contain 8+ characters, uppercase, lowercase, number & special character" />
+
+            <div id="strengthText" style="font-size:12px; margin-top:-10px; margin-bottom:16px;"></div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="closeAuth()">Login / Sign Up</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">Career<span>Bridge</span></div>
+        <div style="font-size: 14px; color: var(--muted);">Student Portal • 2026</div>
+    </nav>
+
+    <div class="container">
+
+        <section id="verify" style="margin-bottom: 100px;">
+            <div class="section-header">
+                <div class="section-label">Step 01: Identity</div>
+                <h2 class="section-title">Verified Student Badge</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <h3>Aadhaar Verification</h3>
+                    <p style="color: var(--muted); margin: 12px 0;">Upload your Aadhaar to verify identity.</p>
+                    <input type="file" id="aadhaar-input" style="display:none" onchange="verifyDoc('aadhaar-zone')">
+                    <div class="verify-zone" id="aadhaar-zone"
+                        onclick="document.getElementById('aadhaar-input').click()">
+                        <strong>Click to Upload Aadhaar</strong>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>College ID Verification</h3>
+                    <p style="color: var(--muted); margin: 12px 0;">Confirms your college year and branch.</p>
+                    <input type="file" id="college-input" style="display:none" onchange="verifyDoc('college-zone')">
+                    <div class="verify-zone" id="college-zone"
+                        onclick="document.getElementById('college-input').click()">
+                        <strong>Click to Upload ID</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="courses" style="margin-bottom: 100px;">
+            <div class="section-header">
+                <div class="section-label">Step 02: Learning</div>
+                <h2 class="section-title">In-Platform Learning</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div style="font-size: 24px;">🐍</div>
+                    <h3 style="margin-top: 12px;">Python for Data Science</h3>
+                    <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">IIT Madras • 8 Modules</p>
+                    <button class="btn btn-primary" style="width: 100%;"
+                        onclick="startCourse('rfscVS0vtbw', 'Python for Data Science')">
+                        Open Course Player
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div style="font-size: 24px;">🌐</div>
+                    <h3 style="margin-top: 12px;">Full Stack Web Dev</h3>
+                    <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">freeCodeCamp • 12 Modules</p>
+                    <button class="btn btn-primary" style="width: 100%;"
+                        onclick="startCourse('86v9t-A0D3w', 'Full Stack Web Dev')">
+                        Open Course Player
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="resume" style="margin-bottom: 100px;">
+            <div class="section-header">
+                <div class="section-label">Step 04: AI Scorer</div>
+                <h2 class="section-title">Resume Analysis</h2>
+            </div>
+            <div class="card" style="text-align: center;">
+                <input type="file" id="resume-file" style="display: none;" onchange="startAnalysis()" />
+                <div id="resume-upload-box">
+                    <div style="font-size: 50px; margin-bottom: 16px;">📄</div>
+                    <h3 id="analysis-status">Upload your Resume PDF</h3>
+                    <button class="btn btn-primary" style="margin-top: 20px;"
+                        onclick="document.getElementById('resume-file').click()">Select File</button>
+                </div>
+
+                <div id="resume-results"
+                    style="display: none; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 32px; width: 100%;">
+
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:28px;">
+                        <div style="font-family:var(--font-head); font-size:16px; font-weight:700;">Analysis Result
+                        </div>
+                        <div style="font-size:13px; color:var(--muted);" id="uploaded-file-name">• resume.pdf</div>
+                        <div class="badge badge-ver"
+                            style="margin-left:auto; background: rgba(245,158,11,0.1); color: var(--warn); border-color: rgba(245,158,11,0.3);"
+                            id="top-score-badge">74 / 100</div>
+                    </div>
+
+                    <div class="score-display">
+                        <div class="score-circle" id="main-score-circle">
+                            <div class="score-num" id="score-num">0</div>
+                        </div>
+                        <div class="score-label" id="score-text">Good — A few key improvements could get you to 90+
+                        </div>
+                    </div>
+
+                    <div class="score-breakdown">
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Contact Info</span><span
+                                    class="score-item-val">10/10</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-high" style="width:100%"></div>
+                            </div>
+                            <div class="score-feedback">✓ Email, phone, LinkedIn, GitHub all present</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Education</span><span
+                                    class="score-item-val">8/10</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-high" style="width:80%"></div>
+                            </div>
+                            <div class="score-feedback">Add your CGPA and relevant coursework</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Skills Section</span><span
+                                    class="score-item-val">12/20</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-med" style="width:60%"></div>
+                            </div>
+                            <div class="score-feedback">Add 4–6 more technical skills for target roles</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Work Experience</span><span
+                                    class="score-item-val">9/15</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-med" style="width:60%"></div>
+                            </div>
+                            <div class="score-feedback">Use strong action verbs & quantify results</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Projects</span><span
+                                    class="score-item-val">16/20</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-high" style="width:80%"></div>
+                            </div>
+                            <div class="score-feedback">Good! Add GitHub links and tech stack used</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-item-top"><span class="score-item-name">Summary / Objective</span><span
+                                    class="score-item-val">6/15</span></div>
+                            <div class="progress-bar">
+                                <div class="progress-fill fill-low" style="width:40%"></div>
+                            </div>
+                            <div class="score-feedback">Too generic — tailor it to your target role</div>
+                        </div>
+                    </div>
+
+                    <div class="improvements">
+                        <h4>🚀 Top Improvements to Boost Your Score</h4>
+                        <div class="improvement-item">Quantify every achievement — e.g., "Built a REST API serving 10K
+                            daily requests"</div>
+                        <div class="improvement-item">Replace weak verbs like "worked on" with "engineered",
+                            "architected", "optimized"</div>
+                        <div class="improvement-item">Rewrite your summary to mention your target role and top 2 skills
+                        </div>
+                    </div>
+
+                    <div class="ats-box">
+                        <h5>⚠ ATS Compatibility Issues Found</h5>
+                        <div class="ats-issue">Table detected in Skills section — many ATS systems cannot parse tables
+                            correctly</div>
+                        <div class="ats-issue">Missing keywords: "REST API", "Git", "Agile" not found — add them to
+                            skill section</div>
+                    </div>
+
+                    <button class="btn btn-secondary" style="margin-top: 32px; width: 100%;" onclick="resetResume()">↻
+                        Upload Different Resume</button>
+                </div>
+            </div>
+        </section>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
+        <!-- PERSONAL GUIDANCE -->
+        <section class="section-pad guidance-section" id="guidance">
+            <div class="container">
+                <div class="section-label">1-on-1 Support</div>
+                <h2 class="section-title">Get Personal Career Guidance</h2>
+                <p class="section-sub">
+                    Not sure what to do next? Get expert help for placements, internships,
+                    higher studies, and skill roadmap — personalized for your year.
+                </p>
+
+                <div class="guidance-grid">
+
+                    <div class="guidance-card">
+                        <div class="guidance-icon">👨‍🏫</div>
+                        <h3 class="guidance-title">1-on-1 Mentor Session</h3>
+                        <div class="guidance-desc">
+                            Book a private session with industry mentors from top companies.
+                            Get clarity on skills, roadmap, and job strategy.
+                        </div>
+                        <button class="guidance-btn" onclick="openMentorModal()">Book Session</button>
+                    </div>
+
+                    <div class="guidance-card">
+                        <div class="guidance-icon">📝</div>
+                        <div class="guidance-title">Live Resume Review</div>
+                        <div class="guidance-desc">
+                            Get your resume reviewed by HR professionals.
+                            Improve structure, keywords, and ATS score in real-time.
+                        </div>
+                        <button class="guidance-btn">Schedule Review</button>
+                    </div>
+
+                    <div class="guidance-card">
+                        <div class="guidance-icon">🎯</div>
+                        <div class="guidance-title">Placement Strategy Plan</div>
+                        <div class="guidance-desc">
+                            Final year student? Get a full placement roadmap —
+                            companies to target, skills to learn, and interview plan.
+                        </div>
+                        <button class="guidance-btn">Get Roadmap</button>
+                    </div>
+
+                    <div class="guidance-card">
+                        <div class="guidance-icon">🎓</div>
+                        <div class="guidance-title">Higher Studies Counseling</div>
+                        <div class="guidance-desc">
+                            Planning for MS / MBA / GATE? Get guidance on exams,
+                            SOP writing, university selection, and scholarships.
+                        </div>
+                        <button class="guidance-btn">Talk to Advisor</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="jobs">
+            <div class="section-header">
+                <div class="section-label">Step 05: Placement</div>
+                <h2 class="section-title">Jobs for your Year</h2>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="badge badge-ver">3rd Year Eligible</span>
+                        <span style="color: var(--accent); font-weight: 700;">₹15K/mo</span>
+                    </div>
+                    <h3 style="margin-top: 16px;">Frontend Intern</h3>
+                    <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">Zoho Corp • Chennai</p>
+                    <button class="btn btn-primary" style="margin-top: 20px; width: 100%;">Apply with
+                        CareerBridge</button>
+                </div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="badge badge-ver">Final Year Only</span>
+                        <span style="color: var(--accent); font-weight: 700;">₹8.5 LPA</span>
+                    </div>
+                    <h3 style="margin-top: 16px;">Cloud Support Associate</h3>
+                    <p style="font-size: 13px; color: var(--muted); margin-top: 8px;">AWS India • Remote</p>
+                    <button class="btn btn-primary" style="margin-top: 20px; width: 100%;">Apply with
+                        CareerBridge</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="container"
+            style="padding: 48px 24px; text-align: center; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border);">
+            CareerBridge • Built for Hiba • © 2026
+        </div>
+    </footer>
+
+    <div id="video-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(7, 10, 18, 0.98); z-index:2000; flex-direction: column;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 1px solid var(--border); background: var(--surface);">
+            <div>
+                <h3 id="modal-course-title" style="font-family: var(--font-head);">Course Player</h3>
+                <span style="font-size: 12px; color: var(--accent3);">● Live Session</span>
+            </div>
+            <button onclick="closeVideo()" class="btn btn-secondary" style="padding: 8px 20px;">Exit Classroom</button>
+        </div>
+
+        <div style="display: flex; flex: 1; overflow: hidden;">
+            <div
+                style="flex: 3; background: #000; position: relative; display: flex; align-items: center; justify-content: center;">
+                <div id="youtube-player" style="width: 100%; height: 100%;"></div>
+
+                <div id="video-fallback"
+                    style="display: none; position: absolute; inset: 0; background: #000; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; z-index: 10;">
+                    <h3 style="margin-bottom: 10px; font-family: var(--font-head);">🎬 Video Unavailable</h3>
+                    <p style="margin-bottom: 20px; color: var(--muted);">The creator requires this lesson to be watched
+                        directly on YouTube.</p>
+                    <a id="youtube-direct-link" href="#" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-primary" style="text-decoration: none;">
+                        Watch Lesson on YouTube
+                    </a>
+                </div>
+            </div>
+
+            <div style="flex: 1; background: var(--surface); border-left: 1px solid var(--border); padding: 20px; overflow-y: auto;"
+                class="course-sidebar">
+                <h4 style="margin-bottom: 20px; color: var(--muted);">Course Content</h4>
+                <div
+                    style="padding: 15px; border-radius: 8px; background: var(--surface2); margin-bottom: 10px; border-left: 3px solid var(--accent); cursor: pointer;">
+                    <p style="font-size: 14px; font-weight: 600;">01. Introduction</p>
+                    <small style="color: var(--muted);">Watching Now</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>// PASSWORD STRENGTH CHECK
+        const passwordField = document.getElementById("password");
+        const strengthText = document.getElementById("strengthText");
+
+        if (passwordField) {
+            passwordField.addEventListener("input", function () {
+                const val = passwordField.value;
+                let strength = 0;
+
+                if (val.length >= 8) strength++;
+                if (/[A-Z]/.test(val)) strength++;
+                if (/[a-z]/.test(val)) strength++;
+                if (/[0-9]/.test(val)) strength++;
+                if (/[@$!%*?&]/.test(val)) strength++;
+
+                if (strength <= 2) {
+                    strengthText.innerText = "Weak password";
+                    strengthText.style.color = "red";
+                } else if (strength <= 4) {
+                    strengthText.innerText = "Medium password";
+                    strengthText.style.color = "orange";
+                } else {
+                    strengthText.innerText = "Strong password";
+                    strengthText.style.color = "lime";
+                }
+            });
+        }
+
+
+        // --- YOUTUBE API LOGIC ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        var currentVideoId = '';
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '100%', width: '100%', videoId: '',
+                playerVars: { 'autoplay': 1, 'rel': 0, 'modestbranding': 1 },
+                events: {
+                    'onError': function (event) {
+                        document.getElementById('youtube-player').style.display = 'none';
+                        document.getElementById('video-fallback').style.display = 'flex';
+                        document.getElementById('youtube-direct-link').href = 'https://www.youtube.com/watch?v=' + currentVideoId;
+                    }
+                }
+            });
+        }
+
+        // --- UI FUNCTIONS ---
+        function closeAuth() { document.getElementById('auth-overlay').style.display = 'none'; }
+
+        function verifyDoc(zoneId) {
+            const zone = document.getElementById(zoneId);
+            zone.innerHTML = "<span>Processing...</span>";
+            setTimeout(() => {
+                zone.innerHTML = '<span class="badge badge-ver">✓ Verified</span>';
+                zone.style.borderColor = 'var(--accent3)';
+                zone.onclick = null;
+            }, 1200);
+        }
+
+        function startCourse(videoId, courseTitle) {
+            currentVideoId = videoId;
+            document.getElementById('modal-course-title').innerText = courseTitle;
+            document.getElementById('video-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('video-fallback').style.display = 'none';
+            document.getElementById('youtube-player').style.display = 'block';
+
+            if (player && player.loadVideoById) { player.loadVideoById(videoId); }
+        }
+
+        function closeVideo() {
+            document.getElementById('video-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if (player && player.stopVideo) { player.stopVideo(); }
+        }
+
+
+        async function startAnalysis() {
+
+            const fileInput = document.getElementById("resume-file");
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            document.getElementById("analysis-status").innerText = "Analyzing Resume...";
+
+            const fileReader = new FileReader();
+
+            fileReader.onload = async function () {
+
+                const typedarray = new Uint8Array(this.result);
+
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+
+                let fullText = "";
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+
+                    const pageText = content.items.map(item => item.str).join(" ");
+
+                    fullText += pageText + " ";
+                }
+
+                analyzeResume(fullText);
+            };
+
+            fileReader.readAsArrayBuffer(file);
+
+            document.getElementById("uploaded-file-name").innerText =
+                "• " + file.name;
+        }
+
+        function analyzeResume(text) {
+
+            text = text.toLowerCase(); // ✅ important fix
+
+            let contact = 0;
+            let education = 0;
+            let skills = 0;
+            let experience = 0;
+            let projects = 0;
+            let summary = 0;
+
+            let improvements = [];
+            let atsIssues = [];
+
+            // -------- CONTACT --------
+            if (text.includes("@")) contact += 5;
+            else improvements.push("Add a professional email address.");
+
+            if (text.includes("linkedin")) contact += 3;
+            else improvements.push("Include LinkedIn profile link.");
+
+            if (text.includes("github")) contact += 2;
+            else improvements.push("Add GitHub profile for technical roles.");
+
+            // -------- EDUCATION --------
+            if (text.includes("b.tech") || text.includes("bca") || text.includes("degree"))
+                education += 5;
+            else improvements.push("Mention your degree clearly.");
+
+            if (text.includes("cgpa") || text.includes("percentage"))
+                education += 5;
+            else improvements.push("Add CGPA or percentage to education section.");
+
+            // -------- SKILLS --------
+            const skillKeywords = ["python", "django", "sql", "javascript", "html", "css", "react", "node", "git", "aws", "rest"];
+            skillKeywords.forEach(skill => {
+                if (text.includes(skill)) skills += 2;
+            });
+
+            if (skills < 10)
+                improvements.push("Add more technical skills relevant to your target role.");
+
+            skills = Math.min(skills, 20);
+
+            // -------- EXPERIENCE --------
+            if (text.includes("intern")) experience += 7;
+            if (text.includes("developed") || text.includes("built") || text.includes("engineered"))
+                experience += 8;
+
+            if (experience < 8)
+                improvements.push("Use strong action verbs like 'Built', 'Engineered', 'Optimized'.");
+
+            // -------- PROJECTS --------
+            if (text.includes("project")) projects += 10;
+            if (text.includes("github")) projects += 10;
+
+            if (projects < 10)
+                improvements.push("Add 2–3 strong projects with tech stack mentioned.");
+
+            // -------- SUMMARY --------
+            if (text.includes("summary") || text.includes("objective"))
+                summary += 10;
+            else improvements.push("Add a short tailored summary section.");
+
+            // -------- ATS CHECK --------
+            if (text.includes("table"))
+                atsIssues.push("Avoid tables — many ATS cannot parse them.");
+
+            const atsKeywords = ["rest", "git", "agile", "api", "docker"];
+
+            let missingKeywords = atsKeywords.filter(k => !text.includes(k));
+
+            if (missingKeywords.length > 0) {
+                atsIssues.push("Missing keywords: " + missingKeywords.join(", "));
+            }
+
+            let score = contact + education + skills + experience + projects + summary;
+
+            score = Math.min(score, 100);
+
+            updateUI(score, improvements, atsIssues);
+        }
+
+
+        // OUTSIDE analyzeResume
+        function updateUI(score, improvements, atsIssues) {
+
+            document.getElementById("resume-upload-box").style.display = "none";
+            document.getElementById("resume-results").style.display = "block";
+
+            document.getElementById("score-num").innerText = score;
+            document.getElementById("top-score-badge").innerText = score + " / 100";
+
+            const circle = document.getElementById("main-score-circle");
+            const deg = score * 3.6;
+
+            circle.style.background =
+                `conic-gradient(var(--accent) ${deg}deg, var(--border) ${deg}deg)`;
+
+            if (score >= 85)
+                document.getElementById("score-text").innerText =
+                    "Excellent Resume — Ready for Top Companies 🚀";
+            else if (score >= 65)
+                document.getElementById("score-text").innerText =
+                    "Good Resume — Small improvements needed";
+            else
+                document.getElementById("score-text").innerText =
+                    "Needs improvement to pass ATS";
+
+            const improveBox = document.querySelector(".improvements");
+            improveBox.innerHTML = "<h4>🚀 Personalized Improvements</h4>";
+
+            improvements.slice(0, 5).forEach(item => {
+                improveBox.innerHTML += `<div class="improvement-item">${item}</div>`;
+            });
+
+            const atsBox = document.querySelector(".ats-box");
+            atsBox.innerHTML = "<h5>⚠ ATS Compatibility Issues</h5>";
+
+            if (atsIssues.length === 0) {
+                atsBox.innerHTML += `<div class="ats-issue">No major ATS issues detected</div>`;
+            } else {
+                atsIssues.forEach(issue => {
+                    atsBox.innerHTML += `<div class="ats-issue">${issue}</div>`;
+                });
+            }
+        }
+        function animateScore(target) {
+
+            let current = 0;
+            const interval = setInterval(() => {
+
+                if (current >= target) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                current++;
+                animateScore(score);
+            }, 15);
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="{% static 'dashboard/js/dashboard.js' %}"></script>
+</body>
+
+</html>
