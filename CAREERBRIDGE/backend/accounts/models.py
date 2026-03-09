@@ -3,6 +3,16 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
+from django.db import models
+
+class Student(models.Model):
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.email
+
 class User(AbstractUser):
     ROLE_CHOICES = [
         ('student', 'Student'),

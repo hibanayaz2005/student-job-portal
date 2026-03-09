@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.utils import timezone
@@ -11,6 +11,76 @@ import PyPDF2
 from jobs.models import Job, Application
 from courses.models import Course
 from resume.models import ResumeAnalysis
+
+import requests
+
+# Temporary OTP storage
+OTP_STORE = {}
+
+
+def send_aadhaar_otp(request):
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+        phone = data.get("phone")
+
+        otp = random.randint(100000, 999999)
+
+        OTP_STORE[phone] = otp
+
+        url = "https://www.fast2sms.com/dev/bulkV2"
+
+        payload = {
+            "route": "q",
+            "message": f"Your CareerBridge OTP is {otp}",
+            "language": "english",
+            "numbers": phone
+        }
+
+        headers = {
+            "authorization": "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",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        print(response.text)   # IMPORTANT for debugging
+
+        return JsonResponse({"message": "OTP request sent"})
+
+
+def verify_aadhaar_otp(request):
+
+    if request.method == "POST":
+
+        try:
+
+            data = json.loads(request.body)
+
+            phone = data.get("phone")
+            otp = data.get("otp")
+
+            if not phone or not otp:
+                return JsonResponse({"verified": False})
+
+            if OTP_STORE.get(phone) == int(otp):
+
+                # remove OTP after success
+                del OTP_STORE[phone]
+
+                return JsonResponse({
+                    "verified": True
+                })
+
+            return JsonResponse({
+                "verified": False
+            })
+
+        except:
+            return JsonResponse({"verified": False})
+
+    return JsonResponse({"verified": False})
 
 
 def student_portal(request):
@@ -66,79 +136,4 @@ def home(request):
         'upcoming_deadlines': upcoming_deadlines,
     }
 
-    # Resume Upload Analysis
-    if request.method == 'POST' and request.FILES.get('resume_file'):
-
-        uploaded_pdf = request.FILES['resume_file']
-
-        try:
-
-            pdf_reader = PyPDF2.PdfReader(uploaded_pdf)
-
-            text = ""
-            for page in pdf_reader.pages:
-                text += page.extract_text() or ""
-
-            text_lower = text.lower()
-
-            score = 40
-            improvements = []
-            ats_issues = []
-
-            contact_keywords = ["gmail.com", "linkedin.com", "github.com", "phone", "+91"]
-            found_contacts = [k for k in contact_keywords if k in text_lower]
-
-            score += len(found_contacts) * 5
-
-            if len(found_contacts) < 3:
-                improvements.append("Add missing contact details (LinkedIn, GitHub, or professional email).")
-
-            if any(x in text_lower for x in ["university", "college", "b.tech", "bachelor"]):
-                score += 15
-            else:
-                improvements.append("Clearly state your degree and institution name.")
-
-            tech_keywords = ["python", "django", "react", "javascript", "html", "css", "sql", "java", "git", "aws"]
-            found_skills = [kw for kw in tech_keywords if kw in text_lower]
-
-            score += len(found_skills) * 4
-
-            if len(found_skills) < 5:
-                missing = [k for k in tech_keywords if k not in found_skills][:3]
-                improvements.append(
-                    f"Your tech stack seems thin. Consider adding skills like: {', '.join(missing)}"
-                )
-
-            if "table" in text_lower or "\t" in text:
-                ats_issues.append("Complex formatting or tables detected; many ATS cannot parse these.")
-
-            if len(text) > 3000:
-                ats_issues.append("Resume text is very long. Aim for a concise 1-page resume.")
-
-            score = min(score, 100)
-
-            return JsonResponse({
-                'success': True,
-                'score': score,
-                'skills_found': found_skills,
-                'improvements': improvements if improvements else ["Great job! Your resume is highly optimized."],
-                'ats_issues': ats_issues if ats_issues else ["No major ATS compatibility issues found."],
-                'filename': uploaded_pdf.name
-            })
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-
-    elif request.user.is_authenticated:
-
-        user_analysis = ResumeAnalysis.objects.filter(student__user=request.user).last()
-
-        if user_analysis:
-            context['analysis'] = {
-                'overall_score': getattr(user_analysis, 'overall_score', 85)
-            }
-
     return render(request, 'dashboard/home.html', context)
-
-    def student_portal(request):
-        return render(request, 'dashboard/student-portal.html')

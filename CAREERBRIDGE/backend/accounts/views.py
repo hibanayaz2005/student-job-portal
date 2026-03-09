@@ -16,7 +16,47 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import RegisterSerializer, UserSerializer
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password, check_password
+from .models import Student
 
+
+def register_student(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        if Student.objects.filter(email=email).exists():
+            return render(request, "accounts/login.html", {"error": "Email already exists"})
+
+        Student.objects.create(
+            email=email,
+            password=make_password(password)
+        )
+
+        return redirect("login")
+
+    return render(request, "accounts/register.html")
+
+
+def login_student(request):
+
+    if request.method == "POST":
+
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        try:
+            student = Student.objects.get(email=email)
+
+            if check_password(password, student.password):
+                request.session["student"] = student.email
+                return redirect("dashboard")
+
+        except Student.DoesNotExist:
+            pass
+
+    return render(request, "accounts/login.html")
 # =========================
 # REGISTER
 # =========================

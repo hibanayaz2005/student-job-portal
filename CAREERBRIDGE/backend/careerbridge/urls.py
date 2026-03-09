@@ -40,6 +40,10 @@ urlpatterns = [
     path('api/resume/', include('resume.urls')),
     # Jobs API
     path('api/jobs/', include('jobs.urls')),
+    # Mentorship API
+    path('api/mentorship/', include('mentorship.urls')),
+    # Projects API
+    path('api/projects/', include('projects.urls')),
 ]
 
 # Media files (uploads)

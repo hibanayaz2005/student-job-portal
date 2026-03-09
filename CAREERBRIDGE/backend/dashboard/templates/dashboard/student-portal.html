@@ -499,18 +499,39 @@
             <div class="grid">
                 <div class="card">
                     <h3>Aadhaar Verification</h3>
-                    <p style="color: var(--muted); margin: 12px 0;">Upload your Aadhaar to verify identity.</p>
-                    <input type="file" id="aadhaar-input" style="display:none" onchange="verifyDoc('aadhaar-zone')">
-                    <div class="verify-zone" id="aadhaar-zone"
-                        onclick="document.getElementById('aadhaar-input').click()">
-                        <strong>Click to Upload Aadhaar</strong>
+                    <p style="color: var(--muted); margin: 12px 0;">
+                        Verify your identity using Aadhaar OTP
+                    </p>
+
+                    <div class="verify-zone" id="aadhaar-zone">
+
+                        <input type="text" id="phone" placeholder="Enter Mobile Number">
+                        <input id="aadhaar-number" maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+                            placeholder="Enter Aadhaar Number">
+                        <button class="btn btn-primary" onclick="sendAadhaarOTP()"
+                            style="width:100%; margin-bottom:10px;">
+                            Send OTP
+                        </button>
+
+                        <div id="otp-box" style="display:none;">
+
+                            <input type="text" id="aadhaar-otp" placeholder="Enter OTP">
+
+                            <button class="btn btn-secondary" onclick="verifyAadhaarOTP()" style="width:100%;">
+                                Verify OTP
+                            </button>
+
+                        </div>
+
+                        <div id="aadhaar-status" style="margin-top:10px;font-size:13px;"></div>
+
                     </div>
                 </div>
 
                 <div class="card">
                     <h3>College ID Verification</h3>
                     <p style="color: var(--muted); margin: 12px 0;">Confirms your college year and branch.</p>
-                    <input type="file" id="college-input" style="display:none" onchange="verifyDoc('college-zone')">
+                    <input type="file" id="college-input" style="display:none" onchange="scanCollegeID()">
                     <div class="verify-zone" id="college-zone"
                         onclick="document.getElementById('college-input').click()">
                         <strong>Click to Upload ID</strong>
@@ -790,7 +811,7 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script>// PASSWORD STRENGTH CHECK
         const passwordField = document.getElementById("password");
         const strengthText = document.getElementById("strengthText");
@@ -817,6 +838,202 @@
                     strengthText.style.color = "lime";
                 }
             });
+        }
+
+        let generatedOTP = "";
+
+        function sendAadhaarOTP() {
+
+            const phone = document.getElementById("aadhaar-number").value;
+
+            if (phone.length !== 10) {
+                document.getElementById("aadhaar-status").innerText =
+                    "Enter valid mobile number";
+                return;
+            }
+
+            fetch("/send-aadhaar-otp/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    phone: phone
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    document.getElementById("aadhaar-status").innerText =
+                        "OTP sent to your mobile";
+
+                    document.getElementById("otp-box").style.display = "block";
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+        }
+
+
+        var d = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+            [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+            [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+            [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+            [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+            [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+            [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+            [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+            [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        ];
+
+        var p = [
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+            [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+            [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+            [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+            [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+            [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+            [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+        ];
+
+        var inv = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
+
+        function validateAadhaar(aadhaar) {
+
+            if (!/^\d{12}$/.test(aadhaar)) return false;
+
+            var c = 0;
+
+            aadhaar = aadhaar.split("").reverse().join("");
+
+            for (var i = 0; i < aadhaar.length; i++) {
+                c = d[c][p[i % 8][parseInt(aadhaar[i])]];
+            }
+
+            return c === 0;
+
+        }
+
+        function sendAadhaarOTP() {
+
+            const aadhaar = document.getElementById("aadhaar-number").value;
+
+            if (!validateAadhaar(aadhaar)) {
+
+                document.getElementById("aadhaar-status").innerText =
+                    "Invalid Aadhaar Number";
+
+                return;
+
+            }
+
+            fetch("/send-aadhaar-otp/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    phone: aadhaar
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById("aadhaar-status").innerText =
+                        "OTP sent";
+
+                    document.getElementById("otp-box").style.display = "block";
+
+                })
+
+        }
+
+        function getCookie(name) {
+
+            let cookieValue = null;
+
+            if (document.cookie && document.cookie !== "") {
+
+                const cookies = document.cookie.split(";");
+
+                for (let i = 0; i < cookies.length; i++) {
+
+                    const cookie = cookies[i].trim();
+
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                        break;
+
+                    }
+
+                }
+
+            }
+
+            return cookieValue;
+        }
+
+        async function scanCollegeID() {
+
+            const fileInput = document.getElementById("college-input");
+            const file = fileInput.files[0];
+
+            const zone = document.getElementById("college-zone");
+
+            zone.innerHTML = "Scanning ID card...";
+
+            const { data: { text } } = await Tesseract.recognize(
+                file,
+                "eng"
+            );
+
+            const extracted = text.toLowerCase();
+
+            console.log("OCR TEXT:", extracted);
+
+            // Detect year
+            const yearMatch = extracted.match(/20\d{2}/);
+
+            // Detect keywords
+            const collegeKeywords = [
+                "college",
+                "university",
+                "institute",
+                "school",
+                "academy"
+            ];
+
+            let collegeFound = false;
+
+            collegeKeywords.forEach(word => {
+                if (extracted.includes(word)) {
+                    collegeFound = true;
+                }
+            });
+
+            if (collegeFound && yearMatch) {
+
+                zone.innerHTML =
+                    '<span class="badge badge-ver">✓ Student Verified (' + yearMatch[0] + ')</span>';
+
+                zone.style.borderColor = "var(--accent3)";
+                zone.onclick = null;
+
+            } else {
+
+                zone.innerHTML =
+                    '<span style="color:red">Invalid ID. Please upload a valid College/School ID.</span>';
+
+            }
         }
 
 
