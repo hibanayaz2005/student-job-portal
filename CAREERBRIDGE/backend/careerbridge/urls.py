@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import login_page, settings_page, logout_page
+from accounts.views import login_page, settings_page, logout_page, RegisterView
 
 urlpatterns = [
     path('', include('dashboard.urls')),
@@ -33,6 +33,8 @@ urlpatterns = [
 
     # Authentication
     path('api/auth/', include('accounts.urls')),
+    path('api/register', RegisterView.as_view(), name='api-register'),
+    path('api/register/', RegisterView.as_view(), name='api-register-slash'),
 
     # Verification
     path('api/verify/', include('verification.urls')),

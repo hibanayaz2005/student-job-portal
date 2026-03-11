@@ -1,10 +1,10 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="csrf-token" content="EVyPktnUiVpQYYGuvMPRcWEDAzrK17UWC4h9Y7JDanm4c21k4sV9SFWBEdRpCouN">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CareerBridge — Student Career Platform</title>
     <meta name="description"
@@ -1647,7 +1647,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- AUTH OVERLAY -->
-    <div id="auth-overlay" {% if user.is_authenticated %}class="hidden" style="display:none" {% endif %}>
+    <div id="auth-overlay" >
         <div class="auth-card">
             <div class="auth-logo">Career<span>Bridge</span></div>
             <p class="auth-sub">India's First Verified Student Career Platform</p>
@@ -1766,10 +1766,10 @@
             </div>
         </nav>
         <div class="sidebar-user">
-            <div class="user-avatar">{{ user.username|make_list|first|upper|default:"S" }}</div>
+            <div class="user-avatar">S</div>
             <div class="user-info">
-                <div class="user-name">{{ user.first_name|default:user.username|default:"Student" }}</div>
-                <div class="user-role">{{ user.role|title|default:"Student" }}</div>
+                <div class="user-name">Student</div>
+                <div class="user-role">Student</div>
             </div>
             <button class="btn-icon btn-secondary" style="flex-shrink:0" onclick="doLogout()" title="Logout"><i
                     class="fas fa-sign-out-alt"></i></button>
@@ -1803,7 +1803,7 @@
             <div class="section-header">
                 <div>
                     <div class="section-label">Overview</div>
-                    <h1 class="section-title">Welcome back, {{ user.first_name|default:user.username|default:"Student" }}! 👋</h1>
+                    <h1 class="section-title">Welcome back, Student! 👋</h1>
                     <p class="section-sub">Here's what's happening with your career journey today.</p>
                 </div><button class="btn btn-primary btn-sm" onclick="showSection('jobs')"><i class="fas fa-search"></i>
                     Find Jobs</button>

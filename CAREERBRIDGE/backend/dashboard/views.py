@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from django.conf import settings
+from django.views.decorators.http import require_POST
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.utils import timezone
 from django.http import JsonResponse
 from datetime import timedelta
+
 import json
 import random
 import PyPDF2
@@ -17,70 +20,76 @@ import requests
 # Temporary OTP storage
 OTP_STORE = {}
 
-
+@require_POST
 def send_aadhaar_otp(request):
 
-    if request.method == "POST":
+    data = json.loads(request.body)
+    phone = data.get("phone")
 
-        data = json.loads(request.body)
-        phone = data.get("phone")
+    if not phone:
+        return JsonResponse({"error": "Phone required"}, status=400)
 
-        otp = random.randint(100000, 999999)
+    otp = random.randint(100000, 999999)
 
-        OTP_STORE[phone] = otp
+    # save OTP in database
+    OTPVerification.objects.create(
+        phone=phone,
+        otp=otp
+    )
 
-        url = "https://www.fast2sms.com/dev/bulkV2"
+    url = "https://www.fast2sms.com/dev/bulkV2"
 
-        payload = {
-            "route": "q",
-            "message": f"Your CareerBridge OTP is {otp}",
-            "language": "english",
-            "numbers": phone
-        }
+    payload = {
+        "route": "q",
+        "message": f"Your CareerBridge OTP is {otp}",
+        "language": "english",
+        "numbers": phone
+    }
 
-        headers = {
-            "authorization": "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",
-            "Content-Type": "application/json"
-        }
+    headers = {
+        "authorization": settings.FAST2SMS_API_KEY,
+        "Content-Type": "application/json"
+    }
 
-        response = requests.post(url, json=payload, headers=headers)
+    requests.post(url, json=payload, headers=headers)
 
-        print(response.text)   # IMPORTANT for debugging
+    return JsonResponse({"message": "OTP sent"})
 
-        return JsonResponse({"message": "OTP request sent"})
-
-
+@require_POST
 def verify_aadhaar_otp(request):
 
-    if request.method == "POST":
+    data = json.loads(request.body)
 
-        try:
+    phone = data.get("phone")
+    otp = data.get("otp")
 
-            data = json.loads(request.body)
+    if not phone or not otp:
+        return JsonResponse({"verified": False})
 
-            phone = data.get("phone")
-            otp = data.get("otp")
+    try:
 
-            if not phone or not otp:
-                return JsonResponse({"verified": False})
+        record = OTPVerification.objects.filter(phone=phone).latest("created_at")
 
-            if OTP_STORE.get(phone) == int(otp):
-
-                # remove OTP after success
-                del OTP_STORE[phone]
-
-                return JsonResponse({
-                    "verified": True
-                })
-
+        # check expiry (5 minutes)
+        if timezone.now() - record.created_at > timedelta(minutes=5):
             return JsonResponse({
-                "verified": False
+                "verified": False,
+                "error": "OTP expired"
             })
 
-        except:
-            return JsonResponse({"verified": False})
+        if record.otp == int(otp):
 
-    return JsonResponse({"verified": False})
+            record.delete()
+
+            return JsonResponse({
+                "verified": True
+            })
+
+        return JsonResponse({"verified": False})
+
+    except OTPVerification.DoesNotExist:
+
+        return JsonResponse({"verified": False})
 
 
 def student_portal(request):

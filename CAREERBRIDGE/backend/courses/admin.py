@@ -7,7 +7,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('title', 'provider', 'category', 'is_free')
     list_filter = ('provider', 'is_free', 'category')
     search_fields = ('title',)
-
+    ordering = ('title',)
 
 @admin.register(CourseProgress)
 class CourseProgressAdmin(admin.ModelAdmin):

@@ -58,6 +58,6 @@ class EmployerProfile(models.Model):
 def create_user_profiles(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'student':
-            StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026)
+            StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026, college_name='', branch='')
         elif instance.role == 'employer':
-            EmployerProfile.objects.create(user=instance)
+            EmployerProfile.objects.create(user=instance, company_name='', industry='')

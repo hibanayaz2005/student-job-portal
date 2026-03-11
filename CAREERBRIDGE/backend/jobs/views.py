@@ -24,7 +24,6 @@ class JobListView(APIView):
             except Exception:
                 pass
         if not qs.exists():
-            # return a few sample jobs so the UI is not empty
             sample = [
                 {
                     'id': 0,

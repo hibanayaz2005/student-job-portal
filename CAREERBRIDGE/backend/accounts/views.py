@@ -60,34 +60,52 @@ def login_student(request):
 # =========================
 # REGISTER
 # =========================
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
+# =========================
+# REGISTER
+# =========================
 class RegisterView(APIView):
-
+    permission_classes = [AllowAny]
     def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        name = request.data.get('name', '')
+        phone = request.data.get('phone', '')
+        college = request.data.get('college', '')
+        course = request.data.get('course', '')
+        year = request.data.get('year', '')
+        skills = request.data.get('skills', '')
 
-        serializer = RegisterSerializer(data=request.data)
+        if not email or not password:
+            return Response({"error": "Email and password are required"}, status=400)
 
-        if serializer.is_valid():
+        User = get_user_model()
+        
+        if User.objects.filter(email=email).exists():
+            return Response({"error": "Email already exists"}, status=400)
 
-            user = serializer.save(is_active=False)
+        username = email.split('@')[0]
+        # Prevent username conflict
+        if User.objects.filter(username=username).exists():
+            username = f"{username}_{random.randint(1000,9999)}"
 
-            otp = random.randint(100000, 999999)
+        user = User(username=username, email=email, first_name=name, phone=phone, role='student')
+        # Store hashed password
+        user.set_password(password)
+        user.save()
 
-            request.session['otp'] = str(otp)
-            request.session['user_id'] = user.id
+        if hasattr(user, 'student_profile'):
+            profile = user.student_profile
+            profile.college_name = college
+            profile.branch = course
+            if year and year[0].isdigit():
+                profile.year_of_study = int(year[0])
+            if skills:
+                profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
+            profile.save()
 
-            send_mail(
-                "CareerBridge Verification Code",
-                f"Your verification code is {otp}",
-                "noreply@careerbridge.com",
-                [user.email],
-                fail_silently=False,
-            )
-
-            return Response({
-                "message": "User created. OTP sent to email."
-            })
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Account created successfully", "success": True})
 
 
 # =========================
@@ -147,26 +165,43 @@ class SetPasswordView(APIView):
         })
 
 class LoginView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
-        username = request.data.get('username')
+        identifier = request.data.get('email') or request.data.get('identifier')
         password = request.data.get('password')
 
-        # simple validation
-        if not username or not password:
-            return Response({'error': 'username and password required'}, status=400)
+        if not identifier or not password:
+            return Response({'error': 'Email/Username and password required'}, status=400)
 
+        User = get_user_model()
+        user = None
+        
+        # Try finding by email first
         try:
-            user = authenticate(username=username, password=password)
-        except ValueError as e:
-            return Response({'error': str(e)}, status=400)
+            user = User.objects.get(email__iexact=identifier)
+        except User.DoesNotExist:
+            # If not found by email, try username
+            try:
+                user = User.objects.get(username__iexact=identifier)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=404)
 
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
-        return Response({'error': 'Invalid credentials'}, status=401)
+        # Compare password
+        valid = user.check_password(password)
+        if not valid:
+            return Response({'error': 'Invalid password'}, status=401)
+
+        # Secure authentication
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        auth_login(request, user)
+        
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'success': True,
+            'message': 'Login successful',
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

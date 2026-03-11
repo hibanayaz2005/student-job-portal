@@ -1,5 +1,28 @@
 from django.db import models
+from django.conf import settings
 
+
+from django.db import models
+from django.conf import settings
+
+class Job(models.Model):
+    JOB_TYPES = [
+        ('internship', 'Internship'),
+        ('fulltime', 'Full Time'),
+        ('parttime', 'Part Time'),
+        ('freelance', 'Freelance'),
+    ]
+
+    title = models.CharField(max_length=200)
+    company = models.CharField(max_length=200)
+    location = models.CharField(max_length=200)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPES)
+    description = models.TextField()
+    salary = models.CharField(max_length=100)
+    deadline = models.DateField()
+
+    def __str__(self):
+        return self.title
 
 class Course(models.Model):
     title = models.CharField(max_length=300)
@@ -59,11 +82,11 @@ class TestAttempt(models.Model):
 
 
 class Certificate(models.Model):
-    """Certificate issued after passing a skill test."""
-    student = models.ForeignKey('accounts.StudentProfile', on_delete=models.CASCADE)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     test = models.ForeignKey(SkillTest, on_delete=models.CASCADE)
+    certificate_id = models.CharField(max_length=100)
     issued_at = models.DateTimeField(auto_now_add=True)
-    certificate_id = models.CharField(max_length=50, unique=True)
-
+    pdf = models.FileField(upload_to="certificates/", null=True, blank=True)
+    
     def __str__(self):
         return f"Certificate: {self.student} - {self.test.title}"

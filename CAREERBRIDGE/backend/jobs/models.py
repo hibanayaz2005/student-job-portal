@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Job(models.Model):
     # 1. Foreign key (from your first definition)
     employer = models.ForeignKey('accounts.EmployerProfile', on_delete=models.CASCADE, null=True, blank=True)
