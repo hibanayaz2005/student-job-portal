@@ -1,0 +1,13 @@
+﻿diff --git a/CAREERBRIDGE/backend/dashboard/templates/dashboard/student-portal.html b/CAREERBRIDGE/backend/dashboard/templates/dashboard/student-portal.html
+index 562b937..d910ef0 100644
+--- a/CAREERBRIDGE/backend/dashboard/templates/dashboard/student-portal.html
++++ b/CAREERBRIDGE/backend/dashboard/templates/dashboard/student-portal.html
+@@ -2559,7 +2559,7 @@
+ 
+         const COURSES = [
+             {
+-                id: 1, title: "Python for Data Science", category: "data", icon: "≡ƒÉì", provider: "IIT Madras (NPTEL)", duration: "8 weeks", modules: 12, videoId: "7eh4d6sabA0", testQuestions: [
++                id: 1, title: "Python for Data Science", category: "data", icon: "≡ƒÉì", provider: "IIT Madras (NPTEL)", duration: "8 weeks", modules: 12, videoId: "LHBE6Q9XlzI", testQuestions: [
+                     { q: "Which library is used for data manipulation in Python?", options: ["NumPy", "Pandas", "Matplotlib", "Seaborn"], correct: 1, explanation: "Pandas is the primary library for data manipulation." },
+                     { q: "What does df.head() return?", options: ["Last 5 rows", "First 5 rows", "Random 5 rows", "All rows"], correct: 1, explanation: "head() returns the first 5 rows by default." },
+                     { q: "Which function is used to find missing values?", options: ["df.null()", "df.missing()", "df.isnull()", "df.empty()"], correct: 2, explanation: "isnull() identifies missing/NaN values." },

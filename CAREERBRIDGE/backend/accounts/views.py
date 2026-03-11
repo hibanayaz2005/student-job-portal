@@ -184,7 +184,7 @@ class LoginView(APIView):
             try:
                 user = User.objects.get(username__iexact=identifier)
             except User.DoesNotExist:
-                return Response({'error': 'User not found'}, status=404)
+                return Response({'error': 'User not found'}, status=401)
 
         # Compare password
         valid = user.check_password(password)
@@ -279,35 +279,15 @@ def settings_page(request):
 from django.contrib.auth import authenticate, login as auth_login
 
 def login_page(request):
-    """Simple session login page for students/employers."""
-
-    if request.method == 'GET':
-        return render(request, 'accounts/login.html')
-
-    # POST request
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-
-    if not username or not password:
-        messages.error(request, 'Please provide username and password')
-        return render(request, 'accounts/login.html')
-
-    # authenticate user
-    user = authenticate(request, username=username, password=password)
-
-    if user is not None:
-        auth_login(request, user)
-        return redirect('/')   # redirect to homepage or dashboard
-
-    messages.error(request, 'Invalid credentials')
-    return render(request, 'accounts/login.html')
+    """Redirects the old session login page to the modern Dashboard SPA."""
+    return redirect('/')
 
 
 def logout_page(request):
     """Log the user out of the session and redirect to login."""
     logout(request)
     messages.info(request, 'You have been logged out.')
-    return redirect('accounts-login')
+    return redirect('/')
 
 
 def google_login(request):
