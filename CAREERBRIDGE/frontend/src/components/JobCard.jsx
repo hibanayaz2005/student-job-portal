@@ -1,6 +1,10 @@
 import React from 'react';
 
 const JobCard = ({ job }) => {
+  const handleApply = () => {
+    alert(`Application for ${job.title} at ${job.company} would be processed here. This will connect to the backend API.`);
+  };
+
   return (
     <div className="job-card">
       <div className="job-card-top">
@@ -20,7 +24,7 @@ const JobCard = ({ job }) => {
       </div>
       <div className="job-footer">
         <div className="job-salary">{job.salary}</div>
-        <button className="apply-btn">Apply Now</button>
+        <button className="apply-btn" onClick={handleApply}>Apply Now</button>
       </div>
     </div>
   );

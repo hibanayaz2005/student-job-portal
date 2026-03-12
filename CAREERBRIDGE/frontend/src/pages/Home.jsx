@@ -1,4 +1,4 @@
-export default Home;import React from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import HowItWorks from '../components/HowItWorks';
 import Verification from '../components/Verification';
@@ -6,6 +6,8 @@ import JobCard from '../components/JobCard';
 import Courses from '../components/Courses';
 import ResumeScorer from '../components/ResumeScorer';
 import DashboardPreview from '../components/DashboardPreview';
+import MentorAvailability from '../components/MentorAvailability';
+import TestMentorAPI from '../components/TestMentorAPI';
 
 const Home = () => {
   const jobs = [
@@ -15,6 +17,7 @@ const Home = () => {
 
   return (
     <div className="app-container">
+      <TestMentorAPI />
       <Navbar />
       <main>
         {/* Hero Section */}
@@ -39,13 +42,14 @@ const Home = () => {
         </section>
 
         <Courses />
+        <MentorAvailability />
         <ResumeScorer />
         <DashboardPreview />
       </main>
       
       <footer>
         <div className="footer-logo">CareerBridge</div>
-        <p>Built with Django + React • © 2026</p>
+        <p>Built with Django + React • 2026</p>
       </footer>
     </div>
   );

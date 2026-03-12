@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Verification = () => {
+  const [aadhaarFile, setAadhaarFile] = useState(null);
+  const [collegeIdFile, setCollegeIdFile] = useState(null);
+
+  const handleFileUpload = (type, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (type === 'aadhaar') {
+        setAadhaarFile(file);
+        alert(`Aadhaar file "${file.name}" uploaded successfully. This will be sent to the backend for verification.`);
+      } else {
+        setCollegeIdFile(file);
+        alert(`College ID file "${file.name}" uploaded successfully. This will be sent to the backend for verification.`);
+      }
+    }
+  };
+
   return (
     <section className="section-pad" id="verify" style={{ background: 'var(--surface)' }}>
       <div className="container">
@@ -17,10 +33,20 @@ const Verification = () => {
                 <span className="badge-pending">⏳ Pending Review</span>
               </div>
               <p>Upload a clear photo of your Aadhaar card. Your Aadhaar number is hashed and never stored in plain text.</p>
-              <div className="upload-zone">
+              <div className="upload-zone" onClick={() => document.getElementById('aadhaar-upload').click()}>
                 <div className="upload-icon">🪪</div>
-                <div className="upload-text">Drag & drop or <strong>click to upload</strong><br/><span style={{ fontSize: '12px' }}>JPG, PNG, PDF — Max 5MB</span></div>
+                <div className="upload-text">
+                  {aadhaarFile ? `Selected: ${aadhaarFile.name}` : 'Drag & drop or <strong>click to upload</strong>'}
+                  <br/><span style={{ fontSize: '12px' }}>JPG, PNG, PDF — Max 5MB</span>
+                </div>
               </div>
+              <input
+                id="aadhaar-upload"
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                style={{ display: 'none' }}
+                onChange={(e) => handleFileUpload('aadhaar', e)}
+              />
               <div style={{ fontSize: '12px', color: 'var(--muted)', display: 'flex', gap: '6px', alignItems: 'center' }}>
                 <span>🔒</span> Your data is encrypted and never shared with employers
               </div>
@@ -33,10 +59,20 @@ const Verification = () => {
                 <span className="badge-verified">✓ Verified</span>
               </div>
               <p>Upload your current valid student ID card. This confirms your year of study and institution.</p>
-              <div className="upload-zone" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }}>
+              <div className="upload-zone" style={{ borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.03)' }} onClick={() => document.getElementById('college-upload').click()}>
                 <div className="upload-icon">🏫</div>
-                <div className="upload-text" style={{ color: 'var(--accent3)' }}>Document verified ✓<br/><span style={{ fontSize: '12px', color: 'var(--muted)' }}>St. Joseph's Engineering College — 3rd Year CSE</span></div>
+                <div className="upload-text" style={{ color: 'var(--accent3)' }}>
+                  {collegeIdFile ? `Selected: ${collegeIdFile.name}` : 'Document verified ✓'}
+                  <br/><span style={{ fontSize: '12px', color: 'var(--muted)' }}>St. Joseph's Engineering College — 3rd Year CSE</span>
+                </div>
               </div>
+              <input
+                id="college-upload"
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf"
+                style={{ display: 'none' }}
+                onChange={(e) => handleFileUpload('college', e)}
+              />
             </div>
           </div>
 
