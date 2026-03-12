@@ -18,46 +18,7 @@ from .serializers import RegisterSerializer, UserSerializer
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
-from .models import Student
-
-
-def register_student(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-
-        if Student.objects.filter(email=email).exists():
-            return render(request, "accounts/login.html", {"error": "Email already exists"})
-
-        Student.objects.create(
-            email=email,
-            password=make_password(password)
-        )
-
-        return redirect("login")
-
-    return render(request, "accounts/register.html")
-
-
-def login_student(request):
-
-    if request.method == "POST":
-
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-
-        try:
-            student = Student.objects.get(email=email)
-
-            if check_password(password, student.password):
-                request.session["student"] = student.email
-                return redirect("dashboard")
-
-        except Student.DoesNotExist:
-            pass
-
-    return render(request, "accounts/login.html")
-# =========================
+# Django authentication is handled by the API views below
 # REGISTER
 # =========================
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -67,6 +28,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 # =========================
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -82,90 +44,50 @@ class RegisterView(APIView):
 
         User = get_user_model()
         
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "Email already exists"}, status=400)
+        if User.objects.filter(email__iexact=email).exists():
+            return Response({"error": "A user with this email already exists"}, status=400)
 
-        username = email.split('@')[0]
-        # Prevent username conflict
-        if User.objects.filter(username=username).exists():
-            username = f"{username}_{random.randint(1000,9999)}"
+        # Generate a unique username from email
+        base_username = email.split('@')[0]
+        username = base_username
+        while User.objects.filter(username__iexact=username).exists():
+            username = f"{base_username}_{random.randint(1000, 9999)}"
 
-        user = User(username=username, email=email, first_name=name, phone=phone, role='student')
-        # Store hashed password
-        user.set_password(password)
-        user.save()
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=name,
+                phone=phone,
+                role='student'
+            )
+            
+            # The signal in models.py handles StudentProfile creation, 
+            # but we update it with registration details here
+            if hasattr(user, 'student_profile'):
+                profile = user.student_profile
+                profile.college_name = college
+                profile.branch = course
+                # Map '1st Year' etc to integer
+                year_map = {'1st': 1, '2nd': 2, '3rd': 3, '4th': 4, 'Final': 4}
+                for k, v in year_map.items():
+                    if k in year:
+                        profile.year_of_study = v
+                        break
+                
+                if skills:
+                    profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
+                profile.save()
 
-        if hasattr(user, 'student_profile'):
-            profile = user.student_profile
-            profile.college_name = college
-            profile.branch = course
-            if year and year[0].isdigit():
-                profile.year_of_study = int(year[0])
-            if skills:
-                profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
-            profile.save()
+            return Response({"message": "Account created successfully! Please login.", "success": True}, status=201)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
-        return Response({"message": "Account created successfully", "success": True})
-
-
-# =========================
-# VERIFY OTP
-# =========================
-class VerifyOTPView(APIView):
-
-    def post(self, request):
-
-        otp = request.data.get("otp")
-
-        session_otp = request.session.get("otp")
-        user_id = request.session.get("user_id")
-
-        if not session_otp or not user_id:
-            return Response({"error": "Session expired"}, status=400)
-
-        if str(otp) == str(session_otp):
-
-            User = get_user_model()
-            user = User.objects.get(id=user_id)
-
-            user.is_active = True
-            user.save()
-
-            return Response({"message": "OTP verified. Now set password."})
-
-        return Response({"error": "Invalid OTP"}, status=400)
-
-
-# =========================
-# SET PASSWORD
-# =========================
-class SetPasswordView(APIView):
-
-    def post(self, request):
-
-        password = request.data.get("password")
-        user_id = request.session.get("user_id")
-
-        if not password:
-            return Response({"error": "Password required"}, status=400)
-
-        User = get_user_model()
-
-        user = User.objects.get(id=user_id)
-
-        user.set_password(password)
-        user.save()
-
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            "message": "Password set successfully",
-            "refresh": str(refresh),
-            "access": str(refresh.access_token)
-        })
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    
     def post(self, request):
         identifier = request.data.get('email') or request.data.get('identifier')
         password = request.data.get('password')
@@ -173,35 +95,100 @@ class LoginView(APIView):
         if not identifier or not password:
             return Response({'error': 'Email/Username and password required'}, status=400)
 
-        User = get_user_model()
-        user = None
+        # Use Django's authenticate which handles backends automatically
+        from django.contrib.auth import authenticate
+        user = authenticate(request, username=identifier, password=password)
         
-        # Try finding by email first
-        try:
-            user = User.objects.get(email__iexact=identifier)
-        except User.DoesNotExist:
-            # If not found by email, try username
-            try:
-                user = User.objects.get(username__iexact=identifier)
-            except User.DoesNotExist:
-                return Response({'error': 'User not found'}, status=401)
+        if not user:
+            return Response({'error': 'Invalid email/username or password'}, status=401)
 
-        # Compare password
-        valid = user.check_password(password)
-        if not valid:
-            return Response({'error': 'Invalid password'}, status=401)
+        if not user.is_active:
+            return Response({'error': 'This account is inactive'}, status=401)
 
-        # Secure authentication
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
         auth_login(request, user)
         
         refresh = RefreshToken.for_user(user)
         return Response({
             'success': True,
-            'message': 'Login successful',
+            'message': 'Welcome back!',
+            'user': {
+                'username': user.username,
+                'email': user.email,
+                'name': user.get_full_name(),
+                'role': user.role
+            },
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
+
+# =========================
+# PASSWORD RESET API
+# =========================
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=400)
+            
+        User = get_user_model()
+        users = User.objects.filter(email__iexact=email)
+        
+        if users.exists():
+            for user in users:
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                domain = get_current_site(request).domain
+                protocol = 'https' if request.is_secure() else 'http'
+                
+                reset_url = f"{protocol}://{domain}/api/auth/password-reset-confirm/{uid}/{token}/"
+                
+                # In a real app, send actual email. For now, we use Django's console backend.
+                subject = "Password Reset Requested - CareerBridge"
+                message = f"Hello {user.first_name or user.username},\n\nYou requested a password reset. Click the link below to set a new password:\n\n{reset_url}\n\nIf you didn't request this, please ignore this email."
+                
+                send_mail(subject, message, None, [user.email])
+                
+            return Response({"message": "If an account exists with this email, a reset link has been sent.", "success": True})
+        
+        # Always return success to prevent email enumeration
+        return Response({"message": "If an account exists with this email, a reset link has been sent.", "success": True})
+
+def password_reset_confirm_page(request, uidb64, token):
+    """HTML page for setting new password after clicking the reset link."""
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        User = get_user_model()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            new_password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if not new_password or new_password != confirm_password:
+                return render(request, 'accounts/password_reset_confirm.html', {
+                    'error': 'Passwords do not match or are empty',
+                    'validlink': True
+                })
+                
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, 'Your password has been reset successfully. You can now login.')
+            return redirect('/')
+            
+        return render(request, 'accounts/password_reset_confirm.html', {'validlink': True})
+    else:
+        return render(request, 'accounts/password_reset_confirm.html', {'validlink': False})
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

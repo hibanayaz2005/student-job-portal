@@ -1,15 +1,15 @@
 from django.urls import path
 from .views import (
     RegisterView,
-    VerifyOTPView,
-    SetPasswordView,
     LoginView,
     MeView,
     ProfileView,
     settings_page,
     login_page,
     logout_page,
-    google_login
+    google_login,
+    PasswordResetRequestView,
+    password_reset_confirm_page
 )
 
 app_name = "accounts"
@@ -18,9 +18,9 @@ urlpatterns = [
 
     # API authentication
     path("register/", RegisterView.as_view(), name="register"),
-    path("verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
-    path("set-password/", SetPasswordView.as_view(), name="set-password"),
     path("login/", LoginView.as_view(), name="login"),
+    path("password-reset/", PasswordResetRequestView.as_view(), name="password-reset"),
+    path("password-reset-confirm/<uidb64>/<token>/", password_reset_confirm_page, name="password_reset_confirm"),
 
     # API user data
     path("me/", MeView.as_view(), name="me"),

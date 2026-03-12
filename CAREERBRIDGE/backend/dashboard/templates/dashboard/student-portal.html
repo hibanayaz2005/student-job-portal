@@ -2740,10 +2740,30 @@
             }
             return false;
         }
-        function doForgotPassword() {
-            const e = document.getElementById('forgot-email').value;
+        async function doForgotPassword() {
+            const e = document.getElementById('forgot-email').value.trim();
             if (!e) { showToast('Please enter your email', 'error'); return; }
-            showToast('Password reset link sent to ' + e, 'success'); switchAuth('login');
+            
+            showToast('Processing request...', 'info');
+            try {
+                const res = await fetch('/api/auth/password-reset/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify({ email: e })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast(data.message || 'Reset link sent!', 'success');
+                    switchAuth('login');
+                } else {
+                    showToast(data.error || 'Request failed', 'error');
+                }
+            } catch (err) {
+                showToast('Error connecting to server', 'error');
+            }
         }
         function otpNext(el, idx) { if (el.value.length === 1) { const next = el.parentElement.children[idx]; if (next) next.focus(); } }
         function verifyOTP() {
