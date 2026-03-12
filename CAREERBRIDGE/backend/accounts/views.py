@@ -30,6 +30,7 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
+        print(f"Registration attempt: {request.data}")
         email = request.data.get('email')
         password = request.data.get('password')
         name = request.data.get('name', '')
@@ -37,6 +38,8 @@ class RegisterView(APIView):
         college = request.data.get('college', '')
         course = request.data.get('course', '')
         year = request.data.get('year', '')
+        graduation_year = request.data.get('graduation_year', 2026)
+        linkedin = request.data.get('linkedin', '')
         skills = request.data.get('skills', '')
 
         if not email or not password:
@@ -53,35 +56,59 @@ class RegisterView(APIView):
         while User.objects.filter(username__iexact=username).exists():
             username = f"{base_username}_{random.randint(1000, 9999)}"
 
+        # Split full name if provided
+        first_name = name
+        last_name = ""
+        if ' ' in name:
+            parts = name.split(' ', 1)
+            first_name = parts[0]
+            last_name = parts[1]
+
         try:
             user = User.objects.create_user(
                 username=username,
                 email=email,
                 password=password,
-                first_name=name,
+                first_name=first_name,
+                last_name=last_name,
                 phone=phone,
                 role='student'
             )
+            print(f"User {user.username} created successfully.")
             
-            # The signal in models.py handles StudentProfile creation, 
-            # but we update it with registration details here
             if hasattr(user, 'student_profile'):
                 profile = user.student_profile
                 profile.college_name = college
                 profile.branch = course
-                # Map '1st Year' etc to integer
-                year_map = {'1st': 1, '2nd': 2, '3rd': 3, '4th': 4, 'Final': 4}
-                for k, v in year_map.items():
-                    if k in year:
-                        profile.year_of_study = v
-                        break
+                profile.linkedin_url = linkedin
+                
+                # Safer graduation_year conversion
+                try:
+                    if graduation_year and str(graduation_year).strip():
+                        profile.graduation_year = int(graduation_year)
+                    else:
+                        profile.graduation_year = 2026
+                except (ValueError, TypeError):
+                    profile.graduation_year = 2026
+                
+                # Robust year mapping
+                y_str = str(year).lower()
+                if '1' in y_str: profile.year_of_study = 1
+                elif '2' in y_str: profile.year_of_study = 2
+                elif '3' in y_str: profile.year_of_study = 3
+                elif '4' in y_str: profile.year_of_study = 4
+                elif 'final' in y_str: profile.year_of_study = 4
+                elif 'post' in y_str: profile.year_of_study = 5
                 
                 if skills:
+                    # Convert comma string to list for JSON field
                     profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
                 profile.save()
+                print(f"Profile for {user.username} updated successfully.")
 
             return Response({"message": "Account created successfully! Please login.", "success": True}, status=201)
         except Exception as e:
+            print(f"Registration failed: {str(e)}")
             return Response({"error": str(e)}, status=500)
 
 
@@ -189,6 +216,27 @@ def password_reset_confirm_page(request, uidb64, token):
         return render(request, 'accounts/password_reset_confirm.html', {'validlink': True})
     else:
         return render(request, 'accounts/password_reset_confirm.html', {'validlink': False})
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        
+        if not current_password or not new_password:
+            return Response({"error": "Current and new passwords are required"}, status=400)
+            
+        user = request.user
+        if not user.check_password(current_password):
+            return Response({"error": "Incorrect current password"}, status=400)
+            
+        user.set_password(new_password)
+        user.save()
+        # Updating the session is good if using session auth too
+        auth_login(request, user) 
+        
+        return Response({"message": "Password updated successfully", "success": True})
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 

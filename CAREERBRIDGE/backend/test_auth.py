@@ -1,24 +1,41 @@
-import requests
+import os
+import django
 
-s = requests.Session()
-r1 = s.post('http://127.0.0.1:8000/api/register/', json={
-    'name': 'Test',
-    'email': 'test4@e.com',
-    'password': 'password123',
-    'phone': '',
-    'college': '',
-    'course': '',
-    'year': '',
-    'skills': '',
-})
-print("Register response:", r1.json())
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'careerbridge.settings')
+django.setup()
 
-r2 = s.post('http://127.0.0.1:8000/api/auth/login/', json={
-    'email': 'test4@e.com',
-    'password': 'password123'
-})
-print("Login response:", r2.json())
-print("Cookies:", s.cookies.get_dict())
+from django.contrib.auth import authenticate, get_user_model
+from accounts.models import User, StudentProfile
 
-r3 = s.get('http://127.0.0.1:8000/')
-print("Is auth-overlay hidden?", 'class="hidden"' in r3.text)
+# 1. Try to create a test user
+test_email = 'test_login_1@example.com'
+test_pass = 'TestPass123!'
+test_username = 'test_login_1'
+
+# Cleanup
+User.objects.filter(email=test_email).delete()
+
+print(f"Creating user {test_username} with email {test_email}")
+user = User.objects.create_user(
+    username=test_username,
+    email=test_email,
+    password=test_pass,
+    role='student'
+)
+print(f"User created. ID: {user.id}")
+
+# 2. Try standard authenticate with email
+print(f"Authenticating with email: {test_email}")
+auth_user = authenticate(username=test_email, password=test_pass)
+if auth_user:
+    print(f"SUCCESS: Authenticated as {auth_user.username}")
+else:
+    print("FAILED: Could not authenticate with email")
+
+# 3. Try standard authenticate with username
+print(f"Authenticating with username: {test_username}")
+auth_user_2 = authenticate(username=test_username, password=test_pass)
+if auth_user_2:
+    print(f"SUCCESS: Authenticated as {auth_user_2.username}")
+else:
+    print("FAILED: Could not authenticate with username")

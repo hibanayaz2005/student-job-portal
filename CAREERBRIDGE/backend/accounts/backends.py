@@ -5,11 +5,11 @@ class EmailAuthBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         UserModel = get_user_model()
         try:
-            # Check by email
-            user = UserModel.objects.filter(email=username).first()
+            # Check by email (case-insensitive)
+            user = UserModel.objects.filter(email__iexact=username).first()
             if not user:
                 # fallback to username
-                user = UserModel.objects.filter(username=username).first()
+                user = UserModel.objects.filter(username__iexact=username).first()
             
             if user and user.check_password(password):
                 return user

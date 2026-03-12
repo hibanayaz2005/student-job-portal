@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from datetime import timedelta
 
+from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 import random
 import PyPDF2
@@ -14,11 +15,44 @@ import PyPDF2
 from jobs.models import Job, Application
 from courses.models import Course
 from resume.models import ResumeAnalysis
+from .models import OTPVerification
 
 import requests
 
 # Temporary OTP storage
 OTP_STORE = {}
+
+def create_notification(user, title, message):
+    from .models import Notification
+    return Notification.objects.create(user=user, title=title, message=message)
+
+def get_notifications(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"notifications": []})
+    from .models import Notification
+    notes = Notification.objects.filter(user=request.user)[:10]
+    data = [{
+        "id": n.id,
+        "title": n.title,
+        "message": n.message,
+        "is_read": n.is_read,
+        "created_at": n.created_at.strftime("%Y-%m-%d %H:%M")
+    } for n in notes]
+    unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+    return JsonResponse({"notifications": data, "unread_count": unread_count})
+
+@require_POST
+def mark_notification_read(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"success": False}, status=401)
+    from .models import Notification
+    data = json.loads(request.body)
+    note_id = data.get("id")
+    if note_id:
+        Notification.objects.filter(id=note_id, user=request.user).update(is_read=True)
+    else:
+        Notification.objects.filter(user=request.user).update(is_read=True)
+    return JsonResponse({"success": True})
 
 @require_POST
 def send_aadhaar_otp(request):
@@ -92,6 +126,7 @@ def verify_aadhaar_otp(request):
         return JsonResponse({"verified": False})
 
 
+@ensure_csrf_cookie
 def student_portal(request):
     return render(request, 'dashboard/student-portal.html')
 

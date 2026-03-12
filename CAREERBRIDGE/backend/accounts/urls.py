@@ -9,7 +9,8 @@ from .views import (
     logout_page,
     google_login,
     PasswordResetRequestView,
-    password_reset_confirm_page
+    password_reset_confirm_page,
+    ChangePasswordView
 )
 
 app_name = "accounts"
@@ -25,6 +26,7 @@ urlpatterns = [
     # API user data
     path("me/", MeView.as_view(), name="me"),
     path("profile/", ProfileView.as_view(), name="profile"),
+    path("change-password/", ChangePasswordView.as_view(), name="change-password"),
 
     # Web pages
     path("login-page/", login_page, name="login-page"),

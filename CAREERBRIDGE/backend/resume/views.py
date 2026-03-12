@@ -185,7 +185,6 @@ class ResumeUploadView(APIView):
         if section_scores.get('projects', 0) < 12:
             improvements.append('Add 1–2 projects with problem, approach and results')
 
-        ats_friendly = section_scores.get('formatting', 0) >= 15 and '<table' not in text.lower()
 
         # detect unnecessary personal data and suggest removals
         remove_items = detect_unnecessary(text)
@@ -198,7 +197,7 @@ class ResumeUploadView(APIView):
             overall_score=overall,
             section_scores=section_scores,
             improvements=improvements,
-            ats_friendly=ats_friendly,
+            ats_friendly=False,
         )
 
         try:

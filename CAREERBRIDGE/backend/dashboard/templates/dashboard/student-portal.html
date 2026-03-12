@@ -600,6 +600,26 @@
             color: var(--accent)
         }
 
+        /* Notifications */
+        .notif-dropdown { position: absolute; top: calc(var(--topbar-h) - 10px); right: 32px; width: 340px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); z-index: 1000; display: none; overflow: hidden; backdrop-filter: blur(20px); }
+        .notif-dropdown.show { display: block; animation: dropdownSlide .3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        @keyframes dropdownSlide { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .notif-header { padding: 14px 18px; background: var(--surface3); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notif-header h4 { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--accent); }
+        .notif-list { max-height: 420px; overflow-y: auto; }
+        .notif-item { padding: 16px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: .2s; position: relative; }
+        .notif-item:hover { background: var(--surface3); }
+        .notif-item.unread { background: rgba(0, 229, 255, 0.05); }
+        .notif-item.unread::before { content: ""; position: absolute; left: 8px; top: 20px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .notif-item .notif-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block; color: var(--text); padding-left: 5px; }
+        .notif-item .notif-msg { font-size: 12px; color: var(--muted); line-height: 1.5; display: block; padding-left: 5px; }
+        .notif-item .notif-time { font-size: 10px; color: var(--muted); margin-top: 10px; display: block; opacity: 0.6; padding-left: 5px; }
+        .notif-empty { padding: 50px 20px; text-align: center; color: var(--muted); }
+        .notif-empty i { font-size: 40px; margin-bottom: 15px; display: block; opacity: 0.3; }
+        .notif-dot { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; border: 2px solid var(--surface); display: none; }
+        .notif-dot.active { display: block; animation: pulseRed 2s infinite; }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
         .topbar-btn .notif-dot {
             position: absolute;
             top: 6px;
@@ -1643,6 +1663,7 @@
 </head>
 
 <body>
+    {% csrf_token %}
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -1656,31 +1677,31 @@
                 <div class="auth-tab" onclick="switchAuth('register')">Register</div>
             </div>
             <!-- LOGIN FORM -->
-            <form id="login-form" onsubmit="handleLogin(event); return false;">
+            <form id="login-form" onsubmit="handleLogin(event); return false;" autocomplete="off">
                 <div class="form-group"><label>Email Address or Username</label><input type="text" class="form-input"
-                        id="login-email" placeholder="your@college.edu or username"></div>
+                        id="login-email" placeholder="your@college.edu or username" autocomplete="nope" name="login-id-field"></div>
                 <div class="form-group"><label>Password</label><input type="password" class="form-input" id="login-pass"
-                        placeholder="Enter password"></div>
-                <button type="submit" class="btn btn-primary btn-full" onclick="handleLogin(event)"><i
+                        placeholder="Enter password" autocomplete="new-password" name="login-pw-field"></div>
+                <button type="submit" class="btn btn-primary btn-full"><i
                         class="fas fa-sign-in-alt"></i>
                     Login</button>
                 <p class="auth-footer"><a onclick="switchAuth('forgot')">Forgot Password?</a></p>
             </form>
             <!-- REGISTER FORM -->
-            <form id="register-form" style="display:none" onsubmit="handleRegister(event); return false;">
+            <form id="register-form" style="display:none" onsubmit="handleRegister(event); return false;" autocomplete="off">
                 <div class="form-row">
                     <div class="form-group"><label>Full Name</label><input type="text" class="form-input" id="reg-name"
-                            placeholder="John Doe"></div>
+                            placeholder="John Doe" autocomplete="off"></div>
                     <div class="form-group"><label>Phone</label><input type="text" class="form-input" id="reg-phone"
-                            placeholder="+91 98765 43210"></div>
+                            placeholder="+91 98765 43210" autocomplete="off"></div>
                 </div>
                 <div class="form-group"><label>Email Address</label><input type="text" class="form-input" id="reg-email"
-                        placeholder="your@college.edu"></div>
+                        placeholder="your@college.edu" autocomplete="nope" name="reg-email-field"></div>
                 <div class="form-row">
                     <div class="form-group"><label>College / University</label><input type="text" class="form-input"
-                            id="reg-college" placeholder="IIT Madras"></div>
+                            id="reg-college" placeholder="IIT Madras" autocomplete="off"></div>
                     <div class="form-group"><label>Course / Branch</label><input type="text" class="form-input"
-                            id="reg-branch" placeholder="B.Tech CSE"></div>
+                            id="reg-branch" placeholder="B.Tech CSE" autocomplete="off"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group"><label>Year of Study</label><select class="form-input" id="reg-year">
@@ -1689,19 +1710,25 @@
                             <option>3rd Year</option>
                             <option selected>4th Year</option>
                         </select></div>
+                    <div class="form-group"><label>Graduation Year</label><input type="number" class="form-input"
+                            id="reg-grad-year" value="2026" min="2024" max="2030"></div>
+                </div>
+                <div class="form-row">
                     <div class="form-group"><label>Skills (optional)</label><input type="text" class="form-input"
-                            id="reg-skills" placeholder="Python, React, SQL"></div>
+                            id="reg-skills" placeholder="Python, React, SQL" autocomplete="off"></div>
+                    <div class="form-group"><label>LinkedIn (optional)</label><input type="text" class="form-input"
+                            id="reg-linkedin" placeholder="linkedin.com/in/..." autocomplete="off"></div>
                 </div>
                 <div class="form-group"><label>Password</label><input type="password" class="form-input" id="reg-pass"
-                        placeholder="Min 8 chars, uppercase, number, symbol" oninput="checkStrength(this.value)">
+                        placeholder="Min 8 chars, uppercase, number, symbol" oninput="checkStrength(this.value)" autocomplete="new-password">
                     <div class="strength-bar">
                         <div class="strength-fill" id="str-fill"></div>
                     </div>
                     <div id="str-text" style="font-size:11px;margin-top:4px;color:var(--muted)"></div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-full" onclick="handleRegister(event)"><i
-                        class="fas fa-user-plus"></i> Create
-                    Account</button>
+                <button type="submit" id="reg-btn" class="btn btn-primary btn-full" onclick="handleRegister(event)">
+                    <i class="fas fa-user-plus"></i> <span id="reg-btn-text">Create Account</span>
+                </button>
             </form>
             <!-- FORGOT PASSWORD -->
             <div id="forgot-form" style="display:none">
@@ -1766,9 +1793,9 @@
             </div>
         </nav>
         <div class="sidebar-user">
-            <div class="user-avatar">{{ user.username|make_list|first|upper|default:"S" }}</div>
+            <div class="user-avatar" id="sidebar-avatar">{{ user.username|make_list|first|upper|default:"S" }}</div>
             <div class="user-info">
-                <div class="user-name">{{ user.first_name|default:user.username|default:"Student" }}</div>
+                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Student" }}</div>
                 <div class="user-role">{{ user.role|title|default:"Student" }}</div>
             </div>
             <button class="btn-icon btn-secondary" style="flex-shrink:0" onclick="doLogout()" title="Logout"><i
@@ -1780,17 +1807,27 @@
     <header class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-search"><i class="fas fa-search"></i><input type="text"
-                placeholder="Search jobs, courses, mentors..." id="global-search" oninput="globalSearch(this.value)">
+        <div class="topbar-search"><i class="fas fa-search"></i><input type="search"
+                placeholder="Search jobs, courses, mentors..." id="global-search" oninput="globalSearch(this.value)" autocomplete="nope" role="search" name="global-search-field">
         </div>
         <div class="topbar-actions">
             <div class="topbar-btn" onclick="showSection('mentors')" title="Messages"><i
                     class="fas fa-comment-dots"></i>
-                <div class="notif-dot"></div>
             </div>
-            <div class="topbar-btn" title="Notifications"><i class="fas fa-bell"></i>
-                <div class="notif-dot"></div>
+            <div class="topbar-btn" title="Notifications" id="notif-bell-btn" onclick="toggleNotifDropdown()"><i class="fas fa-bell"></i>
+                <div class="notif-dot" id="notif-dot"></div>
             </div>
+            
+            <div class="notif-dropdown" id="notif-dropdown">
+                <div class="notif-header">
+                    <h4>Notifications</h4>
+                    <span style="font-size:10px; color:var(--muted); cursor:pointer" onclick="markAllNotesRead()">Mark all as read</span>
+                </div>
+                <div class="notif-list" id="notif-list">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+            
             <div class="topbar-btn" onclick="showSection('settings')" title="Settings"><i class="fas fa-cog"></i></div>
         </div>
     </header>
@@ -1970,8 +2007,8 @@
             <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
                 <div style="flex:1;min-width:200px;position:relative"><i class="fas fa-search"
                         style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)"></i><input
-                        type="text" class="form-input" style="padding-left:36px;margin:0"
-                        placeholder="Search job titles..." id="job-search" oninput="searchJobs()"></div>
+                        type="search" class="form-input" style="padding-left:36px;margin:0"
+                        placeholder="Search job titles..." id="job-search" oninput="searchJobs()" autocomplete="nope" role="search" name="job-search-field"></div>
                 <select class="form-input" style="width:160px;margin:0" id="job-location" onchange="searchJobs()">
                     <option value="">All Locations</option>
                     <option>Remote</option>
@@ -1998,8 +2035,7 @@
                 <div>
                     <div class="section-label">AI Resume Analyzer</div>
                     <h1 class="section-title">Optimize Your Resume</h1>
-                    <p class="section-sub">Upload your resume for instant AI-powered analysis with ATS compatibility
-                        check.</p>
+                    <p class="section-sub">Upload your resume for instant AI-powered analysis.</p>
                 </div>
             </div>
             <div class="grid-2">
@@ -2075,11 +2111,6 @@
                                 Top Improvements</h4>
                             <div id="improvements-list"></div>
                         </div>
-                        <div class="card" id="ats-card">
-                            <h4 style="font-family:var(--font-head);font-weight:700;color:#f87171;margin-bottom:16px">⚠
-                                ATS Compatibility</h4>
-                            <div id="ats-list"></div>
-                        </div>
                         <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="resetResume()"><i
                                 class="fas fa-redo"></i> Upload Different Resume</button>
                     </div>
@@ -2105,45 +2136,7 @@
                 <div class="tab-item" onclick="filterMentors('professional')">Professionals</div>
             </div>
             <div class="grid-3" id="mentors-grid"></div>
-            <div class="card" style="margin-top:32px">
-                <div class="card-header">
-                    <h3 style="font-family:var(--font-head);font-weight:700">Career Guidance</h3>
-                </div>
-                <div class="grid-4">
-                    <div style="padding:20px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:.3s;border:1px solid var(--border)"
-                        onmouseover="this.style.borderColor='var(--accent)'"
-                        onmouseout="this.style.borderColor='var(--border)'"
-                        onclick="showToast('Session booking coming soon!','info')">
-                        <div style="font-size:28px;margin-bottom:10px">👨‍🏫</div>
-                        <div style="font-weight:600;font-size:14px;margin-bottom:4px">1-on-1 Session</div>
-                        <div style="font-size:12px;color:var(--muted)">Book a private mentor session</div>
-                    </div>
-                    <div style="padding:20px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:.3s;border:1px solid var(--border)"
-                        onmouseover="this.style.borderColor='var(--accent2)'"
-                        onmouseout="this.style.borderColor='var(--border)'"
-                        onclick="showToast('Resume review scheduled!','success')">
-                        <div style="font-size:28px;margin-bottom:10px">📝</div>
-                        <div style="font-weight:600;font-size:14px;margin-bottom:4px">Resume Review</div>
-                        <div style="font-size:12px;color:var(--muted)">Get reviewed by HR pros</div>
-                    </div>
-                    <div style="padding:20px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:.3s;border:1px solid var(--border)"
-                        onmouseover="this.style.borderColor='var(--accent3)'"
-                        onmouseout="this.style.borderColor='var(--border)'"
-                        onclick="showToast('Roadmap generation starting!','info')">
-                        <div style="font-size:28px;margin-bottom:10px">🎯</div>
-                        <div style="font-weight:600;font-size:14px;margin-bottom:4px">Placement Plan</div>
-                        <div style="font-size:12px;color:var(--muted)">Full placement roadmap</div>
-                    </div>
-                    <div style="padding:20px;background:var(--surface2);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:.3s;border:1px solid var(--border)"
-                        onmouseover="this.style.borderColor='var(--warn)'"
-                        onmouseout="this.style.borderColor='var(--border)'"
-                        onclick="showToast('Connecting with advisor...','info')">
-                        <div style="font-size:28px;margin-bottom:10px">🎓</div>
-                        <div style="font-weight:600;font-size:14px;margin-bottom:4px">Higher Studies</div>
-                        <div style="font-size:12px;color:var(--muted)">MS/MBA/GATE guidance</div>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
         <!-- ========== COURSES ========== -->
@@ -2317,46 +2310,55 @@
                     <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:20px">Personal Information
                     </h3>
                     <div class="form-row">
-                        <div class="form-group"><label>Full Name</label><input type="text" class="form-input"
-                                value="Hiba Nayaz"></div>
-                        <div class="form-group"><label>Email</label><input type="text" class="form-input"
-                                value="hiba@college.edu"></div>
+                        <div class="form-group"><label>First Name</label><input type="text" id="settings-fname" class="form-input"
+                                value="{{ user.first_name }}"></div>
+                        <div class="form-group"><label>Last Name</label><input type="text" id="settings-lname" class="form-input"
+                                value="{{ user.last_name }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Phone</label><input type="text" class="form-input"
-                                value="+91 98765 43210"></div>
-                        <div class="form-group"><label>LinkedIn</label><input type="text" class="form-input"
-                                value="linkedin.com/in/hiba" placeholder="LinkedIn URL"></div>
+                        <div class="form-group"><label>Email</label><input type="text" id="settings-email" class="form-input"
+                                value="{{ user.email }}"></div>
+                        <div class="form-group"><label>Phone</label><input type="text" id="settings-phone" class="form-input"
+                                value="{{ user.phone }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>College</label><input type="text" class="form-input"
-                                value="IIT Madras"></div>
-                        <div class="form-group"><label>Branch</label><input type="text" class="form-input"
-                                value="B.Tech CSE"></div>
+                        <div class="form-group"><label>LinkedIn URL</label><input type="text" id="settings-linkedin" class="form-input"
+                                value="{{ user.student_profile.linkedin_url }}" placeholder="https://linkedin.com/in/username"></div>
+                        <div class="form-group"><label>College</label><input type="text" id="settings-college" class="form-input"
+                                value="{{ user.student_profile.college_name }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Year of Study</label><select class="form-input">
-                                <option>1st Year</option>
-                                <option>2nd Year</option>
-                                <option>3rd Year</option>
-                                <option selected>4th Year</option>
+                        <div class="form-group"><label>Branch</label><input type="text" id="settings-branch" class="form-input"
+                                value="{{ user.student_profile.branch }}"></div>
+                        <div class="form-group"><label>Year of Study</label><select id="settings-year" class="form-input">
+                                <option value="1" {% if user.student_profile.year_of_study == 1 %}selected{% endif %}>1st Year</option>
+                                <option value="2" {% if user.student_profile.year_of_study == 2 %}selected{% endif %}>2nd Year</option>
+                                <option value="3" {% if user.student_profile.year_of_study == 3 %}selected{% endif %}>3rd Year</option>
+                                <option value="4" {% if user.student_profile.year_of_study == 4 %}selected{% endif %}>4th Year</option>
                             </select></div>
-                        <div class="form-group"><label>Skills</label><input type="text" class="form-input"
-                                value="Python, Django, React, SQL"></div>
                     </div>
-                    <button class="btn btn-primary" onclick="showToast('Profile updated successfully!','success')"><i
+                    <div class="form-row">
+                        <div class="form-group"><label>Graduation Year</label><input type="number" id="settings-grad-year" class="form-input"
+                                value="{{ user.student_profile.graduation_year }}"></div>
+                        <div class="form-group" style="visibility:hidden"></div>
+                    </div>
+                    <div class="form-group"><label>Skills (comma separated)</label>
+                        <input type="text" id="settings-skills" class="form-input"
+                            value="{{ user.student_profile.skills|join:', ' }}">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveProfile()"><i
                             class="fas fa-save"></i> Save Changes</button>
                 </div>
                 <div>
                     <div class="card" style="margin-bottom:20px">
                         <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:20px">Change Password</h3>
-                        <div class="form-group"><label>Current Password</label><input type="password" class="form-input"
+                        <div class="form-group"><label>Current Password</label><input type="password" id="settings-cur-pass" class="form-input"
                                 placeholder="Enter current password"></div>
-                        <div class="form-group"><label>New Password</label><input type="password" class="form-input"
+                        <div class="form-group"><label>New Password</label><input type="password" id="settings-new-pass" class="form-input"
                                 placeholder="Enter new password"></div>
-                        <div class="form-group"><label>Confirm Password</label><input type="password" class="form-input"
+                        <div class="form-group"><label>Confirm Password</label><input type="password" id="settings-conf-pass" class="form-input"
                                 placeholder="Confirm new password"></div>
-                        <button class="btn btn-secondary" onclick="showToast('Password changed!','success')"><i
+                        <button class="btn btn-secondary" onclick="updatePassword()"><i
                                 class="fas fa-lock"></i> Update Password</button>
                     </div>
                     <div class="card">
@@ -2494,7 +2496,10 @@
                     class="badge badge-green">● Live</span>
             </div>
             <div style="position:relative;padding-bottom:56.25%;height:0"><iframe id="course-iframe"
-                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
         </div>
     </div>
@@ -2638,6 +2643,12 @@
 
             tabs.forEach(t => t.classList.remove('active'));
 
+            // Reset forms when switching to ensure a clean state
+            document.getElementById('login-form').reset();
+            document.getElementById('register-form').reset();
+            const forgotForm = document.getElementById('forgot-form').querySelector('input');
+            if (forgotForm) forgotForm.value = '';
+
             document.getElementById('login-form').style.display = 'none';
             document.getElementById('register-form').style.display = 'none';
             document.getElementById('forgot-form').style.display = 'none';
@@ -2662,7 +2673,12 @@
             }
         }
         function getCsrfToken() {
-            return document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('csrftoken='))?.split('=')?.[1] || '';
+            let token = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('csrftoken='))?.split('=')?.[1];
+            if (!token) {
+                const hiddenToken = document.querySelector('input[name="csrfmiddlewaretoken"]');
+                if (hiddenToken) token = hiddenToken.value;
+            }
+            return token || '';
         }
         async function handleLogin(event) {
             if (event) { event.preventDefault(); event.stopPropagation(); }
@@ -2677,6 +2693,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCsrfToken()
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ email: e, password: p })
                 });
                 const data = await res.json();
@@ -2694,25 +2711,45 @@
             return false;
         }
         async function handleRegister(event) {
-            if (event) event.preventDefault();
-            const n = document.getElementById('reg-name').value;
-            const e = document.getElementById('reg-email').value;
-            const p = document.getElementById('reg-pass').value;
-            const phone = document.getElementById('reg-phone').value;
-            const college = document.getElementById('reg-college').value;
-            const course = document.getElementById('reg-branch').value;
-            const year = document.getElementById('reg-year').value;
-            const skills = document.getElementById('reg-skills').value;
+            if (event) { event.preventDefault(); event.stopPropagation(); }
+            console.log('Registration process started...');
+            
+            const btn = document.getElementById('reg-btn');
+            const btnText = document.getElementById('reg-btn-text');
+            if (btn.disabled) return false;
 
-            if (!e || !p) { showToast('Please fill in email and password', 'error'); return false; }
+            const n = document.getElementById('reg-name').value.trim();
+            const e = document.getElementById('reg-email').value.trim();
+            const p = document.getElementById('reg-pass').value;
+            const phone = document.getElementById('reg-phone').value.trim();
+            const college = document.getElementById('reg-college').value.trim();
+            const course = document.getElementById('reg-branch').value.trim();
+            const year = document.getElementById('reg-year').value;
+            const gradYearInput = document.getElementById('reg-grad-year');
+            const gradYear = gradYearInput ? gradYearInput.value : '2026';
+            const linkedinInput = document.getElementById('reg-linkedin');
+            const linkedin = linkedinInput ? linkedinInput.value.trim() : '';
+            const skills = document.getElementById('reg-skills').value.trim();
+
+            if (!e || !p || !n) { 
+                showToast('Please fill in name, email and password', 'error'); 
+                return false; 
+            }
 
             try {
+                btn.disabled = true;
+                btnText.textContent = 'Creating Account...';
+                
+                const csrf = getCsrfToken();
+                console.log('CSRF Token retrieved:', csrf ? 'Yes' : 'No');
+
                 const res = await fetch('/api/register/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCsrfToken()
+                        'X-CSRFToken': csrf
                     },
+                    credentials: 'include',
                     body: JSON.stringify({
                         name: n,
                         email: e,
@@ -2721,22 +2758,36 @@
                         college: college,
                         course: course,
                         year: year,
+                        graduation_year: gradYear,
+                        linkedin: linkedin,
                         skills: skills
                     })
                 });
 
-                const data = await res.json();
-                console.log('Register response:', data);
+                let data;
+                const text = await res.text();
+                try {
+                    data = JSON.parse(text);
+                } catch (parseErr) {
+                    console.error('Failed to parse response as JSON:', text);
+                    data = { error: 'Invalid response from server' };
+                }
+
+                console.log('Register response:', res.status, data);
 
                 if (res.ok && data.success) {
                     showToast('Registration successful! Please login.', 'success');
-                    switchAuth('login');
+                    setTimeout(() => switchAuth('login'), 1500);
                 } else {
-                    showToast(data.error || 'Error during registration', 'error');
+                    const errMsg = data.error || data.detail || (typeof data === 'string' ? data : 'Error during registration');
+                    showToast(errMsg, 'error');
                 }
             } catch (err) {
                 console.error('Register error:', err);
-                showToast('Error connecting to server', 'error');
+                showToast('Error connecting to server. Please check your internet.', 'error');
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Create Account';
             }
             return false;
         }
@@ -2752,6 +2803,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCsrfToken()
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ email: e })
                 });
                 const data = await res.json();
@@ -2795,7 +2847,7 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + name).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const titles = { dashboard: 'Dashboard', jobs: 'Job Portal', resume: 'Resume AI', mentors: 'Mentors & Guidance', courses: 'Courses & Skill Tests', projects: 'Project Collaboration', admin: 'Admin Panel', settings: 'Settings & Profile' };
+            const titles = { dashboard: 'Dashboard', jobs: 'Job Portal', resume: 'Resume AI', mentors: 'Mentors', courses: 'Courses & Skill Tests', projects: 'Project Collaboration', admin: 'Admin Panel', settings: 'Settings & Profile' };
             document.getElementById('topbar-title').textContent = titles[name] || name;
             event && event.target && event.target.closest && event.target.closest('.nav-item') && event.target.closest('.nav-item').classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.toLowerCase().includes(name)) n.classList.add('active'); });
@@ -2949,10 +3001,11 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             document.querySelector('#chat-modal p').innerHTML = `${mentor.title}`;
 
             const box = document.getElementById('chat-messages');
+            const firstName = mentor.name.startsWith('Dr.') ? mentor.name.split(' ')[1] : mentor.name.split(' ')[0];
             box.innerHTML = `
                 <div class="chat-msg">
                     <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${mentor.gradient}">${mentor.initials}</div>
-                    <div class="chat-bubble">Hi, I'm ${mentor.name.split(' ')[0]}. How can I help you today?</div>
+                    <div class="chat-bubble">Hi, I'm ${mentor.name.startsWith('Dr.') ? mentor.name : firstName}. How can I help you today?</div>
                 </div>
             `;
 
@@ -3035,7 +3088,10 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             } else if (embedId.includes('youtu.be/')) {
                 embedId = embedId.split('youtu.be/')[1].split('?')[0];
             }
-            document.getElementById('course-iframe').src = 'https://www.youtube.com/embed/' + embedId + '?autoplay=1';
+            
+            // Using youtube-nocookie.com which often bypasses embedding restrictions that cause Error 153
+            const iframe = document.getElementById('course-iframe');
+            iframe.src = 'https://www.youtube-nocookie.com/embed/' + embedId + '?autoplay=1&rel=0&modestbranding=1';
             openModal('video-modal');
         }
         function startTest(courseId) {
@@ -3170,7 +3226,6 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                 return `<div style="padding:12px;background:var(--surface2);border-radius:var(--radius-sm)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px">${names[k]}</span><span style="font-size:12px;font-weight:700;color:var(--accent)">${v}/${maxes[k]}</span></div><div class="progress"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div></div>`;
             }).join('');
             document.getElementById('improvements-list').innerHTML = improvements.slice(0, 5).map(i => `<div style="display:flex;gap:10px;margin-bottom:10px;font-size:13px"><span style="color:#a78bfa;flex-shrink:0">→</span>${i}</div>`).join('');
-            document.getElementById('ats-list').innerHTML = (ats.length ? ats : ['No major ATS issues detected ✓']).map(a => `<div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px"><span style="color:var(--warn);flex-shrink:0">⚠</span>${a}</div>`).join('');
         }
         function resetResume() {
             document.getElementById('resume-upload-card').style.display = 'block';
@@ -3187,8 +3242,209 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
             event.target.classList.add('active'); showToast('Switched to ' + tab + ' management', 'info');
         }
 
+        /* ============ NOTIFICATIONS ============ */
+        async function fetchNotifications() {
+            try {
+                const res = await fetch('/api/notifications/', { credentials: 'include' });
+                const data = await res.json();
+                const list = document.getElementById('notif-list');
+                const dot = document.getElementById('notif-dot');
+                
+                if (data.unread_count > 0) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+                
+                if (data.notifications.length === 0) {
+                    list.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>`;
+                    return;
+                }
+                
+                list.innerHTML = data.notifications.map(n => `
+                    <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="markNoteRead(${n.id})">
+                        <span class="notif-title">${n.title}</span>
+                        <span class="notif-msg">${n.message}</span>
+                        <span class="notif-time">${n.created_at}</span>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error("Failed to fetch notifications", e);
+            }
+        }
+
+        function toggleNotifDropdown() {
+            const d = document.getElementById('notif-dropdown');
+            const isShow = d.classList.contains('show');
+            
+            if (!isShow) {
+                fetchNotifications();
+                d.classList.add('show');
+                
+                const closeHandler = (e) => {
+                    if (!d.contains(e.target) && !document.getElementById('notif-bell-btn').contains(e.target)) {
+                        d.classList.remove('show');
+                        document.removeEventListener('click', closeHandler);
+                    }
+                };
+                setTimeout(() => document.addEventListener('click', closeHandler), 10);
+            } else {
+                d.classList.remove('show');
+            }
+        }
+
+        async function markNoteRead(id) {
+            try {
+                await fetch('/api/notifications/read/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+                    credentials: 'include',
+                    body: JSON.stringify({ id: id })
+                });
+                fetchNotifications();
+            } catch (e) {}
+        }
+
+        async function markAllNotesRead() {
+            try {
+                await fetch('/api/notifications/read/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+                    credentials: 'include',
+                    body: JSON.stringify({}) // Empty body marks all as read
+                });
+                fetchNotifications();
+            } catch (e) {}
+        }
+
+        /* ============ SETTINGS ============ */
+        async function saveProfile() {
+            const btn = event.target.closest('button');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+
+            const payload = {
+                first_name: document.getElementById('settings-fname').value,
+                last_name: document.getElementById('settings-lname').value,
+                email: document.getElementById('settings-email').value,
+                phone: document.getElementById('settings-phone').value,
+                student_profile: {
+                    linkedin_url: document.getElementById('settings-linkedin').value,
+                    college_name: document.getElementById('settings-college').value,
+                    branch: document.getElementById('settings-branch').value,
+                    year_of_study: document.getElementById('settings-year').value,
+                    graduation_year: document.getElementById('settings-grad-year').value,
+                    skills: document.getElementById('settings-skills').value
+                }
+            };
+
+            try {
+                const res = await fetch('/api/auth/profile/', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Profile updated successfully!', 'success');
+                    
+                    const newName = payload.first_name || 'Student';
+                    
+                    // Update welcome text if name changed
+                    const welcome = document.querySelector('#sec-dashboard .section-title');
+                    if (welcome) {
+                        welcome.textContent = `Welcome back, ${newName}! 👋`;
+                    }
+                    
+                    // Update sidebar name
+                    const sidebarName = document.getElementById('sidebar-name');
+                    if (sidebarName) {
+                        sidebarName.textContent = newName;
+                    }
+                    
+                    // Update avatar
+                    const avatar = document.getElementById('sidebar-avatar');
+                    if (avatar && payload.first_name) {
+                        avatar.textContent = payload.first_name.charAt(0).toUpperCase();
+                    }
+                } else {
+                    showToast(data.detail || 'Failed to update profile', 'error');
+                }
+            } catch (e) {
+                showToast('Network error while saving profile', 'error');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        async function updatePassword() {
+            const cur = document.getElementById('settings-cur-pass').value;
+            const next = document.getElementById('settings-new-pass').value;
+            const conf = document.getElementById('settings-conf-pass').value;
+
+            if (!cur || !next || !conf) { showToast('Please fill all password fields', 'error'); return; }
+            if (next !== conf) { showToast('Passwords do not match', 'error'); return; }
+
+            const btn = event.target.closest('button');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/change-password/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        current_password: cur,
+                        new_password: next
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Password updated successfully!', 'success');
+                    document.getElementById('settings-cur-pass').value = '';
+                    document.getElementById('settings-new-pass').value = '';
+                    document.getElementById('settings-conf-pass').value = '';
+                } else {
+                    showToast(data.error || 'Failed to update password', 'error');
+                }
+            } catch (e) {
+                showToast('Network error while updating password', 'error');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
         /* ============ INIT ============ */
         document.addEventListener('DOMContentLoaded', () => {
+            // Force-clear all search bars and auth form fields to defeat browser autofill
+            setTimeout(() => {
+                const searchFields = document.querySelectorAll('input[type="search"], #global-search, #job-search');
+                searchFields.forEach(f => { f.value = ''; });
+                // Clear login/register forms only if the overlay is visible (user not logged in)
+                const overlay = document.getElementById('auth-overlay');
+                if (overlay && !overlay.classList.contains('hidden')) {
+                    const loginForm = document.getElementById('login-form');
+                    const regForm = document.getElementById('register-form');
+                    if (loginForm) loginForm.reset();
+                    if (regForm) regForm.reset();
+                }
+            }, 100);
+
+            fetchNotifications();
+            // Poll for notifications every 2 minutes
+            setInterval(fetchNotifications, 120000);
             renderJobs(JOBS); renderMentors(MENTORS); renderCourses(COURSES); renderProjects(PROJECTS);
             // Drag and drop for resume
             const dz = document.getElementById('drop-zone'); if (dz) {
