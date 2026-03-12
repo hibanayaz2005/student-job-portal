@@ -1,2 +1,6 @@
-CAREERBRIDGE/backend/debug_auth_2.py
-CAREERBRIDGE/backend/test_register_api.py
+.venv/
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+node_modules/
