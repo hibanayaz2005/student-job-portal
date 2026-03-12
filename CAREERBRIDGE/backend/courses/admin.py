@@ -1,4 +1,5 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import Course, CourseProgress, SkillTest, TestAttempt, Certificate
 
 
@@ -29,3 +30,7 @@ class TestAttemptAdmin(admin.ModelAdmin):
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ('student', 'test', 'certificate_id', 'issued_at')
+=======
+
+# Register your models here.
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9

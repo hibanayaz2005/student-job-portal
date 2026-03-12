@@ -16,17 +16,21 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import RegisterSerializer, UserSerializer
 
+<<<<<<< HEAD
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 # Django authentication is handled by the API views below
 # REGISTER
 # =========================
 from rest_framework.permissions import IsAuthenticated, AllowAny
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 # =========================
 # REGISTER
 # =========================
 class RegisterView(APIView):
+<<<<<<< HEAD
     permission_classes = [AllowAny]
     
     def post(self, request):
@@ -237,6 +241,114 @@ class ChangePasswordView(APIView):
         
         return Response({"message": "Password updated successfully", "success": True})
 
+=======
+
+    def post(self, request):
+
+        serializer = RegisterSerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            user = serializer.save(is_active=False)
+
+            otp = random.randint(100000, 999999)
+
+            request.session['otp'] = str(otp)
+            request.session['user_id'] = user.id
+
+            send_mail(
+                "CareerBridge Verification Code",
+                f"Your verification code is {otp}",
+                "noreply@careerbridge.com",
+                [user.email],
+                fail_silently=False,
+            )
+
+            return Response({
+                "message": "User created. OTP sent to email."
+            })
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# =========================
+# VERIFY OTP
+# =========================
+class VerifyOTPView(APIView):
+
+    def post(self, request):
+
+        otp = request.data.get("otp")
+
+        session_otp = request.session.get("otp")
+        user_id = request.session.get("user_id")
+
+        if not session_otp or not user_id:
+            return Response({"error": "Session expired"}, status=400)
+
+        if str(otp) == str(session_otp):
+
+            User = get_user_model()
+            user = User.objects.get(id=user_id)
+
+            user.is_active = True
+            user.save()
+
+            return Response({"message": "OTP verified. Now set password."})
+
+        return Response({"error": "Invalid OTP"}, status=400)
+
+
+# =========================
+# SET PASSWORD
+# =========================
+class SetPasswordView(APIView):
+
+    def post(self, request):
+
+        password = request.data.get("password")
+        user_id = request.session.get("user_id")
+
+        if not password:
+            return Response({"error": "Password required"}, status=400)
+
+        User = get_user_model()
+
+        user = User.objects.get(id=user_id)
+
+        user.set_password(password)
+        user.save()
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "message": "Password set successfully",
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        })
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        # simple validation
+        if not username or not password:
+            return Response({'error': 'username and password required'}, status=400)
+
+        try:
+            user = authenticate(username=username, password=password)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=400)
+
+        if user:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            })
+        return Response({'error': 'Invalid credentials'}, status=401)
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -314,15 +426,44 @@ def settings_page(request):
 from django.contrib.auth import authenticate, login as auth_login
 
 def login_page(request):
+<<<<<<< HEAD
     """Redirects the old session login page to the modern Dashboard SPA."""
     return redirect('/')
+=======
+    """Simple session login page for students/employers."""
+
+    if request.method == 'GET':
+        return render(request, 'accounts/login.html')
+
+    # POST request
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    if not username or not password:
+        messages.error(request, 'Please provide username and password')
+        return render(request, 'accounts/login.html')
+
+    # authenticate user
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        auth_login(request, user)
+        return redirect('/')   # redirect to homepage or dashboard
+
+    messages.error(request, 'Invalid credentials')
+    return render(request, 'accounts/login.html')
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 
 def logout_page(request):
     """Log the user out of the session and redirect to login."""
     logout(request)
     messages.info(request, 'You have been logged out.')
+<<<<<<< HEAD
     return redirect('/')
+=======
+    return redirect('accounts-login')
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 
 def google_login(request):

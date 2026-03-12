@@ -1,4 +1,5 @@
 from django.db import models
+<<<<<<< HEAD
 from django.conf import settings
 
 
@@ -27,10 +28,17 @@ class Job(models.Model):
 class Course(models.Model):
     title = models.CharField(max_length=300)
     provider = models.CharField(max_length=50)  # YouTube, NPTEL, etc.
+=======
+
+class Course(models.Model):
+    title = models.CharField(max_length=300)
+    provider = models.CharField(max_length=50) # YouTube, NPTEL, etc.
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
     provider_url = models.URLField()
     category = models.CharField(max_length=100)
     target_years = models.JSONField(default=list)
     is_free = models.BooleanField(default=True)
+<<<<<<< HEAD
     description = models.TextField(blank=True)
     duration = models.CharField(max_length=50, blank=True)
     icon = models.CharField(max_length=10, default='📚')
@@ -38,10 +46,13 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 class CourseProgress(models.Model):
     student = models.ForeignKey('accounts.StudentProfile', on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+<<<<<<< HEAD
     status = models.CharField(max_length=15, default='not_started')
     completed_at = models.DateTimeField(null=True, blank=True)
 
@@ -90,3 +101,6 @@ class Certificate(models.Model):
     
     def __str__(self):
         return f"Certificate: {self.student} - {self.test.title}"
+=======
+    status = models.CharField(max_length=15, default='not_started')
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9

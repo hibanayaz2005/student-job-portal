@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+<<<<<<< HEAD
 import os
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +35,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
     'daphne',
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,12 +52,16 @@ INSTALLED_APPS = [
 
     # Your apps
     'accounts',
+<<<<<<< HEAD
     'channels',
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
     'verification',
     'jobs',
     'courses',
     'resume',
     'dashboard',
+<<<<<<< HEAD
     'mentorship',
     'projects',
 ]
@@ -62,6 +72,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+=======
+]
+AUTH_USER_MODEL = 'accounts.User'
+
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -92,8 +107,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'careerbridge.wsgi.application'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+<<<<<<< HEAD
 ASGI_APPLICATION = "careerbridge.asgi.application"
 FAST2SMS_API_KEY = os.environ.get("FAST2SMS_API_KEY", "")
+=======
+
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -128,11 +147,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+<<<<<<< HEAD
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -149,6 +171,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -180,13 +206,19 @@ CORS_ALLOWED_ORIGINS = [
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
+<<<<<<< HEAD
 CSRF_COOKIE_HTTPONLY = False   # Allow JS to read csrftoken cookie
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 3600
 
+<<<<<<< HEAD
 CORS_ALLOW_CREDENTIALS = True
 
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"

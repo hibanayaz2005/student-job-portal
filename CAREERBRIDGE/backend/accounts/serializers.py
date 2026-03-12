@@ -24,6 +24,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             'completion_percentage',
         ]
         read_only_fields = ['resume_score', 'is_verified', 'completion_percentage']
+<<<<<<< HEAD
         extra_kwargs = {
             'graduation_year': {'required': False},
             'college_name': {'required': False},
@@ -40,6 +41,8 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             data = data.copy()
             data['certifications'] = [c.strip() for c in data['certifications'].split(',') if c.strip()]
         return super().to_internal_value(data)
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 
 class EmployerProfileSerializer(serializers.ModelSerializer):
@@ -55,10 +58,13 @@ class EmployerProfileSerializer(serializers.ModelSerializer):
             'completion_percentage',
         ]
         read_only_fields = ['is_verified', 'completion_percentage']
+<<<<<<< HEAD
         extra_kwargs = {
             'company_name': {'required': False},
             'industry': {'required': False},
         }
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -71,8 +77,11 @@ class UserSerializer(serializers.ModelSerializer):
             'id',
             'username',
             'email',
+<<<<<<< HEAD
             'first_name',
             'last_name',
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
             'role',
             'phone',
             'student_profile',
@@ -84,6 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
         student_data = validated_data.pop('student_profile', None)
         employer_data = validated_data.pop('employer_profile', None)
 
+<<<<<<< HEAD
         if student_data:
             if 'certifications' in student_data:
                 cert = student_data['certifications']
@@ -93,6 +103,13 @@ class UserSerializer(serializers.ModelSerializer):
                 sk = student_data['skills']
                 if isinstance(sk, str):
                     student_data['skills'] = [s.strip() for s in sk.split(',') if s.strip()]
+=======
+        # when updating, ensure certifications and skills come in as list if comma strings
+        if student_data and 'certifications' in student_data:
+            cert = student_data['certifications']
+            if isinstance(cert, str):
+                student_data['certifications'] = [c.strip() for c in cert.split(',') if c.strip()]
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

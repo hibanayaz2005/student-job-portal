@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 import django
 
@@ -19,3 +20,21 @@ application = ProtocolTypeRouter({
         )
     ),
 })
+=======
+"""
+ASGI config for careerbridge project.
+
+It exposes the ASGI callable as a module-level variable named ``application``.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/6.0/howto/deployment/asgi/
+"""
+
+import os
+
+from django.core.asgi import get_asgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'careerbridge.settings')
+
+application = get_asgi_application()
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9

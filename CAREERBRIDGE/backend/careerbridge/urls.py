@@ -19,7 +19,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+<<<<<<< HEAD
 from accounts.views import login_page, settings_page, logout_page, RegisterView
+=======
+from accounts.views import login_page, settings_page, logout_page
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
 urlpatterns = [
     path('', include('dashboard.urls')),
@@ -33,8 +37,11 @@ urlpatterns = [
 
     # Authentication
     path('api/auth/', include('accounts.urls')),
+<<<<<<< HEAD
     path('api/register', RegisterView.as_view(), name='api-register'),
     path('api/register/', RegisterView.as_view(), name='api-register-slash'),
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 
     # Verification
     path('api/verify/', include('verification.urls')),
@@ -42,10 +49,13 @@ urlpatterns = [
     path('api/resume/', include('resume.urls')),
     # Jobs API
     path('api/jobs/', include('jobs.urls')),
+<<<<<<< HEAD
     # Mentorship API
     path('api/mentorship/', include('mentorship.urls')),
     # Projects API
     path('api/projects/', include('projects.urls')),
+=======
+>>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 ]
 
 # Media files (uploads)
