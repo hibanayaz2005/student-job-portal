@@ -198,7 +198,6 @@ class ResumeUploadView(APIView):
             overall_score=overall,
             section_scores=section_scores,
             improvements=improvements,
-            ats_friendly=False,
             ats_friendly=ats_friendly,
         )
 

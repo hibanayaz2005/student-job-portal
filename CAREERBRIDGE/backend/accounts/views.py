@@ -241,8 +241,9 @@ class ChangePasswordView(APIView):
         
         return Response({"message": "Password updated successfully", "success": True})
 
-=======
-
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+    
     def post(self, request):
 
         serializer = RegisterSerializer(data=request.data)

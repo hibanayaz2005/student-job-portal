@@ -1,30 +1,23 @@
 from django.urls import path
 from .views import (
     RegisterView,
-
-
     VerifyOTPView,
     SetPasswordView,
-
     LoginView,
     MeView,
     ProfileView,
     settings_page,
     login_page,
     logout_page,
-
     google_login,
     PasswordResetRequestView,
     password_reset_confirm_page,
     ChangePasswordView
-
-    google_login
 )
 
 app_name = "accounts"
 
 urlpatterns = [
-
     # API authentication
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
