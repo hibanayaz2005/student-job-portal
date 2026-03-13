@@ -16,21 +16,21 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import RegisterSerializer, UserSerializer
 
-<<<<<<< HEAD
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 # Django authentication is handled by the API views below
 # REGISTER
-# =========================
+
 from rest_framework.permissions import IsAuthenticated, AllowAny
-=======
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
+
 
 # =========================
 # REGISTER
 # =========================
 class RegisterView(APIView):
-<<<<<<< HEAD
+
     permission_classes = [AllowAny]
     
     def post(self, request):
@@ -348,7 +348,7 @@ class LoginView(APIView):
                 'access': str(refresh.access_token),
             })
         return Response({'error': 'Invalid credentials'}, status=401)
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -426,10 +426,10 @@ def settings_page(request):
 from django.contrib.auth import authenticate, login as auth_login
 
 def login_page(request):
-<<<<<<< HEAD
+
     """Redirects the old session login page to the modern Dashboard SPA."""
     return redirect('/')
-=======
+
     """Simple session login page for students/employers."""
 
     if request.method == 'GET':
@@ -452,18 +452,17 @@ def login_page(request):
 
     messages.error(request, 'Invalid credentials')
     return render(request, 'accounts/login.html')
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 
 
 def logout_page(request):
     """Log the user out of the session and redirect to login."""
     logout(request)
     messages.info(request, 'You have been logged out.')
-<<<<<<< HEAD
+
     return redirect('/')
-=======
     return redirect('accounts-login')
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 
 
 def google_login(request):

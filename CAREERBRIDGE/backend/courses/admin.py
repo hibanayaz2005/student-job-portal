@@ -1,5 +1,5 @@
 from django.contrib import admin
-<<<<<<< HEAD
+
 from .models import Course, CourseProgress, SkillTest, TestAttempt, Certificate
 
 

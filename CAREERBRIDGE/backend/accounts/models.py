@@ -3,14 +3,13 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-<<<<<<< HEAD
+
 
 from django.db import models
 
 
 
-=======
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 class User(AbstractUser):
     ROLE_CHOICES = [
         ('student', 'Student'),
@@ -43,7 +42,7 @@ class StudentProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.college_name}"
 
-<<<<<<< HEAD
+
     @property
     def completion_percentage(self):
         # Calculate based on filled fields
@@ -58,18 +57,18 @@ class EmployerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_profile')
     company_name = models.CharField(max_length=200)
     company_website = models.URLField(blank=True)
-=======
+
 class EmployerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_profile')
     company_name = models.CharField(max_length=200)
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
     industry = models.CharField(max_length=100)
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.company_name
 
-<<<<<<< HEAD
+
     @property
     def completion_percentage(self):
         fields = [self.company_name, self.industry]
@@ -77,18 +76,15 @@ class EmployerProfile(models.Model):
         if self.is_verified: filled += 1
         return int((filled / 3) * 100)
 
-=======
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 @receiver(post_save, sender=User)
 def create_user_profiles(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'student':
-<<<<<<< HEAD
+
             StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026, college_name='', branch='')
         elif instance.role == 'employer':
             EmployerProfile.objects.create(user=instance, company_name='', industry='')
-=======
+
             StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026)
         elif instance.role == 'employer':
             EmployerProfile.objects.create(user=instance)
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9

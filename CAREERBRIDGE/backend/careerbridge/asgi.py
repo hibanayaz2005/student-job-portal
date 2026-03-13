@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import os
 import django
 
@@ -20,7 +20,7 @@ application = ProtocolTypeRouter({
         )
     ),
 })
-=======
+
 """
 ASGI config for careerbridge project.
 
@@ -37,4 +37,10 @@ from django.core.asgi import get_asgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'careerbridge.settings')
 
 application = get_asgi_application()
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+FAST2SMS_API_KEY = os.getenv("FAST2SMS_API_KEY")
