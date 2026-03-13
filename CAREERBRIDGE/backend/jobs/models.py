@@ -1,10 +1,9 @@
 from django.db import models
-
-
+from django.conf import settings
 
 class Job(models.Model):
     # 1. Foreign key (from your first definition)
-    employer = models.ForeignKey('accounts.EmployerProfile', on_delete=models.CASCADE, null=True, blank=True)
+    employer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     
     # 2. All other fields (from your second definition)
