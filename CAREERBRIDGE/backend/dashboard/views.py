@@ -1,10 +1,8 @@
-<<<<<<< HEAD
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.http import require_POST
-=======
 from django.shortcuts import render, redirect
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.utils import timezone
@@ -132,10 +130,6 @@ def verify_aadhaar_otp(request):
 
 
 @ensure_csrf_cookie
-=======
-
-
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
 def student_portal(request):
     return render(request, 'dashboard/student-portal.html')
 
@@ -189,9 +183,8 @@ def home(request):
         'upcoming_deadlines': upcoming_deadlines,
     }
 
-<<<<<<< HEAD
+
     return render(request, 'dashboard/home.html', context)
-=======
     # Resume Upload Analysis
     if request.method == 'POST' and request.FILES.get('resume_file'):
 
@@ -268,4 +261,4 @@ def home(request):
 
     def student_portal(request):
         return render(request, 'dashboard/student-portal.html')
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
