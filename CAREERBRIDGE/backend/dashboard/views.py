@@ -10,11 +10,9 @@ from django.db.models import Count
 from django.utils import timezone
 from django.http import JsonResponse
 from datetime import timedelta
-<<<<<<< HEAD
 
 from django.views.decorators.csrf import ensure_csrf_cookie
-=======
->>>>>>> 0b0f1a661d9fad69408034b791d0366a517855f9
+
 import json
 import random
 import PyPDF2
@@ -22,7 +20,6 @@ import PyPDF2
 from jobs.models import Job, Application
 from courses.models import Course
 from resume.models import ResumeAnalysis
-<<<<<<< HEAD
 from .models import OTPVerification
 
 import requests
