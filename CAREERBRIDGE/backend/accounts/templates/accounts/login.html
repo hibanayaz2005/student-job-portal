@@ -1,33 +1,334 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Login — CareerBridge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CareerBridge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { font-family: Arial, sans-serif; background:#f4f6fb; display:flex; align-items:center; justify-content:center; height:100vh; }
-    .card { background:white; padding:24px; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.08); width:360px; }
-    .input { width:100%; padding:10px; margin-bottom:12px; border:1px solid #ddd; border-radius:6px; }
-    .btn { background:#06b6d4; color:#000; padding:10px 14px; border-radius:6px; border:none; font-weight:700; cursor:pointer; width:100%; }
-    .error { color:#ef4444; margin-bottom:10px; }
+    :root {
+      --bg: #0a0e1a;
+      --surface: rgba(255, 255, 255, 0.03);
+      --border: rgba(255, 255, 255, 0.1);
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --text: #e8edf5;
+      --muted: #94a3b8;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated Background Blobs */
+    .blob {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      opacity: 0.15;
+      animation: move 20s infinite alternate;
+    }
+
+    .blob-1 {
+      background: var(--accent);
+      top: -200px;
+      left: -100px;
+    }
+
+    .blob-2 {
+      background: var(--accent2);
+      bottom: -200px;
+      right: -100px;
+      animation-delay: -5s;
+    }
+
+    @keyframes move {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(100px, 50px) scale(1.1); }
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .glass-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .logo {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      margin-left: 4px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 14px 16px 14px 44px;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 15px;
+      font-family: var(--font-body);
+      transition: all 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1);
+    }
+
+    .input-field:focus + i {
+      color: var(--accent);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #00b8d4 100%);
+      color: #000;
+      margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(0, 229, 255, 0.4);
+    }
+
+    .btn-google {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: #fff;
+      margin-top: 24px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .btn-google:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-google img {
+      width: 18px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 24px 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .divider:not(:empty)::before { margin-right: 1.5rem; }
+    .divider:not(:empty)::after { margin-left: 1.5rem; }
+
+    .error-msg {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #ff6b6b;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-links {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .footer-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .glass-card {
+        padding: 32px 24px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h3 style="margin-bottom:12px;">Sign in to CareerBridge</h3>
-    {% if messages %}
-      {% for m in messages %}
-        <div class="error">{{ m }}</div>
-      {% endfor %}
-    {% endif %}
-    <form method="post">
-      {% csrf_token %}
-      <input class="input" name="username" placeholder="Username or email" />
-      <input class="input" name="password" type="password" placeholder="Password" />
-      <button class="btn" type="submit">Sign in</button>
-    </form>
-    <div style="margin-top:12px;font-size:13px;color:#666;">
-      <a href="/accounts/google/" style="display:inline-block;padding:8px 12px;background:#4285F4;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Sign in with Google</a>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="login-container">
+    <div class="glass-card">
+      <h1 class="logo">CareerBridge</h1>
+      <p class="subtitle">Elevating Student Careers in India</p>
+
+      {% if messages %}
+        {% for m in messages %}
+          <div class="error-msg">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ m }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="username">Username or Email</label>
+          <div class="input-wrapper">
+            <input type="text" id="username" name="username" class="input-field" placeholder="name@college.edu" required autofocus>
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label class="form-label" for="password" style="margin-bottom: 0;">Password</label>
+            <a href="#" style="font-size: 12px; color: var(--accent); text-decoration: none;">Forgot?</a>
+          </div>
+          <div class="input-wrapper">
+            <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required>
+            <i class="fas fa-lock"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <span>Sign In</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="divider">or continue with</div>
+
+      <a href="/accounts/google/" class="btn btn-google">
+        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google Logo">
+        <span>Sign in with Google</span>
+      </a>
+
+      <div class="footer-links">
+        Don't have an account? <a href="#">Create Account</a>
+      </div>
     </div>
   </div>
 </body>
-</html>
+</html>

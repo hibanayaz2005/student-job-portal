@@ -55,19 +55,13 @@ class StudentProfile(models.Model):
 
 class EmployerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_profile')
-    company_name = models.CharField(max_length=200)
+    company_name = models.CharField(max_length=200, blank=True)
     company_website = models.URLField(blank=True)
-
-class EmployerProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_profile')
-    company_name = models.CharField(max_length=200)
-
-    industry = models.CharField(max_length=100)
+    industry = models.CharField(max_length=100, blank=True)
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.company_name
-
+        return self.company_name or self.user.username
 
     @property
     def completion_percentage(self):
@@ -80,11 +74,20 @@ class EmployerProfile(models.Model):
 def create_user_profiles(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'student':
-
-            StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026, college_name='', branch='')
+            StudentProfile.objects.get_or_create(
+                user=instance, 
+                defaults={
+                    'year_of_study': 1, 
+                    'graduation_year': 2026, 
+                    'college_name': '', 
+                    'branch': ''
+                }
+            )
         elif instance.role == 'employer':
-            EmployerProfile.objects.create(user=instance, company_name='', industry='')
-
-            StudentProfile.objects.create(user=instance, year_of_study=1, graduation_year=2026)
-        elif instance.role == 'employer':
-            EmployerProfile.objects.create(user=instance)
+            EmployerProfile.objects.get_or_create(
+                user=instance,
+                defaults={
+                    'company_name': '',
+                    'industry': ''
+                }
+            )

@@ -241,35 +241,6 @@ class ChangePasswordView(APIView):
         
         return Response({"message": "Password updated successfully", "success": True})
 
-class RegisterView(APIView):
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-
-        serializer = RegisterSerializer(data=request.data)
-
-        if serializer.is_valid():
-
-            user = serializer.save(is_active=False)
-
-            otp = random.randint(100000, 999999)
-
-            request.session['otp'] = str(otp)
-            request.session['user_id'] = user.id
-
-            send_mail(
-                "CareerBridge Verification Code",
-                f"Your verification code is {otp}",
-                "noreply@careerbridge.com",
-                [user.email],
-                fail_silently=False,
-            )
-
-            return Response({
-                "message": "User created. OTP sent to email."
-            })
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # =========================
@@ -328,27 +299,6 @@ class SetPasswordView(APIView):
             "access": str(refresh.access_token)
         })
 
-class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-
-        # simple validation
-        if not username or not password:
-            return Response({'error': 'username and password required'}, status=400)
-
-        try:
-            user = authenticate(username=username, password=password)
-        except ValueError as e:
-            return Response({'error': str(e)}, status=400)
-
-        if user:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
-        return Response({'error': 'Invalid credentials'}, status=401)
 
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -428,8 +378,7 @@ from django.contrib.auth import authenticate, login as auth_login
 
 def login_page(request):
 
-    """Redirects the old session login page to the modern Dashboard SPA."""
-    return redirect('/')
+    # Simple session login page for students/employers.
 
     """Simple session login page for students/employers."""
 
