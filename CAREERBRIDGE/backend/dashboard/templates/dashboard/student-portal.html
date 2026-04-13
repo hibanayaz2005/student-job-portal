@@ -15,17 +15,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
         :root {
-            --bg: #0a0e1a;
+            --bg: #05070a;
+            --sidebar-bg: #0a0c14;
+            --card-bg: #121520;
             --surface: #111827;
-            --surface2: #1a2235;
-            --surface3: #232d42;
-            --border: #1e2d45;
-            --border2: #2a3a55;
-            --accent: #00e5ff;
-            --accent2: #7c3aed;
+            --surface2: #161b2c;
+            --surface3: #1f2937;
+            --border: #1e293b;
+            --border2: #334155;
+            --accent: #00d2ff;
+            --accent-glow: rgba(0, 210, 255, 0.4);
+            --accent-purple: #9d50bb;
+            --accent2: #a78bfa;
             --accent3: #10b981;
-            --warn: #f59e0b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
             --danger: #ef4444;
+
+            --sidebar-w: 260px;
+            --topbar-h: 70px;
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --glow-cyan: 0 0 20px rgba(0, 210, 255, 0.15);
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
         }
 
         * {
@@ -362,25 +377,20 @@
             left: 0;
             width: var(--sidebar-w);
             height: 100vh;
-            background: var(--surface);
+            background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             z-index: 100;
             display: flex;
             flex-direction: column;
-            transition: transform .3s
+            transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .sidebar-logo {
-            padding: 20px 24px;
+            padding: 30px 24px;
             font-family: var(--font-head);
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--accent);
-            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 10px;
-            height: var(--topbar-h)
+            gap: 4px;
         }
 
         .sidebar-logo span {
@@ -448,19 +458,12 @@
 
         .nav-item.active {
             color: var(--accent);
-            background: rgba(0, 229, 255, 0.08)
+            background: rgba(0, 210, 255, 0.08);
+            border-right: 3px solid var(--accent);
         }
 
-        .nav-item.active::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 60%;
-            background: var(--accent);
-            border-radius: 0 4px 4px 0
+        .nav-item.active i {
+            color: var(--accent);
         }
 
         .nav-item i {
@@ -751,19 +754,19 @@
         }
 
         .stat-card {
-            background: var(--surface);
+            background: #15192b;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 20px;
             padding: 24px;
             position: relative;
             overflow: hidden;
-            transition: .3s
+            transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: var(--glow-cyan)
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
 
         .stat-card::after {
@@ -1155,70 +1158,61 @@
             gap: 8px
         }
 
-        /* MENTOR CARDS */
-        .mentor-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            text-align: center;
-            transition: .3s
+        /* MENTOR CARDS V2 */
+        .mentor-card-v2 {
+            background: #15192b;
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .mentor-card:hover {
-            border-color: var(--accent2);
-            transform: translateY(-4px);
-            box-shadow: var(--glow-purple)
+        .mentor-card-v2:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 210, 255, 0.1);
         }
 
-        .mentor-avatar {
-            width: 72px;
-            height: 72px;
+        .mentor-card-v2::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .mentor-avatar-v2 {
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
-            margin: 0 auto 16px;
-            background: linear-gradient(135deg, var(--accent2), var(--accent));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 700;
-            color: #000
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .mentor-name {
-            font-family: var(--font-head);
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 2px
-        }
-
-        .mentor-title {
-            font-size: 12px;
+        .tag-v2 {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 11px;
             color: var(--muted);
-            margin-bottom: 12px
+            border: 1px solid var(--border);
+            transition: 0.2s;
         }
 
-        .mentor-stats {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin: 12px 0;
-            font-size: 12px;
-            color: var(--muted)
-        }
-
-        .mentor-stat-val {
-            font-weight: 700;
-            color: var(--text);
-            display: block
-        }
-
-        .mentor-skills {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px;
-            margin: 12px 0
+        .mentor-card-v2:hover .tag-v2 {
+            background: rgba(0, 210, 255, 0.05);
+            color: var(--accent);
+            border-color: rgba(0, 210, 255, 0.2);
         }
 
         /* COURSE CARDS */
@@ -1337,43 +1331,100 @@
         /* SCORE CIRCLE */
         .score-display {
             text-align: center;
-            margin-bottom: 32px
+            margin-bottom: 40px;
         }
 
         .score-circle {
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background: conic-gradient(var(--accent) 0deg, var(--border) 0deg);
+            background: conic-gradient(var(--accent) 0deg, #1e293b 0deg);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
+            margin: 0 auto 24px;
             position: relative;
-            transition: background 1.5s ease-out
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
         }
 
         .score-circle::before {
             content: '';
             position: absolute;
-            inset: 14px;
+            inset: 20px;
             border-radius: 50%;
-            background: var(--surface)
+            background: #0d111c;
+            z-index: 0;
         }
 
         .score-num {
             position: relative;
             z-index: 1;
             font-family: var(--font-head);
-            font-size: 40px;
-            font-weight: 800;
-            color: var(--accent)
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: -2px;
         }
 
         .score-label {
             color: var(--muted);
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* BREAKDOWN CARDS */
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .breakdown-card {
+            background: #15192b;
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-label {
             font-size: 14px;
-            margin-bottom: 8px
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .breakdown-score {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .breakdown-progress {
+            height: 6px;
+            background: #1e293b;
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: #2a3a55; /* Muted default */
+            transition: width 1s ease;
+        }
+
+        .breakdown-fill.high {
+            background: #10b981; /* Neon Green */
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }
 
         /* CHAT */
@@ -1772,50 +1823,66 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">Career<span>Bridge</span>
-            <div class="logo-dot"></div>
+        <div class="sidebar-logo">
+            <span style="color: var(--accent); font-weight: 800; font-size: 26px;">Career</span>
+            <span style="color: #fff; font-weight: 800; font-size: 26px;">Bridge</span>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section">
-                <div class="nav-label">Main</div>
-                <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-th-large"></i>Dashboard
+                <div class="nav-label">MAIN</div>
+                <div class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-th-large"></i><span>Dashboard</span>
                 </div>
-                <div class="nav-item" onclick="showSection('jobs')"><i class="fas fa-briefcase"></i>Job Portal<span
-                        class="badge-count">12</span></div>
-                <div class="nav-item" onclick="showSection('resume')"><i class="fas fa-file-alt"></i>Resume AI</div>
-            </div>
-            <div class="nav-section">
-                <div class="nav-label">Growth</div>
-                <div class="nav-item" onclick="showSection('mentors')"><i class="fas fa-user-tie"></i>Mentors<span
-                        class="badge-count">3</span></div>
-                <div class="nav-item" onclick="showSection('courses')"><i class="fas fa-graduation-cap"></i>Courses &
-                    Tests</div>
-                <div class="nav-item" onclick="showSection('projects')"><i class="fas fa-project-diagram"></i>Projects
+                <div class="nav-item" onclick="showSection('jobs')">
+                    <i class="fas fa-briefcase"></i><span>Job Portal</span>
+                    <span class="badge-count" style="background: #7c3aed;">12</span>
+                </div>
+                <div class="nav-item" onclick="showSection('resume')">
+                    <i class="fas fa-file-alt"></i><span>Resume AI</span>
                 </div>
             </div>
             <div class="nav-section">
-                <div class="nav-label">System</div>
-                <div class="nav-item" onclick="showSection('admin')"><i class="fas fa-shield-alt"></i>Admin Panel</div>
-                <div class="nav-item" onclick="showSection('settings')"><i class="fas fa-cog"></i>Settings</div>
+                <div class="nav-label">GROWTH</div>
+                <div class="nav-item" onclick="showSection('mentors')">
+                    <i class="fas fa-user-friends"></i><span>Mentors</span>
+                    <span class="badge-count" style="background: #7c3aed;">3</span>
+                </div>
+                <div class="nav-item" onclick="showSection('courses')">
+                    <i class="fas fa-graduation-cap"></i><span>Courses & Tests</span>
+                </div>
+                <div class="nav-item" onclick="showSection('projects')">
+                    <i class="fas fa-project-diagram"></i><span>Projects</span>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-label">SYSTEM</div>
+                <div class="nav-item" onclick="showSection('admin')">
+                    <i class="fas fa-shield-alt"></i><span>Admin Panel</span>
+                </div>
+                <div class="nav-item" onclick="showSection('settings')">
+                    <i class="fas fa-cog"></i><span>Settings</span>
+                </div>
             </div>
         </nav>
-        <div class="sidebar-user">
-            <div class="user-avatar" id="sidebar-avatar">{{ user.username|make_list|first|upper|default:"S" }}</div>
+        <div class="sidebar-user" style="background: rgba(255,255,255,0.03); margin: 12px; border-radius: 12px; border: 1px solid var(--border);">
+            <div class="user-avatar" id="sidebar-avatar" style="border-radius: 8px;">{{ user.username|make_list|first|upper|default:"A" }}</div>
             <div class="user-info">
-                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Student" }}</div>
+                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Ananya" }}</div>
                 <div class="user-role">{{ user.role|title|default:"Student" }}</div>
             </div>
-            <button class="btn-icon btn-secondary" style="flex-shrink:0" onclick="doLogout()" title="Logout"><i
-                    class="fas fa-sign-out-alt"></i></button>
+            <button class="btn-icon" style="background: none; border: none; color: var(--muted); cursor: pointer;" onclick="doLogout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </aside>
 
     <!-- TOPBAR -->
     <header class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-search"><i class="fas fa-search"></i><input type="search"
-                placeholder="Search jobs, courses, mentors..." id="global-search" oninput="globalSearch(this.value)" autocomplete="nope" role="search" name="global-search-field">
+        <div class="topbar-title" id="topbar-title" style="font-family: var(--font-head); font-weight: 700; margin-left: 20px;">Mentors</div>
+        <div class="topbar-search">
+            <i class="fas fa-search"></i>
+            <input type="search" placeholder="Search jobs, courses, mentors..." id="global-search" oninput="globalSearch(this.value)" autocomplete="off">
         </div>
         <div class="topbar-actions">
             <div class="topbar-btn" onclick="showSection('mentors')" title="Messages"><i
@@ -2109,8 +2176,7 @@
                             </div>
                             <div class="score-label" id="score-text">Upload a resume to see your score</div>
                         </div>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px"
-                            id="score-breakdown"></div>
+                        <div class="breakdown-grid" id="score-breakdown"></div>
                     </div>
                     <div>
                         <div class="card" style="margin-bottom:20px" id="improvements-card">
@@ -2127,23 +2193,52 @@
 
         <!-- ========== MENTORS ========== -->
         <div class="section" id="sec-mentors">
-            <div class="section-header">
+            <div class="section-header" style="margin-bottom: 40px;">
                 <div>
-                    <div class="section-label">Mentorship</div>
-                    <h1 class="section-title">Connect with Mentors</h1>
-                    <p class="section-sub">Get guidance from seniors, alumni and industry professionals.</p>
-                </div><button class="btn btn-purple btn-sm"
-                    onclick="showToast('Please select a mentor from below to start chatting!', 'info')"><i
-                        class="fas fa-comments"></i> Open Chat</button>
+                    <div class="section-label" style="color: var(--accent); font-weight: 800;">MENTORSHIP</div>
+                    <h1 class="section-title" style="font-size: 42px; font-weight: 900; letter-spacing: -1px;">Connect with Mentors</h1>
+                    <p class="section-sub" style="font-size: 16px; margin-top: 8px; opacity: 0.8;">Get guidance from seniors, alumni and industry professionals.</p>
+                </div>
+                <button class="btn" style="background: #9d50bb; color: #fff; border-radius: 12px; padding: 12px 24px; font-weight: 700;">
+                    <i class="fas fa-comment-dots" style="margin-right: 8px;"></i> Open Chat
+                </button>
             </div>
-            <div class="tab-bar">
-                <div class="tab-item active" onclick="filterMentors('all')">All Mentors</div>
-                <div class="tab-item" onclick="filterMentors('senior')">Seniors</div>
-                <div class="tab-item" onclick="filterMentors('alumni')">Alumni</div>
-                <div class="tab-item" onclick="filterMentors('professional')">Professionals</div>
+            
+            <div class="tab-bar" style="background: #111827; padding: 6px; border-radius: 14px; margin-bottom: 32px; border: 1px solid var(--border);">
+                <div class="tab-item active" onclick="filterMentors('all')" style="border-radius: 10px;">All Mentors</div>
+                <div class="tab-item" onclick="filterMentors('senior')" style="border-radius: 10px;">Seniors</div>
+                <div class="tab-item" onclick="filterMentors('alumni')" style="border-radius: 10px;">Alumni</div>
+                <div class="tab-item" onclick="filterMentors('professional')" style="border-radius: 10px;">Professionals</div>
             </div>
-            <div class="grid-3" id="mentors-grid"></div>
 
+            <div class="grid-4" id="mentors-grid">
+                <!-- Sample Mentor Cards to match screenshot -->
+                <div class="card mentor-card-v2" style="background: #15192b; border: 1px solid #1e293b; border-radius: 20px; padding: 30px;">
+                    <div class="mentor-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div class="mentor-avatar" style="width: 54px; height: 54px; border-radius: 50%; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;">RP</div>
+                        <div>
+                            <h3 style="font-size: 18px; font-weight: 800;">Dr. Ravi Patil</h3>
+                            <p style="font-size: 12px; color: var(--muted);">Senior Engineer at Google</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: var(--muted);">12+ years in tech. Ex-Amazon, now at Google. Passionate about mentoring students.</p>
+                    <div class="mentor-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">System Design</span>
+                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">DSA</span>
+                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">Career Strategy</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; gap: 12px; font-size: 12px; color: var(--muted);">
+                            <span><i class="fas fa-star" style="color: #fbbf24; margin-right: 4px;"></i>4.9</span>
+                            <span><i class="fas fa-clock" style="margin-right: 4px;"></i>120 Sessions</span>
+                        </div>
+                        <button class="btn btn-sm" style="background: #00d2ff; color: #000; font-weight: 800; border-radius: 8px; padding: 8px 16px;">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
+                    </div>
+                </div>
+                <!-- ... other mentor cards will be rendered dynamically ... -->
+            </div>
         </div>
 
         <!-- ========== COURSES ========== -->
@@ -2982,24 +3077,26 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         function renderMentors(mentors) {
             const grid = document.getElementById('mentors-grid');
             grid.innerHTML = mentors.map(m => `
-                <div class="mentor-card" style="background:var(--surface2);border-radius:var(--radius);padding:24px;border:1px solid var(--border)">
-                    <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px">
-                        <div class="user-avatar" style="width:56px;height:56px;font-size:20px;background:${m.gradient}">${m.initials}</div>
+                <div class="card mentor-card-v2">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div class="mentor-avatar-v2" style="background: ${m.gradient}">${m.initials}</div>
                         <div>
-                            <h3 style="font-family:var(--font-head);font-size:18px">${m.name}</h3>
-                            <div style="color:var(--muted);font-size:13px">${m.title}</div>
+                            <h3 style="font-size: 18px; font-weight: 800; font-family: var(--font-head);">${m.name}</h3>
+                            <p style="font-size: 12px; color: var(--muted);">${m.title}</p>
                         </div>
                     </div>
-                    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.5">${m.bio}</p>
-                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
-                        ${m.expertise.map(e => '<span class="badge badge-purple" style="font-size:11px">' + e + '</span>').join('')}
+                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: var(--muted); height: 60px; overflow: hidden;">${m.bio}</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                        ${m.expertise.map(e => '<span class="tag-v2">' + e + '</span>').join('')}
                     </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:1px solid var(--border)">
-                        <div style="display:flex;gap:12px;font-size:12px;color:var(--muted)">
-                            <span>⭐ ${m.rating}</span>
-                            <span>🕒 ${m.sessions} Sessions</span>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; gap: 12px; font-size: 12px; color: var(--muted);">
+                            <span><i class="fas fa-star" style="color: #fbbf24; margin-right: 4px;"></i>${m.rating}</span>
+                            <span><i class="fas fa-clock" style="margin-right: 4px;"></i>${m.sessions} Sessions</span>
                         </div>
-                        <button class="btn btn-primary btn-sm" onclick="chatWithMentor(${m.id})"><i class="fas fa-comments"></i> Chat</button>
+                        <button class="btn btn-sm" onclick="chatWithMentor(${m.id})" style="background: var(--accent); color: #000; font-weight: 800; border-radius: 8px; padding: 8px 16px;">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -3229,21 +3326,56 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
             let score = Math.min(contact + education + skills + experience + projects + summary, 100);
             showResumeResults(score, { contact, education, skills, experience, projects, summary }, improvements, atsIssues);
         }
+        /* ============ INITIALIZATION ============ */
+        document.addEventListener('DOMContentLoaded', () => {
+            renderJobs(JOBS);
+            renderMentors(MENTORS);
+            renderCourses(COURSES);
+            renderProjects(PROJECTS);
+            
+            // Auto-show dashboard or mentors based on current task
+            showSection('mentors'); 
+        });
         function showResumeResults(score, sections, improvements, ats) {
             document.getElementById('resume-upload-card').style.display = 'none';
             document.getElementById('resume-tips').style.display = 'none';
             document.getElementById('resume-results').style.display = 'block';
             document.getElementById('score-num').textContent = score;
-            document.getElementById('top-score-badge').textContent = score + '/100';
+            
+            // Set top right badge
+            const topBadge = document.getElementById('top-score-badge');
+            topBadge.textContent = score + '/100';
+            topBadge.className = 'badge ' + (score >= 80 ? 'badge-green' : score >= 50 ? 'badge-warn' : 'badge-danger');
+            topBadge.style.background = '#1e293b';
+            topBadge.style.color = '#fff';
+            topBadge.style.padding = '4px 12px';
+            topBadge.style.borderRadius = '100px';
+
             const circle = document.getElementById('main-score-circle');
-            setTimeout(() => { circle.style.background = `conic-gradient(var(--accent) ${score * 3.6}deg, var(--border) ${score * 3.6}deg)`; }, 100);
+            setTimeout(() => { 
+                circle.style.background = `conic-gradient(var(--accent) ${score * 3.6}deg, #1e293b ${score * 3.6}deg)`; 
+            }, 100);
+
             document.getElementById('score-text').textContent = score >= 85 ? 'Excellent — Ready for top companies! 🚀' : score >= 65 ? 'Good — A few improvements needed' : score >= 40 ? 'Fair — Needs significant improvement' : 'Poor — Major revisions needed';
+            
             const names = { contact: 'Contact Info', education: 'Education', skills: 'Skills', experience: 'Experience', projects: 'Projects', summary: 'Summary' };
             const maxes = { contact: 10, education: 10, skills: 20, experience: 15, projects: 20, summary: 15 };
+            
             document.getElementById('score-breakdown').innerHTML = Object.entries(sections).map(([k, v]) => {
-                const pct = Math.round(v / maxes[k] * 100), cls = pct >= 80 ? 'fill-green' : pct >= 50 ? 'fill-warn' : 'fill-danger';
-                return `<div style="padding:12px;background:var(--surface2);border-radius:var(--radius-sm)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px">${names[k]}</span><span style="font-size:12px;font-weight:700;color:var(--accent)">${v}/${maxes[k]}</span></div><div class="progress"><div class="progress-fill ${cls}" style="width:${pct}%"></div></div></div>`;
+                const pct = Math.round(v / maxes[k] * 100);
+                const isHigh = pct === 100;
+                return `
+                <div class="breakdown-card">
+                    <div class="breakdown-header">
+                        <span class="breakdown-label">${names[k]}</span>
+                        <span class="breakdown-score" style="color: ${isHigh ? '#10b981' : 'var(--accent)'}">${v}/${maxes[k]}</span>
+                    </div>
+                    <div class="breakdown-progress">
+                        <div class="breakdown-fill ${isHigh ? 'high' : ''}" style="width: ${pct}%"></div>
+                    </div>
+                </div>`;
             }).join('');
+            
             document.getElementById('improvements-list').innerHTML = improvements.slice(0, 5).map(i => `<div style="display:flex;gap:10px;margin-bottom:10px;font-size:13px"><span style="color:#a78bfa;flex-shrink:0">→</span>${i}</div>`).join('');
         }
         function resetResume() {
