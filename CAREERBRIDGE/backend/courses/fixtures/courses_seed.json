@@ -1,122 +1,420 @@
-[
+﻿[
   {
     "model": "courses.course",
     "pk": 1,
     "fields": {
-      "title": "Introduction to Business Management (BBA)",
-      "provider": "YouTube · SimpleLearn",
-      "provider_url": "https://www.youtube.com/watch?v=business101",
-      "category": "BBA",
-      "target_years": [1,2,3,4],
-      "is_free": true
+      "title": "Python for Data Science & AI",
+      "provider": "YouTube",
+      "provider_url": "https://www.youtube.com/watch?v=LHBE6Q9XlzI",
+      "category": "data",
+      "target_program": "BTech",
+      "target_years": [2, 3, 4],
+      "is_free": true,
+      "description": "Learn Python from scratch. Covers data manipulation, NumPy, Pandas, and intro to Machine Learning with real-world projects.",
+      "duration": "12 hrs",
+      "icon": "ðŸ"
     }
   },
   {
     "model": "courses.course",
     "pk": 2,
     "fields": {
-      "title": "Corporate Finance Basics (BCOM)",
-      "provider": "Coursera · University of Pennsylvania",
-      "provider_url": "https://www.coursera.org/learn/corporate-finance-basics",
-      "category": "BCOM",
-      "target_years": [2,3,4],
-      "is_free": false
+      "title": "Full-Stack Web Development Bootcamp",
+      "provider": "freeCodeCamp",
+      "provider_url": "https://www.youtube.com/watch?v=nu_pCVPKzTk",
+      "category": "web",
+      "target_program": "BCA",
+      "target_years": [1, 2, 3],
+      "is_free": true,
+      "description": "Build real-world projects with HTML, CSS, JavaScript, React, Node.js and MongoDB. Beginner to advanced coverage.",
+      "duration": "15 hrs",
+      "icon": "ðŸŒ"
     }
   },
   {
     "model": "courses.course",
     "pk": 3,
     "fields": {
-      "title": "Programming Fundamentals (BCA)",
-      "provider": "freeCodeCamp",
-      "provider_url": "https://www.freecodecamp.org/learn",
-      "category": "BCA",
-      "target_years": [1,2,3],
-      "is_free": true
+      "title": "Business Management Fundamentals",
+      "provider": "Coursera",
+      "provider_url": "https://www.youtube.com/watch?v=yoEezZD71sc",
+      "category": "BBA",
+      "target_program": "BBA",
+      "target_years": [1, 2, 3, 4],
+      "is_free": true,
+      "description": "Introduction to core business concepts. Topics include organizational behavior, strategic planning, and management principles.",
+      "duration": "8 hrs",
+      "icon": "ðŸ“Š"
     }
   },
   {
     "model": "courses.course",
     "pk": 4,
     "fields": {
-      "title": "Advanced Database Systems (MCA)",
+      "title": "Accounting & Financial Statements",
       "provider": "NPTEL",
-      "provider_url": "https://nptel.ac.in/courses/database-systems",
-      "category": "MCA",
-      "target_years": [1,2,3],
-      "is_free": true
+      "provider_url": "https://www.youtube.com/watch?v=yYX4bvQSqbo",
+      "category": "BCom",
+      "target_program": "BCom",
+      "target_years": [1, 2, 3, 4],
+      "is_free": true,
+      "description": "Covers journal entries, ledger accounts, balance sheets, P&L statements and corporate taxation basics.",
+      "duration": "10 hrs",
+      "icon": "ðŸ“’"
     }
   },
   {
     "model": "courses.course",
     "pk": 5,
     "fields": {
-      "title": "Advanced Machine Learning (M.Tech)",
-      "provider": "Coursera · DeepLearning.AI",
-      "provider_url": "https://www.coursera.org/specializations/machine-learning",
-      "category": "MTECH",
-      "target_years": [1,2],
-      "is_free": false
+      "title": "Data Structures & Algorithms in C++",
+      "provider": "YouTube",
+      "provider_url": "https://www.youtube.com/watch?v=8hly31xKli0",
+      "category": "data",
+      "target_program": "BTech",
+      "target_years": [1, 2, 3],
+      "is_free": true,
+      "description": "Master arrays, linked lists, trees, graphs, sorting, dynamic programming â€” everything needed for placement interviews.",
+      "duration": "20 hrs",
+      "icon": "ðŸ”¢"
     }
   },
   {
     "model": "courses.course",
     "pk": 6,
     "fields": {
-      "title": "Physics: PUC Level — Mechanics",
-      "provider": "Khan Academy",
-      "provider_url": "https://www.khanacademy.org/science/physics",
-      "category": "PUC",
-      "target_years": [0],
-      "is_free": true
+      "title": "React.js â€” Complete Guide 2025",
+      "provider": "YouTube",
+      "provider_url": "https://www.youtube.com/watch?v=CgkZ7MvWUAA",
+      "category": "web",
+      "target_program": "Any",
+      "target_years": [2, 3, 4],
+      "is_free": true,
+      "description": "Build modern SPAs with React hooks, Context API, Redux, React Router. Includes 3 project builds.",
+      "duration": "11 hrs",
+      "icon": "âš›ï¸"
     }
   },
   {
     "model": "courses.course",
     "pk": 7,
     "fields": {
-      "title": "Accounting Fundamentals (BCOM)",
-      "provider": "Alison",
-      "provider_url": "https://alison.com/course/accounting-fundamentals",
-      "category": "BCOM",
-      "target_years": [1,2,3,4],
-      "is_free": true
+      "title": "Digital Marketing Masterclass",
+      "provider": "Google",
+      "provider_url": "https://www.youtube.com/watch?v=hiCjj55_zV0",
+      "category": "BBA",
+      "target_program": "BBA",
+      "target_years": [2, 3, 4],
+      "is_free": true,
+      "description": "SEO, SEM, social media strategy, email marketing and analytics. Includes Google Analytics certification prep.",
+      "duration": "6 hrs",
+      "icon": "ðŸ“±"
     }
   },
   {
     "model": "courses.course",
     "pk": 8,
     "fields": {
-      "title": "Web Development Bootcamp (BCA)",
-      "provider": "Udemy",
-      "provider_url": "https://www.udemy.com/course/web-development-bootcamp/",
-      "category": "BCA",
-      "target_years": [2,3],
-      "is_free": false
+      "title": "Database Management with SQL",
+      "provider": "freeCodeCamp",
+      "provider_url": "https://www.youtube.com/watch?v=HXV3zeQKqGY",
+      "category": "web",
+      "target_program": "BCA",
+      "target_years": [1, 2, 3, 4],
+      "is_free": true,
+      "description": "Master SQL from zero to advanced â€” SELECT, JOINs, subqueries, indexing, stored procedures and transactions.",
+      "duration": "4 hrs",
+      "icon": "ðŸ—„ï¸"
     }
   },
   {
     "model": "courses.course",
     "pk": 9,
     "fields": {
-      "title": "Data Structures & Algorithms (MCA/MTECH)",
-      "provider": "NPTEL",
-      "provider_url": "https://nptel.ac.in/courses/dsa",
-      "category": "MTECH",
-      "target_years": [1,2],
-      "is_free": true
+      "title": "Corporate Finance & Investment",
+      "provider": "edX",
+      "provider_url": "https://www.youtube.com/watch?v=WEDIj9JBTC8",
+      "category": "BCom",
+      "target_program": "BCom",
+      "target_years": [2, 3, 4],
+      "is_free": true,
+      "description": "Valuation, capital budgeting, risk & return, portfolio management and financial statement analysis for commerce students.",
+      "duration": "9 hrs",
+      "icon": "ðŸ’¹"
     }
   },
   {
     "model": "courses.course",
     "pk": 10,
     "fields": {
-      "title": "Business Communication (BBA/BCOM)",
-      "provider": "edX",
-      "provider_url": "https://www.edx.org/course/business-communication",
-      "category": "BBA",
-      "target_years": [1,2,3,4],
-      "is_free": false
+      "title": "Machine Learning with TensorFlow",
+      "provider": "YouTube",
+      "provider_url": "https://www.youtube.com/watch?v=tPYj3fFJGjk",
+      "category": "data",
+      "target_program": "BTech",
+      "target_years": [3, 4],
+      "is_free": true,
+      "description": "Build neural networks, CNNs, RNNs and NLP models with TensorFlow 2.x. Includes image classification and sentiment analysis projects.",
+      "duration": "14 hrs",
+      "icon": "ðŸ¤–"
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 1,
+    "fields": {
+      "course": 1,
+      "title": "Python & Data Science Test",
+      "description": "Test your Python and data science fundamentals.",
+      "passing_score": 70,
+      "time_limit_minutes": 15,
+      "questions": [
+        {
+          "question": "Which of the following is used to create a DataFrame in Pandas?",
+          "options": ["pd.DataFrame()", "pd.Series()", "pd.Array()", "pd.Table()"],
+          "correct_index": 0,
+          "explanation": "pd.DataFrame() is the constructor for creating DataFrame objects in Pandas."
+        },
+        {
+          "question": "What does the `len()` function return for a list?",
+          "options": ["The last element", "The sum of elements", "The number of elements", "The first element"],
+          "correct_index": 2,
+          "explanation": "len() returns the number of items in a list."
+        },
+        {
+          "question": "Which library is primarily used for numerical computing in Python?",
+          "options": ["Matplotlib", "NumPy", "Scikit-learn", "Flask"],
+          "correct_index": 1,
+          "explanation": "NumPy provides fast array operations and mathematical functions."
+        },
+        {
+          "question": "What is the output of `print(type([]))` in Python?",
+          "options": ["<class 'tuple'>", "<class 'dict'>", "<class 'list'>", "<class 'array'>"],
+          "correct_index": 2,
+          "explanation": "[] creates a list object, so type([]) returns <class 'list'>."
+        },
+        {
+          "question": "In Python, which keyword is used to define a function?",
+          "options": ["function", "define", "def", "func"],
+          "correct_index": 2,
+          "explanation": "The 'def' keyword is used to define a function in Python."
+        }
+      ]
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 2,
+    "fields": {
+      "course": 2,
+      "title": "Web Development Fundamentals Test",
+      "description": "Test your HTML, CSS, and JavaScript knowledge.",
+      "passing_score": 70,
+      "time_limit_minutes": 15,
+      "questions": [
+        {
+          "question": "Which HTML tag is used to link an external CSS file?",
+          "options": ["<style>", "<link>", "<css>", "<script>"],
+          "correct_index": 1,
+          "explanation": "<link rel='stylesheet'> is used to import external CSS."
+        },
+        {
+          "question": "What does CSS stand for?",
+          "options": ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Scripts", "Coded Style System"],
+          "correct_index": 1,
+          "explanation": "CSS stands for Cascading Style Sheets."
+        },
+        {
+          "question": "Which JavaScript method is used to select an element by its ID?",
+          "options": ["document.getElement()", "document.querySelector()", "document.getElementById()", "document.findById()"],
+          "correct_index": 2,
+          "explanation": "getElementById() returns the element with the specified ID."
+        },
+        {
+          "question": "What is the correct way to create an arrow function in JavaScript?",
+          "options": ["function() =>", "() => {}", "=> function()", "() -> {}"],
+          "correct_index": 1,
+          "explanation": "Arrow functions use the () => {} syntax introduced in ES6."
+        },
+        {
+          "question": "Which CSS property controls text size?",
+          "options": ["font-weight", "text-size", "font-size", "text-style"],
+          "correct_index": 2,
+          "explanation": "font-size controls the size of the text."
+        }
+      ]
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 3,
+    "fields": {
+      "course": 3,
+      "title": "Business Management Test",
+      "description": "Test your knowledge of core management concepts.",
+      "passing_score": 70,
+      "time_limit_minutes": 15,
+      "questions": [
+        {
+          "question": "Which management function involves setting organizational goals?",
+          "options": ["Organizing", "Controlling", "Planning", "Directing"],
+          "correct_index": 2,
+          "explanation": "Planning involves defining goals and determining the best way to achieve them."
+        },
+        {
+          "question": "SWOT analysis stands for?",
+          "options": ["Speed, Work, Output, Time", "Strengths, Weaknesses, Opportunities, Threats", "System, Work, Operations, Tasks", "Sales, Wages, Output, Targets"],
+          "correct_index": 1,
+          "explanation": "SWOT = Strengths, Weaknesses, Opportunities, Threats â€” a strategic planning tool."
+        },
+        {
+          "question": "What is the primary goal of Human Resource Management?",
+          "options": ["Maximize profits", "Manage financial assets", "Optimize employee performance and well-being", "Control production costs"],
+          "correct_index": 2,
+          "explanation": "HRM focuses on recruiting, managing, and developing employees."
+        },
+        {
+          "question": "Which leadership style gives employees maximum freedom to make decisions?",
+          "options": ["Autocratic", "Democratic", "Transactional", "Laissez-Faire"],
+          "correct_index": 3,
+          "explanation": "Laissez-Faire leadership provides minimal direction, giving full autonomy to employees."
+        },
+        {
+          "question": "Marketing mix refers to the combination of?",
+          "options": ["Price, Product, Process, People", "Product, Price, Place, Promotion", "Product, Profit, Place, Publicity", "Price, People, Position, Promotion"],
+          "correct_index": 1,
+          "explanation": "The 4 Ps of Marketing Mix are Product, Price, Place, and Promotion."
+        }
+      ]
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 4,
+    "fields": {
+      "course": 4,
+      "title": "Accounting & Finance Test",
+      "description": "Test your accounting and financial statement knowledge.",
+      "passing_score": 70,
+      "time_limit_minutes": 15,
+      "questions": [
+        {
+          "question": "Which financial statement shows a company's financial position at a specific point in time?",
+          "options": ["Income Statement", "Cash Flow Statement", "Balance Sheet", "Statement of Equity"],
+          "correct_index": 2,
+          "explanation": "The Balance Sheet shows assets, liabilities and equity at a specific date."
+        },
+        {
+          "question": "What is the accounting equation?",
+          "options": ["Assets = Revenue - Expenses", "Assets = Liabilities + Equity", "Profit = Revenue + Expenses", "Assets - Equity = Revenue"],
+          "correct_index": 1,
+          "explanation": "The fundamental accounting equation: Assets = Liabilities + Owner's Equity."
+        },
+        {
+          "question": "Which of these is a current asset?",
+          "options": ["Land", "Goodwill", "Accounts Receivable", "Patent"],
+          "correct_index": 2,
+          "explanation": "Accounts Receivable is a short-term asset expected to be converted to cash within a year."
+        },
+        {
+          "question": "Depreciation is applied to?",
+          "options": ["Current assets", "Fixed/Non-current assets", "Revenue", "Liabilities"],
+          "correct_index": 1,
+          "explanation": "Depreciation is the reduction in value of fixed assets over their useful life."
+        },
+        {
+          "question": "When a business pays rent in advance, it is recorded as?",
+          "options": ["Rent Expense", "Accounts Payable", "Prepaid Expense", "Accrued Liability"],
+          "correct_index": 2,
+          "explanation": "Rent paid in advance is a prepaid expense â€” a current asset."
+        }
+      ]
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 5,
+    "fields": {
+      "course": 5,
+      "title": "DSA Fundamentals Test",
+      "description": "Test your data structures and algorithms knowledge.",
+      "passing_score": 70,
+      "time_limit_minutes": 20,
+      "questions": [
+        {
+          "question": "What is the time complexity of Binary Search?",
+          "options": ["O(n)", "O(nÂ²)", "O(log n)", "O(1)"],
+          "correct_index": 2,
+          "explanation": "Binary Search divides the search space in half each time â€” O(log n)."
+        },
+        {
+          "question": "Which data structure uses LIFO (Last In, First Out) order?",
+          "options": ["Queue", "Stack", "Linked List", "Tree"],
+          "correct_index": 1,
+          "explanation": "A Stack follows LIFO â€” the last element pushed is the first to be popped."
+        },
+        {
+          "question": "What is the worst-case time complexity of QuickSort?",
+          "options": ["O(n log n)", "O(log n)", "O(nÂ²)", "O(n)"],
+          "correct_index": 2,
+          "explanation": "QuickSort has O(nÂ²) worst case when the pivot is always the smallest/largest element."
+        },
+        {
+          "question": "Which traversal visits nodes in Left â†’ Root â†’ Right order?",
+          "options": ["Preorder", "Postorder", "Inorder", "Level-order"],
+          "correct_index": 2,
+          "explanation": "Inorder traversal: visit left subtree, then root, then right subtree."
+        },
+        {
+          "question": "A hash table lookup has average time complexity of?",
+          "options": ["O(n)", "O(n log n)", "O(log n)", "O(1)"],
+          "correct_index": 3,
+          "explanation": "Hash tables provide O(1) average-case lookup using a hash function."
+        }
+      ]
+    }
+  },
+  {
+    "model": "courses.skilltÐµÑÑ‚",
+    "pk": 6,
+    "fields": {
+      "course": 8,
+      "title": "SQL Database Test",
+      "description": "Test your SQL and database fundamentals.",
+      "passing_score": 70,
+      "time_limit_minutes": 15,
+      "questions": [
+        {
+          "question": "Which SQL clause is used to filter records?",
+          "options": ["ORDER BY", "GROUP BY", "WHERE", "HAVING"],
+          "correct_index": 2,
+          "explanation": "WHERE filters rows before any grouping occurs."
+        },
+        {
+          "question": "What does JOIN do in SQL?",
+          "options": ["Deletes duplicate rows", "Combines rows from two or more tables", "Creates a new table", "Updates multiple tables at once"],
+          "correct_index": 1,
+          "explanation": "JOIN combines rows from related tables based on a condition."
+        },
+        {
+          "question": "Which aggregate function returns the total number of rows?",
+          "options": ["SUM()", "AVG()", "COUNT()", "MAX()"],
+          "correct_index": 2,
+          "explanation": "COUNT() returns the number of rows matching the specified criteria."
+        },
+        {
+          "question": "What is a PRIMARY KEY?",
+          "options": ["A key that can have NULL values", "A column that uniquely identifies each row", "A foreign key reference", "An index on multiple columns"],
+          "correct_index": 1,
+          "explanation": "A PRIMARY KEY uniquely identifies each record and cannot be NULL."
+        },
+        {
+          "question": "Which command removes all rows from a table without deleting the table?",
+          "options": ["DROP TABLE", "DELETE FROM", "REMOVE ALL", "TRUNCATE"],
+          "correct_index": 3,
+          "explanation": "TRUNCATE removes all rows efficiently without logging individual deletions."
+        }
+      ]
     }
   }
 ]

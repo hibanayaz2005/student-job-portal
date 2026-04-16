@@ -1599,6 +1599,153 @@
             line-height: 1.5
         }
 
+        /* COURSE PLAYER CSS */
+        .player-container {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            margin-top: 24px;
+            height: calc(100vh - 250px);
+            min-height: 600px;
+        }
+
+        @media (max-width: 1100px) {
+            .player-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .player-main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .player-info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        .player-info-card h2 {
+            font-family: var(--font-head);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .player-sidebar {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .player-sidebar .sidebar-header {
+            padding: 20px;
+            background: var(--surface3);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-sidebar .sidebar-header h3 {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .lesson-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .lesson-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: .2s;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+        }
+
+        .lesson-item:hover {
+            background: var(--surface3);
+        }
+
+        .lesson-item.active {
+            background: rgba(0, 210, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .lesson-order {
+            width: 28px;
+            height: 28px;
+            background: var(--surface3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .lesson-item.active .lesson-order {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .lesson-meta {
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .lesson-item.active .lesson-title {
+            color: var(--accent);
+        }
+
         .chat-msg:not(.sent) .chat-bubble {
             background: var(--surface2);
             border: 1px solid var(--border)
@@ -1926,7 +2073,7 @@
                     </div>
                     <div id="str-text" style="font-size:11px;margin-top:4px;color:var(--muted)"></div>
                 </div>
-                <button type="submit" id="reg-btn" class="btn btn-primary btn-full" onclick="handleRegister(event)">
+                <button type="submit" id="reg-btn" class="btn btn-primary btn-full">
                     <i class="fas fa-user-plus"></i> <span id="reg-btn-text">Create Account</span>
                 </button>
             </form>
@@ -2008,11 +2155,9 @@
         </nav>
         <div class="sidebar-user"
             style="background: rgba(255,255,255,0.03); margin: 12px; border-radius: 12px; border: 1px solid var(--border);">
-            <div class="user-avatar" id="sidebar-avatar" style="border-radius: 8px;">{{
-                user.username|make_list|first|upper|default:"A" }}</div>
+            <div class="user-avatar" id="sidebar-avatar" style="border-radius: 8px;">{{ user.username|slice:":1"|upper|default:"A" }}</div>
             <div class="user-info">
-                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Ananya" }}
-                </div>
+                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Student" }}</div>
                 <div class="user-role">{{ user.role|title|default:"Student" }}</div>
             </div>
             <button class="btn-icon" style="background: none; border: none; color: var(--muted); cursor: pointer;"
@@ -2064,8 +2209,7 @@
             <div class="section-header">
                 <div>
                     <div class="section-label">Overview</div>
-                    <h1 class="section-title">Welcome back, {{ user.first_name|default:user.username|default:"Student"
-                        }}! 👋</h1>
+                    <h1 class="section-title">Welcome back, {{ user.first_name|default:user.username|default:"Student" }}! 👋</h1>
                     <p class="section-sub">Here's what's happening with your career journey today.</p>
                 </div><button class="btn btn-primary btn-sm" onclick="showSection('jobs')"><i class="fas fa-search"></i>
                     Find Jobs</button>
@@ -2416,6 +2560,47 @@
             </div>
             <div class="grid-3" id="courses-grid"></div>
             <div id="skill-test-area" style="display:none;margin-top:32px"></div>
+        </div>
+
+        <!-- ========== COURSE PLAYER ========== -->
+        <div class="section" id="sec-player">
+            <div class="section-header">
+                <div style="display:flex;align-items:center;gap:16px">
+                    <button class="btn-icon" onclick="showSection('courses')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <div class="section-label" id="player-course-category">Course Player</div>
+                        <h1 class="section-title" id="player-course-title">Course Title</h1>
+                    </div>
+                </div>
+                <div id="player-actions">
+                    <button class="btn btn-purple btn-sm" id="player-take-test-btn">
+                        <i class="fas fa-pen-nib"></i> Take Final Test
+                    </button>
+                </div>
+            </div>
+
+            <div class="player-container">
+                <div class="player-main">
+                    <div class="video-wrapper">
+                        <iframe id="main-player-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                    <div class="player-info-card">
+                        <h2 id="player-lesson-title">Lesson Title</h2>
+                        <p id="player-course-desc" style="color:var(--muted);font-size:14px;margin-top:8px"></p>
+                    </div>
+                </div>
+                <div class="player-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Course Content</h3>
+                        <span id="lesson-count" style="font-size:12px;color:var(--muted)">0 Lessons</span>
+                    </div>
+                    <div class="lesson-list" id="player-lesson-list">
+                        <!-- Lessons will be loaded here -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ========== PROJECTS ========== -->
@@ -2803,7 +2988,7 @@
                 onclick="closeModal('video-modal')"
                 style="top:12px;right:12px;z-index:10;background:rgba(0,0,0,0.5);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i
                     class="fas fa-times"></i></button>
-            <div
+            <div    
                 style="padding:16px 20px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
                 <h3 id="modal-course-title" style="font-family:var(--font-head);font-size:16px">Course Player</h3><span
                     class="badge badge-green">● Live</span>
@@ -3116,7 +3301,7 @@
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById('sec-' + name).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const titles = { dashboard: 'Dashboard', jobs: 'Job Portal', resume: 'Resume AI', mentors: 'Mentors', courses: 'Courses & Skill Tests', projects: 'Project Collaboration', admin: 'Admin Panel', settings: 'Settings & Profile' };
+            const titles = { dashboard: 'Dashboard', jobs: 'Job Portal', resume: 'Resume AI', mentors: 'Mentors', courses: 'Courses & Skill Tests', projects: 'Project Collaboration', admin: 'Admin Panel', settings: 'Settings & Profile', player: 'Course Player' };
             document.getElementById('topbar-title').textContent = titles[name] || name;
             event && event.target && event.target.closest && event.target.closest('.nav-item') && event.target.closest('.nav-item').classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => { if (n.textContent.toLowerCase().includes(name)) n.classList.add('active'); });
@@ -3585,11 +3770,17 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         /* ============ COURSES & TESTS ============ */
         async function fetchCourses(program = 'all') {
             try {
-                const res = await fetch(`/api/courses/?program=${program}`, { headers: { "X-CSRFToken": getCsrfToken() } });
+                const res = await fetch(`/api/courses/?program=${program}`, { 
+                    headers: { "X-CSRFToken": getCsrfToken() },
+                    credentials: 'include'
+                });
                 if (res.ok) {
                     const data = await res.json();
                     COURSES = data.courses || [];
                     renderCourses(COURSES);
+                } else {
+                    const error = await res.text();
+                    console.error('Fetch courses error:', res.status, error);
                 }
             } catch (e) {
                 console.error('Failed to fetch courses:', e);
@@ -3597,43 +3788,176 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         }
 
         function renderCourses(list) {
-            document.getElementById('courses-grid').innerHTML = list.map(c => `
-<div class="course-card"><div class="course-thumb">${c.icon}<div class="course-provider"><span class="badge badge-cyan">${c.provider}</span></div></div>
-<div class="course-body"><div class="course-title">${c.title}</div><div class="course-info"><i class="far fa-clock"></i> ${c.duration} • Program: ${c.target_program}</div>
-<div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm" style="flex:1" onclick="playCourse(${c.id})"><i class="fas fa-play"></i> Start</button><button class="btn btn-purple btn-sm" style="flex:1" onclick="startTest(${c.id})"><i class="fas fa-pen"></i> Test</button></div>
-</div></div>`).join('');
+            const grid = document.getElementById('courses-grid');
+            if (!list || list.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)"><i class="fas fa-book-open" style="font-size:48px;opacity:0.3;display:block;margin-bottom:16px"></i><p style="font-size:15px">No courses found for this filter.</p></div>';
+                return;
+            }
+            const pc = { BTech:'#4f46e5', BCA:'#0891b2', BBA:'#7c3aed', BCom:'#b45309', Any:'#059669' };
+            grid.innerHTML = list.map(c => {
+                const col = pc[c.target_program] || '#475569';
+                const freeBadge = c.is_free
+                    ? '<span style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700">FREE</span>'
+                    : '<span style="background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700">PAID</span>';
+                const testBadge = c.has_test
+                    ? '<span style="background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700"><i class="fas fa-pen-nib" style="margin-right:3px"></i>TEST</span>'
+                    : '';
+                const testBtn = c.has_test
+                    ? '<button class="btn btn-sm" style="flex:1;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;font-weight:700" onclick="startTest(' + c.id + ')"><i class="fas fa-pen-nib"></i> Take Test</button>'
+                    : '<button class="btn btn-sm btn-secondary" style="flex:1;opacity:0.45;cursor:not-allowed" disabled><i class="fas fa-pen-nib"></i> No Test</button>';
+                return '<div class="course-card" style="background:#15192b;border:1px solid #1e293b;border-radius:20px;overflow:hidden;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column" onmouseover="this.style.transform=\'translateY(-6px)\';this.style.borderColor=\'var(--accent3)\';this.style.boxShadow=\'0 20px 40px rgba(0,0,0,0.4)\'" onmouseout="this.style.transform=\'\';this.style.borderColor=\'#1e293b\';this.style.boxShadow=\'\'">'
+                    + '<div style="height:130px;background:linear-gradient(135deg,' + col + '1a,' + col + '33);display:flex;align-items:center;justify-content:center;position:relative;font-size:54px">'
+                    + c.icon
+                    + '<div style="position:absolute;top:12px;left:12px;display:flex;gap:6px"><span style="background:' + col + ';color:#fff;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:800">' + c.target_program + '</span>' + freeBadge + '</div>'
+                    + '<div style="position:absolute;top:12px;right:12px">' + testBadge + '</div>'
+                    + '</div>'
+                    + '<div style="padding:20px;display:flex;flex-direction:column;flex:1;gap:10px">'
+                    + '<div style="font-family:var(--font-head);font-size:15px;font-weight:700;line-height:1.4">' + c.title + '</div>'
+                    + '<p style="font-size:12px;color:var(--muted);line-height:1.6;flex:1;margin:0">' + (c.description || 'Expand your skills with this course.') + '</p>'
+                    + '<div style="display:flex;gap:16px;font-size:11px;color:var(--muted);padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">'
+                    + '<span><i class="far fa-clock" style="margin-right:4px;color:var(--accent)"></i>' + (c.duration || 'Self-paced') + '</span>'
+                    + '<span><i class="fas fa-building" style="margin-right:4px;color:var(--accent2)"></i>' + c.provider + '</span>'
+                    + '</div>'
+                    + '<div style="display:flex;gap:8px;margin-top:4px">'
+                    + '<button class="btn btn-sm" style="flex:2;background:linear-gradient(135deg,var(--accent),#3af3ff);color:#000;font-weight:800" onclick="playCourse(' + c.id + ')"><i class="fas fa-play"></i> Watch Now</button>'
+                    + testBtn
+                    + '</div></div></div>';
+            }).join('');
         }
         function filterCourses(cat) {
             document.querySelectorAll('#sec-courses .tab-item').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             let filtered = COURSES;
             if (cat !== 'all') {
-                if (['web', 'data', 'cloud', 'mobile'].includes(cat)) {
+                if (cat === 'web' || cat === 'data') {
                     filtered = COURSES.filter(c => c.category === cat);
                 } else {
-                    filtered = COURSES.filter(c => c.target_program === cat);
+                    filtered = COURSES.filter(c => c.target_program === cat || c.target_program === 'Any');
                 }
+                if (filtered.length === 0) filtered = COURSES.filter(c => c.category === cat || c.target_program === cat);
             }
             renderCourses(filtered);
         }
-        function playCourse(id) {
-            const c = COURSES.find(x => x.id === id); if (!c) return;
-            document.getElementById('modal-course-title').textContent = c.title;
-            let embedId = c.provider_url || '';
-            if (embedId.includes('watch?v=')) {
-                embedId = embedId.split('watch?v=')[1].split('&')[0];
-            } else if (embedId.includes('youtu.be/')) {
-                embedId = embedId.split('youtu.be/')[1].split('?')[0];
+        async function playCourse(id) {
+            const courseData = COURSES.find(x => x.id === id); 
+            if (!courseData) return;
+
+            // Show player section
+            showSection('player');
+            
+            // Initial placeholders
+            document.getElementById('player-course-title').textContent = courseData.title;
+            document.getElementById('player-course-desc').textContent = courseData.description || "Loading course content...";
+            document.getElementById('player-lesson-list').innerHTML = '<div style="padding:20px;text-align:center"><i class="fas fa-spinner fa-spin"></i></div>';
+            
+            // Set up test button
+            const testBtn = document.getElementById('player-take-test-btn');
+            if (courseData.has_test) {
+                testBtn.style.display = 'inline-flex';
+                testBtn.onclick = () => { showSection('courses'); startTest(id); };
+            } else {
+                testBtn.style.display = 'none';
             }
 
-            const iframe = document.getElementById('course-iframe');
+            try {
+                console.log(`Fetching details for course ID: ${id}`);
+                const res = await fetch(`/api/courses/${id}/`, { 
+                    method: 'GET',
+                    headers: { "X-CSRFToken": getCsrfToken() },
+                    credentials: 'include'
+                });
+                
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error("Course fetch error:", res.status, errorText);
+                    throw new Error(`Server returned ${res.status}: ${errorText || 'Unknown error'}`);
+                }
+                
+                const data = await res.json();
+                console.log("Course data loaded:", data);
+                const lessons = data.lessons || [];
+                
+                document.getElementById('lesson-count').textContent = lessons.length + ' Lessons';
+                
+                if (lessons.length === 0) {
+                    // Fallback to provider_url if no lessons (single video course)
+                    const fallbackLesson = {
+                        title: "Intro & Overview",
+                        video_url: courseData.provider_url,
+                        duration: courseData.duration || "N/A"
+                    };
+                    renderLessonList([fallbackLesson], courseData);
+                    loadLesson(fallbackLesson);
+                } else {
+                    renderLessonList(lessons, courseData);
+                    loadLesson(lessons[0]); // Load first lesson by default
+                }
+            } catch (err) {
+                console.error("playCourse Exception:", err);
+                showToast(`Error loading course: ${err.message}`, "error");
+                // Fallback to minimal player if fetch fails but we have provider_url
+                if (courseData.provider_url) {
+                    const fallbackLesson = { title: "Course Content", video_url: courseData.provider_url, duration: "N/A" };
+                    renderLessonList([fallbackLesson], courseData);
+                    loadLesson(fallbackLesson);
+                }
+            }
+        }
+
+        function renderLessonList(lessons, course) {
+            const list = document.getElementById('player-lesson-list');
+            list.innerHTML = lessons.map((l, idx) => `
+                <div class="lesson-item ${idx === 0 ? 'active' : ''}" onclick="loadLessonById(${idx})">
+                    <div class="lesson-order">${idx + 1}</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">${l.title}</div>
+                        <div class="lesson-meta"><i class="far fa-play-circle"></i> ${l.duration}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Store lessons globally for current session
+            window.CURRENT_LESSONS = lessons;
+        }
+
+        function loadLessonById(idx) {
+            const lessons = window.CURRENT_LESSONS;
+            if (!lessons || !lessons[idx]) return;
+            
+            // Update active state in UI
+            document.querySelectorAll('.lesson-item').forEach((el, i) => {
+                if (i === idx) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            
+            loadLesson(lessons[idx]);
+        }
+
+        function loadLesson(lesson) {
+            document.getElementById('player-lesson-title').textContent = lesson.title;
+            
+            let url = lesson.video_url || '';
+            let embedId = '';
+            
+            if (url.includes('watch?v=')) {
+                embedId = url.split('watch?v=')[1].split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                embedId = url.split('youtu.be/')[1].split('?')[0];
+            } else if (url.includes('/embed/')) {
+                embedId = url.split('/embed/')[1].split('?')[0];
+            }
+
+            const iframe = document.getElementById('main-player-iframe');
             if (embedId) {
-                iframe.src = 'https://www.youtube-nocookie.com/embed/' + embedId + '?autoplay=1&rel=0&modestbranding=1';
+                // We successfully parsed a YouTube ID
+                iframe.src = 'https://www.youtube.com/embed/' + embedId + '?rel=0&modestbranding=1';
+            } else if (url) {
+                // Fallback: Just use the URL directly as the iframe source
+                iframe.src = url;
             } else {
                 iframe.src = "about:blank";
-                iframe.parentElement.innerHTML += "<p style='color:white;text-align:center;padding:20px'>No valid video URL found.</p>";
+                showToast("No valid video URL found for this lesson", "error");
             }
-            openModal('video-modal');
         }
 
         let antiCheatActive = false;
@@ -3648,7 +3972,6 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         }
 
         function cancelTest() {
-            // "If a student cancels or exits the test, it should be restarted from the beginning when they attempt again."
             if (testTimer) clearInterval(testTimer);
             antiCheatActive = false;
             window.removeEventListener('blur', handleAntiCheat);
@@ -3656,6 +3979,13 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             document.getElementById('skill-test-area').style.display = 'none';
             testAnswers = {};
             currentTestCourseId = null;
+            
+            // Re-enable options and buttons in case they were disabled
+            const area = document.getElementById('skill-test-area');
+            if(area) {
+                area.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'auto');
+                area.querySelectorAll('button').forEach(b => b.disabled = false);
+            }
         }
 
         async function startTest(courseId) {
@@ -3666,7 +3996,10 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             area.scrollIntoView({ behavior: 'smooth' });
 
             try {
-                const res = await fetch(`/api/courses/${courseId}/test/`, { headers: { "X-CSRFToken": getCsrfToken() } });
+                const res = await fetch(`/api/courses/${courseId}/test/`, { 
+                    headers: { "X-CSRFToken": getCsrfToken() },
+                    credentials: 'include'
+                });
                 const data = await res.json();
                 if (!res.ok) {
                     area.innerHTML = `<div class="card" style="text-align:center;border-color:var(--danger)">
@@ -3695,7 +4028,7 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
 <div class="question-card"><div class="question-num">Question ${i + 1} of ${data.questions.length}</div><div class="question-text">${q.question}</div>
 ${q.options.map((o, oi) => `<div class="option" onclick="selectAnswer(${i},${oi},this)"><div class="option-marker">${String.fromCharCode(65 + oi)}</div>${o}</div>`).join('')}</div>`).join('')}</div>
 <div style="display:flex;gap:12px;margin-top:20px">
-    <button class="btn btn-secondary" style="flex:1" onclick="if(confirm('Are you sure you want to cancel? Progress will be lost.')) cancelTest()"><i class="fas fa-times"></i> Cancel Test</button>
+    <button class="btn btn-secondary" style="flex:1" onclick="antiCheatActive=false; if(confirm('Are you sure you want to cancel? Progress will be lost.')) { cancelTest(); } else { antiCheatActive=true; }"><i class="fas fa-times"></i> Cancel Test</button>
     <button class="btn btn-primary" style="flex:2" onclick="submitTest()"><i class="fas fa-check"></i> Submit Test</button>
 </div>
 </div>`;
@@ -3728,6 +4061,7 @@ ${q.options.map((o, oi) => `<div class="option" onclick="selectAnswer(${i},${oi}
                 const res = await fetch(`/api/courses/${currentTestCourseId}/test/submit/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+                    credentials: 'include',
                     body: JSON.stringify({ answers: testAnswers })
                 });
                 const data = await res.json();
@@ -3740,10 +4074,14 @@ ${q.options.map((o, oi) => `<div class="option" onclick="selectAnswer(${i},${oi}
 ${data.score}%</strong> (${data.correct_count}/${data.total_questions} correct)</p>
 ${data.passed ? `<p style="color:var(--accent3);margin-bottom:16px">✓ You passed! Certificate earned.</p><button class="btn btn-primary" onclick="showCertificate('Course Test',${data.score})"><i class="fas fa-certificate"></i> View Certificate</button>` : `<p style="color:var(--danger);margin-bottom:16px">Try again!</p><button class="btn btn-secondary" onclick="startTest(${currentTestCourseId})"><i class="fas fa-redo"></i> Retry Test</button>`}</div>`;
                 } else {
-                    area.innerHTML += `<p style="color:var(--danger)">Error saving results: ${data.error}</p>`;
+                    area.innerHTML += `<p style="color:var(--danger)">Error saving results: ${data.error || data.detail || 'Server error'}</p>`;
+                    submitBtns.forEach(b => b.disabled = false);
+                    area.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'auto');
                 }
             } catch (e) {
-                area.innerHTML += `<p style="color:var(--danger)">Network error.</p>`;
+                area.innerHTML += `<p style="color:var(--danger)">Network error while submitting details. Please try again.</p>`;
+                submitBtns.forEach(b => b.disabled = false);
+                area.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'auto');
             }
         }
         function showCertificate(courseName, score) {
@@ -4092,6 +4430,7 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
             fetchNotifications();
             // Poll for notifications every 2 minutes
             setInterval(fetchNotifications, 120000);
+            fetchCourses();
             renderJobs(JOBS); renderMentors(MENTORS); renderCourses(COURSES); renderProjects(PROJECTS);
             // Drag and drop for resume
             const dz = document.getElementById('drop-zone'); if (dz) {

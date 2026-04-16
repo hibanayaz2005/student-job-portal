@@ -31,8 +31,36 @@ def list_courses(request):
             'description': c.description,
             'duration': c.duration,
             'icon': c.icon,
+            'has_test': hasattr(c, 'skill_test'),
         })
     return Response({'courses': data})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_course(request, course_id):
+    """Get single course details with lessons."""
+    course = get_object_or_404(Course, id=course_id)
+    lessons = course.lessons.all()
+    
+    lesson_data = []
+    for l in lessons:
+        lesson_data.append({
+            'id': l.id,
+            'title': l.title,
+            'video_url': l.video_url,
+            'duration': l.duration,
+            'order': l.order
+        })
+        
+    return Response({
+        'id': course.id,
+        'title': course.title,
+        'description': course.description,
+        'provider': course.provider,
+        'icon': course.icon,
+        'lessons': lesson_data
+    })
 
 
 @api_view(['GET'])

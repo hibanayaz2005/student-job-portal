@@ -78,3 +78,16 @@ class Certificate(models.Model):
     def __str__(self):
         return f"Certificate: {self.student} - {self.test.title}"
 
+
+class Lesson(models.Model):
+    course = models.ForeignKey(Course, related_name='lessons', on_delete=models.CASCADE)
+    title = models.CharField(max_length=300)
+    video_url = models.URLField()
+    duration = models.CharField(max_length=50, blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
