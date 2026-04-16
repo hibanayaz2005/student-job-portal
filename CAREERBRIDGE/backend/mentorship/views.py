@@ -122,16 +122,27 @@ def book_session(request):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        # Get mentor and availability
+        # Get mentor
         mentor = get_object_or_404(MentorProfile, id=mentor_id)
-        availability = get_object_or_404(MentorAvailability, id=availability_id, mentor=mentor)
         
-        # Check if availability is still available
-        if availability.is_booked:
+        # Check approval
+        if not mentor.is_approved:
             return Response(
-                {'error': 'This time slot is already booked'}, 
-                status=status.HTTP_400_BAD_REQUEST
+                {'error': 'This mentor is pending verification and cannot accept bookings yet.'}, 
+                status=status.HTTP_403_FORBIDDEN
             )
+            
+        # Optional availability check
+        if availability_id:
+            availability = get_object_or_404(MentorAvailability, id=availability_id, mentor=mentor)
+            if availability.is_booked:
+                return Response(
+                    {'error': 'This time slot is already booked'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Mark availability as booked
+            availability.is_booked = True
+            availability.save()
         
         # Parse session date
         try:
@@ -142,6 +153,9 @@ def book_session(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        duration_minutes = data.get('duration_minutes', 60)
+        notes = data.get('notes', '')
+
         # Create session
         session = MentorSession.objects.create(
             mentor=mentor,
@@ -149,12 +163,10 @@ def book_session(request):
             topic=topic,
             session_type=session_type,
             session_date=session_datetime,
+            duration_minutes=duration_minutes,
+            notes=notes,
             status='pending'
         )
-        
-        # Mark availability as booked
-        availability.is_booked = True
-        availability.save()
         
         return Response({
             'message': 'Session booked successfully',
@@ -215,3 +227,95 @@ def my_sessions(request):
         })
     
     return Response({'sessions': session_data})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def chat_history(request, peer_id):
+    from mentorship.models import Message
+    from django.db.models import Q
+    msgs = Message.objects.filter(
+        (Q(sender=request.user) & Q(receiver_id=peer_id)) |
+        (Q(sender_id=peer_id) & Q(receiver=request.user))
+    ).select_related('sender').order_by('created_at')[:100]
+
+    data = [
+        {
+            'sender_id': m.sender_id,
+            'sender_name': m.sender.get_full_name() or m.sender.username,
+            'message': m.text,
+            'timestamp': m.created_at.strftime('%H:%M'),
+            'is_mine': m.sender_id == request.user.id,
+        }
+        for m in msgs
+    ]
+    return Response({'messages': data, 'peer_id': peer_id, 'my_id': request.user.id})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_peer_user_id(request, mentor_profile_id):
+    mentor = get_object_or_404(MentorProfile, id=mentor_profile_id)
+    return Response({
+        'user_id': mentor.user_id,
+        'name': mentor.user.get_full_name() or mentor.user.username,
+        'username': mentor.user.username,
+    })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def apply_mentor(request):
+    """Apply to become a mentor, uploading a college ID."""
+    user = request.user
+    if hasattr(user, 'mentor_profile'):
+        return Response({'error': 'You have already applied or are already a mentor.'}, status=400)
+        
+    college_id_file = request.FILES.get('college_id')
+    if not college_id_file:
+        return Response({'error': 'College ID document is required for verification.'}, status=400)
+        
+    mentor_type = request.POST.get('mentor_type', 'senior')
+    company = request.POST.get('company', '')
+    designation = request.POST.get('designation', '')
+    expertise_str = request.POST.get('expertise', '')
+    
+    # ID Verification via PDF parsing
+    import PyPDF2
+    try:
+        pdf_reader = PyPDF2.PdfReader(college_id_file)
+        id_text = ""
+        for page in pdf_reader.pages:
+            id_text += (page.extract_text() or "") + " "
+        id_text_low = id_text.lower()
+        
+        if mentor_type in ['senior', 'alumni']:
+            if not company or (company.lower() not in id_text_low and not any(kw in id_text_low for kw in ['university', 'college', 'institute', 'b.tech', 'bca', 'technology', 'academy'])):
+                return Response({'error': 'ID Validation Failed: The scanned document does not clearly show your institution name or valid student credentials.'}, status=400)
+        else:
+            if not company or company.lower() not in id_text_low:
+                if not designation or designation.lower() not in id_text_low:
+                    exp_found = any(e.strip().lower() in id_text_low for e in expertise_str.split(',') if e.strip())
+                    if not exp_found:
+                        return Response({'error': 'ID Validation Failed: The scanned document must match your Company, Designation, or Area of Expertise.'}, status=400)
+                    
+        # Reset pointer so it gets saved to model properly
+        college_id_file.seek(0)
+    except Exception as e:
+        return Response({'error': 'Failed to process ID document automatically. Please ensure it is a valid text-based PDF.'}, status=400)
+
+    expertise = [e.strip() for e in expertise_str.split(',') if e.strip()]
+    
+    mentor = MentorProfile.objects.create(
+        user=user,
+        mentor_type=request.POST.get('mentor_type', 'senior'),
+        company=request.POST.get('company', ''),
+        designation=request.POST.get('designation', ''),
+        years_experience=int(request.POST.get('years_experience', 0)),
+        bio=request.POST.get('bio', ''),
+        expertise=expertise,
+        college_id=college_id_file,
+        is_approved=False  # Must be verified by admin
+    )
+    
+    return Response({'message': 'Application submitted successfully. Awaiting verification.'}, status=201)

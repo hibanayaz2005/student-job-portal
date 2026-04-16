@@ -40,7 +40,7 @@
             --font-head: 'Syne', sans-serif;
             --font-body: 'DM Sans', sans-serif;
             --glow-cyan: 0 0 20px rgba(0, 210, 255, 0.15);
-            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -133,7 +133,7 @@
             max-width: 440px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
         }
 
         .auth-card::before {
@@ -161,8 +161,13 @@
         }
 
         @keyframes authGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .auth-card>* {
@@ -605,24 +610,155 @@
         }
 
         /* Notifications */
-        .notif-dropdown { position: absolute; top: calc(var(--topbar-h) - 10px); right: 32px; width: 340px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); z-index: 1000; display: none; overflow: hidden; backdrop-filter: blur(20px); }
-        .notif-dropdown.show { display: block; animation: dropdownSlide .3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-        @keyframes dropdownSlide { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .notif-header { padding: 14px 18px; background: var(--surface3); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .notif-header h4 { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: var(--accent); }
-        .notif-list { max-height: 420px; overflow-y: auto; }
-        .notif-item { padding: 16px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: .2s; position: relative; }
-        .notif-item:hover { background: var(--surface3); }
-        .notif-item.unread { background: rgba(0, 229, 255, 0.05); }
-        .notif-item.unread::before { content: ""; position: absolute; left: 8px; top: 20px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-        .notif-item .notif-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block; color: var(--text); padding-left: 5px; }
-        .notif-item .notif-msg { font-size: 12px; color: var(--muted); line-height: 1.5; display: block; padding-left: 5px; }
-        .notif-item .notif-time { font-size: 10px; color: var(--muted); margin-top: 10px; display: block; opacity: 0.6; padding-left: 5px; }
-        .notif-empty { padding: 50px 20px; text-align: center; color: var(--muted); }
-        .notif-empty i { font-size: 40px; margin-bottom: 15px; display: block; opacity: 0.3; }
-        .notif-dot { position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; border: 2px solid var(--surface); display: none; }
-        .notif-dot.active { display: block; animation: pulseRed 2s infinite; }
-        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        .notif-dropdown {
+            position: absolute;
+            top: calc(var(--topbar-h) - 10px);
+            right: 32px;
+            width: 340px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .notif-dropdown.show {
+            display: block;
+            animation: dropdownSlide .3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notif-header {
+            padding: 14px 18px;
+            background: var(--surface3);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-header h4 {
+            font-family: var(--font-head);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .notif-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .notif-item {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: .2s;
+            position: relative;
+        }
+
+        .notif-item:hover {
+            background: var(--surface3);
+        }
+
+        .notif-item.unread {
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .notif-item.unread::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 20px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .notif-item .notif-title {
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 4px;
+            display: block;
+            color: var(--text);
+            padding-left: 5px;
+        }
+
+        .notif-item .notif-msg {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+            display: block;
+            padding-left: 5px;
+        }
+
+        .notif-item .notif-time {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 10px;
+            display: block;
+            opacity: 0.6;
+            padding-left: 5px;
+        }
+
+        .notif-empty {
+            padding: 50px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .notif-empty i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.3;
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--surface);
+            display: none;
+        }
+
+        .notif-dot.active {
+            display: block;
+            animation: pulseRed 2s infinite;
+        }
+
+        @keyframes pulseRed {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
 
         .topbar-btn .notif-dot {
             position: absolute;
@@ -766,7 +902,7 @@
         .stat-card:hover {
             border-color: var(--accent);
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
         .stat-card::after {
@@ -1196,11 +1332,11 @@
             font-weight: 800;
             font-size: 18px;
             color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .tag-v2 {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             padding: 6px 14px;
             border-radius: 100px;
             font-size: 11px;
@@ -1418,12 +1554,14 @@
         .breakdown-fill {
             height: 100%;
             border-radius: 100px;
-            background: #2a3a55; /* Muted default */
+            background: #2a3a55;
+            /* Muted default */
             transition: width 1s ease;
         }
 
         .breakdown-fill.high {
-            background: #10b981; /* Neon Green */
+            background: #10b981;
+            /* Neon Green */
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }
 
@@ -1730,21 +1868,24 @@
             </div>
             <!-- LOGIN FORM -->
             <form id="login-form" onsubmit="handleLogin(event); return false;" autocomplete="off">
-                <div id="login-error" class="error-msg" style="display:none;margin-bottom:20px;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ff6b6b;font-size:13px;border-radius:10px;align-items:center;gap:10px">
+                <div id="login-error" class="error-msg"
+                    style="display:none;margin-bottom:20px;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ff6b6b;font-size:13px;border-radius:10px;align-items:center;gap:10px">
                     <i class="fas fa-exclamation-circle"></i><span id="login-error-text"></span>
                 </div>
                 <div class="form-group"><label>Email Address or Username</label><input type="text" class="form-input"
-                        id="login-email" placeholder="your@college.edu or username" autocomplete="nope" name="login-id-field"></div>
+                        id="login-email" placeholder="your@college.edu or username" autocomplete="nope"
+                        name="login-id-field"></div>
                 <div class="form-group"><label>Password</label><input type="password" class="form-input" id="login-pass"
                         placeholder="Enter password" autocomplete="new-password" name="login-pw-field"></div>
-                <button type="submit" class="btn btn-primary btn-full"><i
-                        class="fas fa-sign-in-alt"></i>
+                <button type="submit" class="btn btn-primary btn-full"><i class="fas fa-sign-in-alt"></i>
                     Login</button>
                 <p class="auth-footer"><a onclick="switchAuth('forgot')">Forgot Password?</a></p>
             </form>
             <!-- REGISTER FORM -->
-            <form id="register-form" style="display:none" onsubmit="handleRegister(event); return false;" autocomplete="off">
-                <div id="reg-error" class="error-msg" style="display:none;margin-bottom:20px;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ff6b6b;font-size:13px;border-radius:10px;align-items:center;gap:10px">
+            <form id="register-form" style="display:none" onsubmit="handleRegister(event); return false;"
+                autocomplete="off">
+                <div id="reg-error" class="error-msg"
+                    style="display:none;margin-bottom:20px;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#ff6b6b;font-size:13px;border-radius:10px;align-items:center;gap:10px">
                     <i class="fas fa-exclamation-circle"></i><span id="reg-error-text"></span>
                 </div>
                 <div class="form-row">
@@ -1778,7 +1919,8 @@
                             id="reg-linkedin" placeholder="linkedin.com/in/..." autocomplete="off"></div>
                 </div>
                 <div class="form-group"><label>Password</label><input type="password" class="form-input" id="reg-pass"
-                        placeholder="Min 8 chars, uppercase, number, symbol" oninput="checkStrength(this.value)" autocomplete="new-password">
+                        placeholder="Min 8 chars, uppercase, number, symbol" oninput="checkStrength(this.value)"
+                        autocomplete="new-password">
                     <div class="strength-bar">
                         <div class="strength-fill" id="str-fill"></div>
                     </div>
@@ -1864,13 +2006,17 @@
                 </div>
             </div>
         </nav>
-        <div class="sidebar-user" style="background: rgba(255,255,255,0.03); margin: 12px; border-radius: 12px; border: 1px solid var(--border);">
-            <div class="user-avatar" id="sidebar-avatar" style="border-radius: 8px;">{{ user.username|make_list|first|upper|default:"A" }}</div>
+        <div class="sidebar-user"
+            style="background: rgba(255,255,255,0.03); margin: 12px; border-radius: 12px; border: 1px solid var(--border);">
+            <div class="user-avatar" id="sidebar-avatar" style="border-radius: 8px;">{{
+                user.username|make_list|first|upper|default:"A" }}</div>
             <div class="user-info">
-                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Ananya" }}</div>
+                <div class="user-name" id="sidebar-name">{{ user.first_name|default:user.username|default:"Ananya" }}
+                </div>
                 <div class="user-role">{{ user.role|title|default:"Student" }}</div>
             </div>
-            <button class="btn-icon" style="background: none; border: none; color: var(--muted); cursor: pointer;" onclick="doLogout()" title="Logout">
+            <button class="btn-icon" style="background: none; border: none; color: var(--muted); cursor: pointer;"
+                onclick="doLogout()" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
@@ -1879,29 +2025,33 @@
     <!-- TOPBAR -->
     <header class="topbar">
         <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="topbar-title" id="topbar-title" style="font-family: var(--font-head); font-weight: 700; margin-left: 20px;">Mentors</div>
+        <div class="topbar-title" id="topbar-title"
+            style="font-family: var(--font-head); font-weight: 700; margin-left: 20px;">Mentors</div>
         <div class="topbar-search">
             <i class="fas fa-search"></i>
-            <input type="search" placeholder="Search jobs, courses, mentors..." id="global-search" oninput="globalSearch(this.value)" autocomplete="off">
+            <input type="search" placeholder="Search jobs, courses, mentors..." id="global-search"
+                oninput="globalSearch(this.value)" autocomplete="off">
         </div>
         <div class="topbar-actions">
             <div class="topbar-btn" onclick="showSection('mentors')" title="Messages"><i
                     class="fas fa-comment-dots"></i>
             </div>
-            <div class="topbar-btn" title="Notifications" id="notif-bell-btn" onclick="toggleNotifDropdown()"><i class="fas fa-bell"></i>
+            <div class="topbar-btn" title="Notifications" id="notif-bell-btn" onclick="toggleNotifDropdown()"><i
+                    class="fas fa-bell"></i>
                 <div class="notif-dot" id="notif-dot"></div>
             </div>
-            
+
             <div class="notif-dropdown" id="notif-dropdown">
                 <div class="notif-header">
                     <h4>Notifications</h4>
-                    <span style="font-size:10px; color:var(--muted); cursor:pointer" onclick="markAllNotesRead()">Mark all as read</span>
+                    <span style="font-size:10px; color:var(--muted); cursor:pointer" onclick="markAllNotesRead()">Mark
+                        all as read</span>
                 </div>
                 <div class="notif-list" id="notif-list">
                     <!-- Notifications will be loaded here -->
                 </div>
             </div>
-            
+
             <div class="topbar-btn" onclick="showSection('settings')" title="Settings"><i class="fas fa-cog"></i></div>
         </div>
     </header>
@@ -1914,7 +2064,8 @@
             <div class="section-header">
                 <div>
                     <div class="section-label">Overview</div>
-                    <h1 class="section-title">Welcome back, {{ user.first_name|default:user.username|default:"Student" }}! 👋</h1>
+                    <h1 class="section-title">Welcome back, {{ user.first_name|default:user.username|default:"Student"
+                        }}! 👋</h1>
                     <p class="section-sub">Here's what's happening with your career journey today.</p>
                 </div><button class="btn btn-primary btn-sm" onclick="showSection('jobs')"><i class="fas fa-search"></i>
                     Find Jobs</button>
@@ -2082,7 +2233,8 @@
                 <div style="flex:1;min-width:200px;position:relative"><i class="fas fa-search"
                         style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)"></i><input
                         type="search" class="form-input" style="padding-left:36px;margin:0"
-                        placeholder="Search job titles..." id="job-search" oninput="searchJobs()" autocomplete="nope" role="search" name="job-search-field"></div>
+                        placeholder="Search job titles..." id="job-search" oninput="searchJobs()" autocomplete="nope"
+                        role="search" name="job-search-field"></div>
                 <select class="form-input" style="width:160px;margin:0" id="job-location" onchange="searchJobs()">
                     <option value="">All Locations</option>
                     <option>Remote</option>
@@ -2196,48 +2348,50 @@
             <div class="section-header" style="margin-bottom: 40px;">
                 <div>
                     <div class="section-label" style="color: var(--accent); font-weight: 800;">MENTORSHIP</div>
-                    <h1 class="section-title" style="font-size: 42px; font-weight: 900; letter-spacing: -1px;">Connect with Mentors</h1>
-                    <p class="section-sub" style="font-size: 16px; margin-top: 8px; opacity: 0.8;">Get guidance from seniors, alumni and industry professionals.</p>
+                    <h1 class="section-title" style="font-size: 42px; font-weight: 900; letter-spacing: -1px;">Connect
+                        with Mentors</h1>
+                    <p class="section-sub" style="font-size: 16px; margin-top: 8px; opacity: 0.8;">Get guidance from
+                        seniors, alumni and industry professionals.</p>
                 </div>
-                <button class="btn" style="background: #9d50bb; color: #fff; border-radius: 12px; padding: 12px 24px; font-weight: 700;">
-                    <i class="fas fa-comment-dots" style="margin-right: 8px;"></i> Open Chat
-                </button>
-            </div>
-            
-            <div class="tab-bar" style="background: #111827; padding: 6px; border-radius: 14px; margin-bottom: 32px; border: 1px solid var(--border);">
-                <div class="tab-item active" onclick="filterMentors('all')" style="border-radius: 10px;">All Mentors</div>
-                <div class="tab-item" onclick="filterMentors('senior')" style="border-radius: 10px;">Seniors</div>
-                <div class="tab-item" onclick="filterMentors('alumni')" style="border-radius: 10px;">Alumni</div>
-                <div class="tab-item" onclick="filterMentors('professional')" style="border-radius: 10px;">Professionals</div>
+                <div style="display:flex; gap:12px">
+                    <button class="btn btn-secondary" onclick="openModal('apply-mentor-modal')"
+                        style="border-radius: 12px; padding: 12px 24px; font-weight: 700;">
+                        <i class="fas fa-chalkboard-teacher" style="margin-right: 8px;"></i> Become a Mentor
+                    </button>
+                    <button class="btn"
+                        style="background: #9d50bb; color: #fff; border-radius: 12px; padding: 12px 24px; font-weight: 700;">
+                        <i class="fas fa-comment-dots" style="margin-right: 8px;"></i> Open Chat
+                    </button>
+                </div>
             </div>
 
-            <div class="grid-4" id="mentors-grid">
-                <!-- Sample Mentor Cards to match screenshot -->
-                <div class="card mentor-card-v2" style="background: #15192b; border: 1px solid #1e293b; border-radius: 20px; padding: 30px;">
-                    <div class="mentor-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                        <div class="mentor-avatar" style="width: 54px; height: 54px; border-radius: 50%; background: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;">RP</div>
-                        <div>
-                            <h3 style="font-size: 18px; font-weight: 800;">Dr. Ravi Patil</h3>
-                            <p style="font-size: 12px; color: var(--muted);">Senior Engineer at Google</p>
-                        </div>
-                    </div>
-                    <p style="font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: var(--muted);">12+ years in tech. Ex-Amazon, now at Google. Passionate about mentoring students.</p>
-                    <div class="mentor-tags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
-                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">System Design</span>
-                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">DSA</span>
-                        <span style="background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 100px; font-size: 11px; color: var(--muted); border: 1px solid var(--border);">Career Strategy</span>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; gap: 12px; font-size: 12px; color: var(--muted);">
-                            <span><i class="fas fa-star" style="color: #fbbf24; margin-right: 4px;"></i>4.9</span>
-                            <span><i class="fas fa-clock" style="margin-right: 4px;"></i>120 Sessions</span>
-                        </div>
-                        <button class="btn btn-sm" style="background: #00d2ff; color: #000; font-weight: 800; border-radius: 8px; padding: 8px 16px;">
-                            <i class="fas fa-comment"></i> Chat
-                        </button>
-                    </div>
+            <div class="tab-bar"
+                style="background: #111827; padding: 6px; border-radius: 14px; margin-bottom: 32px; border: 1px solid var(--border);">
+                <div class="tab-item active" id="mentor-tab-all" onclick="filterMentors('all')"
+                    style="border-radius: 10px;">All Mentors</div>
+                <div class="tab-item" id="mentor-tab-senior" onclick="filterMentors('senior')"
+                    style="border-radius: 10px;">Seniors</div>
+                <div class="tab-item" id="mentor-tab-alumni" onclick="filterMentors('alumni')"
+                    style="border-radius: 10px;">Alumni</div>
+                <div class="tab-item" id="mentor-tab-professional" onclick="filterMentors('professional')"
+                    style="border-radius: 10px;">Professionals</div>
+                <div class="tab-item" id="mentor-tab-sessions" onclick="showMySessions()" style="border-radius: 10px;">
+                    <i class="fas fa-calendar-check" style="margin-right:6px;"></i>My Sessions
                 </div>
-                <!-- ... other mentor cards will be rendered dynamically ... -->
+            </div>
+
+            <div class="grid-4" id="mentors-grid"></div>
+
+            <!-- My Sessions Panel -->
+            <div id="my-sessions-panel" style="display:none;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                    <h3 style="font-family:var(--font-head);font-size:20px;font-weight:700;"><i
+                            class="fas fa-calendar-alt" style="color:var(--accent);margin-right:10px;"></i>My Booked
+                        Sessions</h3>
+                    <button class="btn btn-sm btn-secondary" onclick="loadMySessions()"><i class="fas fa-sync"></i>
+                        Refresh</button>
+                </div>
+                <div id="my-sessions-list"></div>
             </div>
         </div>
 
@@ -2253,10 +2407,12 @@
             </div>
             <div class="tab-bar">
                 <div class="tab-item active" onclick="filterCourses('all')">All Courses</div>
+                <div class="tab-item" onclick="filterCourses('BTech')">B.Tech</div>
+                <div class="tab-item" onclick="filterCourses('BCA')">BCA</div>
+                <div class="tab-item" onclick="filterCourses('BCom')">B.Com</div>
+                <div class="tab-item" onclick="filterCourses('BBA')">BBA</div>
                 <div class="tab-item" onclick="filterCourses('web')">Web Dev</div>
                 <div class="tab-item" onclick="filterCourses('data')">Data Science</div>
-                <div class="tab-item" onclick="filterCourses('cloud')">Cloud</div>
-                <div class="tab-item" onclick="filterCourses('mobile')">Mobile</div>
             </div>
             <div class="grid-3" id="courses-grid"></div>
             <div id="skill-test-area" style="display:none;margin-top:32px"></div>
@@ -2412,35 +2568,42 @@
                     <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:20px">Personal Information
                     </h3>
                     <div class="form-row">
-                        <div class="form-group"><label>First Name</label><input type="text" id="settings-fname" class="form-input"
-                                value="{{ user.first_name }}"></div>
-                        <div class="form-group"><label>Last Name</label><input type="text" id="settings-lname" class="form-input"
-                                value="{{ user.last_name }}"></div>
+                        <div class="form-group"><label>First Name</label><input type="text" id="settings-fname"
+                                class="form-input" value="{{ user.first_name }}"></div>
+                        <div class="form-group"><label>Last Name</label><input type="text" id="settings-lname"
+                                class="form-input" value="{{ user.last_name }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Email</label><input type="text" id="settings-email" class="form-input"
-                                value="{{ user.email }}"></div>
-                        <div class="form-group"><label>Phone</label><input type="text" id="settings-phone" class="form-input"
-                                value="{{ user.phone }}"></div>
+                        <div class="form-group"><label>Email</label><input type="text" id="settings-email"
+                                class="form-input" value="{{ user.email }}"></div>
+                        <div class="form-group"><label>Phone</label><input type="text" id="settings-phone"
+                                class="form-input" value="{{ user.phone }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>LinkedIn URL</label><input type="text" id="settings-linkedin" class="form-input"
-                                value="{{ user.student_profile.linkedin_url }}" placeholder="https://linkedin.com/in/username"></div>
-                        <div class="form-group"><label>College</label><input type="text" id="settings-college" class="form-input"
-                                value="{{ user.student_profile.college_name }}"></div>
+                        <div class="form-group"><label>LinkedIn URL</label><input type="text" id="settings-linkedin"
+                                class="form-input" value="{{ user.student_profile.linkedin_url }}"
+                                placeholder="https://linkedin.com/in/username"></div>
+                        <div class="form-group"><label>College</label><input type="text" id="settings-college"
+                                class="form-input" value="{{ user.student_profile.college_name }}"></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Branch</label><input type="text" id="settings-branch" class="form-input"
-                                value="{{ user.student_profile.branch }}"></div>
-                        <div class="form-group"><label>Year of Study</label><select id="settings-year" class="form-input">
-                                <option value="1" {% if user.student_profile.year_of_study == 1 %}selected{% endif %}>1st Year</option>
-                                <option value="2" {% if user.student_profile.year_of_study == 2 %}selected{% endif %}>2nd Year</option>
-                                <option value="3" {% if user.student_profile.year_of_study == 3 %}selected{% endif %}>3rd Year</option>
-                                <option value="4" {% if user.student_profile.year_of_study == 4 %}selected{% endif %}>4th Year</option>
+                        <div class="form-group"><label>Branch</label><input type="text" id="settings-branch"
+                                class="form-input" value="{{ user.student_profile.branch }}"></div>
+                        <div class="form-group"><label>Year of Study</label><select id="settings-year"
+                                class="form-input">
+                                <option value="1" {% if user.student_profile.year_of_study == 1 %}selected{% endif %}>1st
+                                    Year</option>
+                                <option value="2" {% if user.student_profile.year_of_study == 2 %}selected{% endif %}>2nd
+                                    Year</option>
+                                <option value="3" {% if user.student_profile.year_of_study == 3 %}selected{% endif %}>3rd
+                                    Year</option>
+                                <option value="4" {% if user.student_profile.year_of_study == 4 %}selected{% endif %}>4th
+                                    Year</option>
                             </select></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Graduation Year</label><input type="number" id="settings-grad-year" class="form-input"
+                        <div class="form-group"><label>Graduation Year</label><input type="number"
+                                id="settings-grad-year" class="form-input"
                                 value="{{ user.student_profile.graduation_year }}"></div>
                         <div class="form-group" style="visibility:hidden"></div>
                     </div>
@@ -2448,20 +2611,20 @@
                         <input type="text" id="settings-skills" class="form-input"
                             value="{{ user.student_profile.skills|join:', ' }}">
                     </div>
-                    <button class="btn btn-primary" onclick="saveProfile()"><i
-                            class="fas fa-save"></i> Save Changes</button>
+                    <button class="btn btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save
+                        Changes</button>
                 </div>
                 <div>
                     <div class="card" style="margin-bottom:20px">
                         <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:20px">Change Password</h3>
-                        <div class="form-group"><label>Current Password</label><input type="password" id="settings-cur-pass" class="form-input"
-                                placeholder="Enter current password"></div>
-                        <div class="form-group"><label>New Password</label><input type="password" id="settings-new-pass" class="form-input"
-                                placeholder="Enter new password"></div>
-                        <div class="form-group"><label>Confirm Password</label><input type="password" id="settings-conf-pass" class="form-input"
-                                placeholder="Confirm new password"></div>
-                        <button class="btn btn-secondary" onclick="updatePassword()"><i
-                                class="fas fa-lock"></i> Update Password</button>
+                        <div class="form-group"><label>Current Password</label><input type="password"
+                                id="settings-cur-pass" class="form-input" placeholder="Enter current password"></div>
+                        <div class="form-group"><label>New Password</label><input type="password" id="settings-new-pass"
+                                class="form-input" placeholder="Enter new password"></div>
+                        <div class="form-group"><label>Confirm Password</label><input type="password"
+                                id="settings-conf-pass" class="form-input" placeholder="Confirm new password"></div>
+                        <button class="btn btn-secondary" onclick="updatePassword()"><i class="fas fa-lock"></i> Update
+                            Password</button>
                     </div>
                     <div class="card">
                         <h3 style="font-family:var(--font-head);font-weight:700;margin-bottom:20px">Notifications</h3>
@@ -2565,25 +2728,73 @@
     </div>
 
     <div class="modal-overlay" id="book-session-modal">
-        <div class="modal" style="max-width:440px"><button class="modal-close"
+        <div class="modal" style="max-width:500px"><button class="modal-close"
                 onclick="closeModal('book-session-modal')"><i class="fas fa-times"></i></button>
-            <div class="modal-title">📅 Book Mentorship Session</div>
-            <p style="color:var(--muted);font-size:13px;margin-bottom:20px" id="booking-mentor-name">with Dr. Ravi Patil
-            </p>
-            <div class="form-group"><label>Topic</label><input type="text" class="form-input"
-                    placeholder="e.g., Resume review, Interview prep"></div>
-            <div class="form-group"><label>Preferred Date</label><input type="date" class="form-input"></div>
-            <div class="form-group"><label>Preferred Time</label><select class="form-input">
-                    <option>10:00 AM</option>
-                    <option>11:00 AM</option>
-                    <option>2:00 PM</option>
-                    <option>4:00 PM</option>
-                    <option>6:00 PM</option>
-                </select></div>
-            <div class="form-group"><label>Notes (optional)</label><textarea class="form-input" rows="3"
-                    placeholder="Any specific topics..." style="resize:vertical;min-height:60px"></textarea></div>
-            <button class="btn btn-purple btn-full" onclick="bookSession()"><i class="fas fa-calendar-check"></i>
-                Confirm Booking</button>
+            <!-- Glowing accent line -->
+            <div
+                style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-purple),var(--accent),transparent);border-radius:var(--radius) var(--radius) 0 0;">
+            </div>
+            <div class="modal-title" style="margin-bottom:4px;">📅 Book a Class Session</div>
+            <p style="color:var(--muted);font-size:13px;margin-bottom:24px;" id="booking-mentor-name">Select a mentor
+                and schedule your mentorship session.</p>
+
+            <!-- Step indicator -->
+            <div
+                style="display:flex;gap:0;margin-bottom:24px;background:var(--surface2);border-radius:10px;padding:4px;border:1px solid var(--border);">
+                <div
+                    style="flex:1;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:700;background:var(--accent);color:#000;">
+                    <i class="fas fa-calendar"></i> Schedule
+                </div>
+                <div style="flex:1;text-align:center;padding:8px;font-size:12px;color:var(--muted);"><i
+                        class="fas fa-check-circle"></i> Confirm</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label>Session Date</label><input type="date" class="form-input"
+                        id="book-session-date" min=""></div>
+                <div class="form-group"><label>Session Time</label><select class="form-input" id="book-session-time">
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="14:00" selected>02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                        <option value="18:00">06:00 PM</option>
+                        <option value="19:00">07:00 PM</option>
+                    </select></div>
+            </div>
+            <div class="form-group"><label>Session Topic</label><input type="text" class="form-input"
+                    id="book-session-topic" placeholder="e.g., Resume review, Interview prep, Career guidance"></div>
+            <div class="form-row">
+                <div class="form-group"><label>Session Type</label><select class="form-input" id="book-session-type">
+                        <option value="video">🎥 Video Call</option>
+                        <option value="audio">🎙️ Audio Call</option>
+                        <option value="text">💬 Text Chat</option>
+                    </select></div>
+                <div class="form-group"><label>Duration</label><select class="form-input" id="book-session-duration">
+                        <option value="30">30 minutes</option>
+                        <option value="60" selected>60 minutes</option>
+                        <option value="90">90 minutes</option>
+                    </select></div>
+            </div>
+            <div class="form-group"><label>Additional Notes <span
+                        style="color:var(--muted);font-weight:400">(optional)</span></label>
+                <textarea class="form-input" rows="3" id="book-session-notes"
+                    placeholder="Describe what you want to learn or discuss in this session..."
+                    style="resize:vertical;min-height:70px"></textarea>
+            </div>
+            <div id="book-session-error"
+                style="display:none;margin-bottom:12px;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;font-size:13px;border-radius:10px;">
+            </div>
+            <button class="btn btn-full" id="book-session-btn"
+                style="background:linear-gradient(135deg,var(--accent-purple),var(--accent));color:#fff;font-weight:800;padding:14px;"
+                onclick="bookSession()">
+                <i class="fas fa-calendar-check"></i> Confirm &amp; Book Session
+            </button>
+            <p style="text-align:center;color:var(--muted);font-size:11px;margin-top:12px;"><i
+                    class="fas fa-shield-alt"></i> You'll receive a confirmation once the mentor accepts</p>
         </div>
     </div>
 
@@ -2598,10 +2809,9 @@
                     class="badge badge-green">● Live</span>
             </div>
             <div style="position:relative;padding-bottom:56.25%;height:0"><iframe id="course-iframe"
-                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen
-                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
             </div>
         </div>
     </div>
@@ -2664,62 +2874,7 @@
             { id: 6, name: "Ananya Gupta", type: "senior", title: "3rd Year, AI @ IIIT Hyderabad", initials: "AG", expertise: ["Deep Learning", "NLP", "Research"], rating: 4.5, sessions: 30, experience: 1, bio: "Published 2 papers in NeurIPS. Can guide on ML research methodologies.", gradient: "linear-gradient(135deg,#a855f7,#ec4899)" }
         ];
 
-        const COURSES = [
-            {
-                id: 1, title: "Python for Data Science", category: "data", icon: "🐍", provider: "IIT Madras (NPTEL)", duration: "8 weeks", modules: 12, videoId: "LHBE6Q9XlzI", testQuestions: [
-                    { q: "Which library is used for data manipulation in Python?", options: ["NumPy", "Pandas", "Matplotlib", "Seaborn"], correct: 1, explanation: "Pandas is the primary library for data manipulation." },
-                    { q: "What does df.head() return?", options: ["Last 5 rows", "First 5 rows", "Random 5 rows", "All rows"], correct: 1, explanation: "head() returns the first 5 rows by default." },
-                    { q: "Which function is used to find missing values?", options: ["df.null()", "df.missing()", "df.isnull()", "df.empty()"], correct: 2, explanation: "isnull() identifies missing/NaN values." },
-                    { q: "What is the output type of df.describe()?", options: ["List", "Dictionary", "DataFrame", "Series"], correct: 2, explanation: "describe() returns a DataFrame with summary statistics." },
-                    { q: "Which method merges two DataFrames?", options: ["df.join()", "df.concat()", "df.merge()", "All of the above"], correct: 3, explanation: "All three can merge DataFrames in different ways." }
-                ]
-            },
-            {
-                id: 2, title: "Full Stack Web Development", category: "web", icon: "🌐", provider: "freeCodeCamp", duration: "12 weeks", modules: 18, videoId: "nu_pCVPKzTk", testQuestions: [
-                    { q: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Tech Modern Language", "Hyper Transfer Markup Language", "Home Tool Markup Language"], correct: 0, explanation: "HTML = Hyper Text Markup Language." },
-                    { q: "Which CSS property controls text size?", options: ["text-style", "font-size", "text-size", "font-style"], correct: 1, explanation: "font-size controls the size of text." },
-                    { q: "What is the virtual DOM?", options: ["A browser feature", "A React concept", "A CSS framework", "A database"], correct: 1, explanation: "Virtual DOM is a React concept for efficient rendering." },
-                    { q: "Which HTTP method updates data?", options: ["GET", "POST", "PUT", "DELETE"], correct: 2, explanation: "PUT is used to update existing resources." },
-                    { q: "What does REST stand for?", options: ["Remote Efficient Server Transfer", "Representational State Transfer", "Real-time Efficient Service Technology", "None"], correct: 1, explanation: "REST = Representational State Transfer." }
-                ]
-            },
-            {
-                id: 3, title: "AWS Cloud Practitioner", category: "cloud", icon: "☁️", provider: "AWS Training", duration: "6 weeks", modules: 10, videoId: "SOTamWNgDKc", testQuestions: [
-                    { q: "What is EC2?", options: ["Storage service", "Compute service", "Database service", "Network service"], correct: 1, explanation: "EC2 is Amazon's elastic cloud compute service." },
-                    { q: "S3 stands for?", options: ["Simple Storage Service", "Secure Server Solution", "Scalable System Storage", "None"], correct: 0, explanation: "S3 = Simple Storage Service." },
-                    { q: "Which service is a NoSQL database?", options: ["RDS", "DynamoDB", "Aurora", "Redshift"], correct: 1, explanation: "DynamoDB is AWS's managed NoSQL database." },
-                    { q: "What is IAM used for?", options: ["Monitoring", "Access management", "Storage", "Compute"], correct: 1, explanation: "IAM manages access and permissions." },
-                    { q: "Lambda is which type of computing?", options: ["Container", "Virtual Machine", "Serverless", "Bare Metal"], correct: 2, explanation: "Lambda is AWS's serverless computing service." }
-                ]
-            },
-            {
-                id: 4, title: "React Native Mobile Dev", category: "mobile", icon: "📱", provider: "Meta (Coursera)", duration: "10 weeks", modules: 14, videoId: "0-S5a0eXPoc", testQuestions: [
-                    { q: "React Native uses which language?", options: ["Swift", "Kotlin", "JavaScript", "Dart"], correct: 2, explanation: "React Native uses JavaScript/TypeScript." },
-                    { q: "Which component shows text?", options: ["<div>", "<Text>", "<p>", "<Label>"], correct: 1, explanation: "<Text> is the React Native text component." },
-                    { q: "What handles navigation?", options: ["Router", "Navigator", "React Navigation", "All"], correct: 2, explanation: "React Navigation is the standard navigation library." },
-                    { q: "What is Expo?", options: ["A database", "A development tool", "A testing framework", "A server"], correct: 1, explanation: "Expo is a development tool for React Native." },
-                    { q: "Where does React Native run?", options: ["Browser only", "iOS only", "Android only", "Both iOS & Android"], correct: 3, explanation: "React Native is cross-platform for iOS and Android." }
-                ]
-            },
-            {
-                id: 5, title: "Machine Learning with Python", category: "data", icon: "🤖", provider: "Stanford (Coursera)", duration: "11 weeks", modules: 16, videoId: "i_LwzRVP7bg", testQuestions: [
-                    { q: "Which is a supervised learning algorithm?", options: ["K-Means", "PCA", "Linear Regression", "DBSCAN"], correct: 2, explanation: "Linear Regression is supervised learning." },
-                    { q: "What is overfitting?", options: ["Model too simple", "Model too complex", "Model just right", "None"], correct: 1, explanation: "Overfitting means the model is too complex for the data." },
-                    { q: "Which metric is used for classification?", options: ["MSE", "RMSE", "Accuracy", "R-squared"], correct: 2, explanation: "Accuracy is a common classification metric." },
-                    { q: "What does CNN stand for?", options: ["Central Neural Network", "Convolutional Neural Network", "Complex Number Network", "None"], correct: 1, explanation: "CNN = Convolutional Neural Network." },
-                    { q: "Random Forest is an example of?", options: ["Boosting", "Bagging", "Stacking", "None"], correct: 1, explanation: "Random Forest uses bagging (bootstrap aggregating)." }
-                ]
-            },
-            {
-                id: 6, title: "Django Backend Mastery", category: "web", icon: "🎸", provider: "TraversyMedia", duration: "8 weeks", modules: 10, videoId: "PtQiiknWUcI", testQuestions: [
-                    { q: "Django is written in?", options: ["Java", "Ruby", "Python", "PHP"], correct: 2, explanation: "Django is a Python web framework." },
-                    { q: "What is a Django Model?", options: ["HTML template", "Database table", "URL pattern", "View function"], correct: 1, explanation: "Models define database table structures." },
-                    { q: "ORM stands for?", options: ["Object Relational Mapping", "Online Resource Manager", "Object Runtime Module", "None"], correct: 0, explanation: "ORM = Object Relational Mapping." },
-                    { q: "Which file defines URL patterns?", options: ["models.py", "views.py", "urls.py", "settings.py"], correct: 2, explanation: "urls.py defines URL routing patterns." },
-                    { q: "Django admin is used for?", options: ["Frontend", "Database management", "Testing", "Deployment"], correct: 1, explanation: "Django admin provides a database management interface." }
-                ]
-            }
-        ];
+        let COURSES = [];
 
         const PROJECTS = [
             { id: 1, title: "AI Resume Builder", description: "Build an AI-powered resume builder that generates ATS-friendly resumes from user input.", skills: ["React", "Python", "NLP", "OpenAI"], status: "open", members: 2, maxMembers: 4, creator: "Hiba N.", gradient: "var(--accent)" },
@@ -2822,7 +2977,7 @@
         async function handleRegister(event) {
             if (event) { event.preventDefault(); event.stopPropagation(); }
             console.log('Registration process started...');
-            
+
             const btn = document.getElementById('reg-btn');
             const btnText = document.getElementById('reg-btn-text');
             if (btn.disabled) return false;
@@ -2840,18 +2995,18 @@
             const linkedin = linkedinInput ? linkedinInput.value.trim() : '';
             const skills = document.getElementById('reg-skills').value.trim();
 
-            if (!e || !p || !n) { 
+            if (!e || !p || !n) {
                 const msg = 'Please fill in name, email and password';
-                showToast(msg, 'error'); 
+                showToast(msg, 'error');
                 document.getElementById('reg-error').style.display = 'flex';
                 document.getElementById('reg-error-text').textContent = msg;
-                return false; 
+                return false;
             }
 
             try {
                 btn.disabled = true;
                 btnText.textContent = 'Creating Account...';
-                
+
                 const csrf = getCsrfToken();
                 console.log('CSRF Token retrieved:', csrf ? 'Yes' : 'No');
 
@@ -2908,7 +3063,7 @@
         async function doForgotPassword() {
             const e = document.getElementById('forgot-email').value.trim();
             if (!e) { showToast('Please enter your email', 'error'); return; }
-            
+
             showToast('Processing request...', 'info');
             try {
                 const res = await fetch('/api/auth/password-reset/', {
@@ -3036,13 +3191,14 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         let chatSocket = null;
 
         // Initialize WebSocket Connection
-        function initChatSocket() {
-            if (chatSocket) return;
-            // We use a generic room "general" for now or based on mentor
+        function initChatSocket(peerId) {
+            if (chatSocket) {
+                chatSocket.close();
+                chatSocket = null;
+            }
             const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-            // Force 127.0.0.1 to avoid IPv6 'localhost' resolution issues in some browsers for WS
             const wsHost = window.location.hostname === 'localhost' ? '127.0.0.1:8000' : window.location.host;
-            chatSocket = new WebSocket(wsProtocol + wsHost + '/ws/chat/');
+            chatSocket = new WebSocket(wsProtocol + wsHost + '/ws/chat/?peer=' + peerId);
 
             chatSocket.onopen = function () {
                 console.log("Chat WebSocket connected");
@@ -3050,28 +3206,50 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
 
             chatSocket.onmessage = function (e) {
                 const data = JSON.parse(e.data);
-                if (data.event_type === "message") {
-                    // Make sure it's not our own message echoed back (if sender_id is set)
-                    const box = document.getElementById('chat-messages');
-                    const initials = activeMentor ? activeMentor.initials : 'M';
-                    const gradient = activeMentor ? activeMentor.gradient : '#ccc';
+                const box = document.getElementById('chat-messages');
+                const initials = activeMentor ? activeMentor.initials : 'M';
+                const gradient = activeMentor ? activeMentor.gradient : '#ccc';
 
-                    // Simple logic to show received message
-                    if (data.sender_id !== 'student') {
-                        box.innerHTML += `
-                        <div class="chat-msg">
-                            <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${gradient}">${initials}</div>
-                            <div class="chat-bubble">${data.message}</div>
-                        </div>`;
-                        box.scrollTop = box.scrollHeight;
-                    }
+                if (data.event_type === "history") {
+                    box.innerHTML = ''; // clear initial placeholder
+                    data.messages.forEach(msg => {
+                        appendChatMessage(box, msg, initials, gradient);
+                    });
+                    box.scrollTop = box.scrollHeight;
+                } else if (data.event_type === "message") {
+                    appendChatMessage(box, data, initials, gradient);
+                    box.scrollTop = box.scrollHeight;
                 }
             };
 
             chatSocket.onclose = function (e) {
                 console.error('Chat socket closed unexpectedly');
-                chatSocket = null; // allow reconnect
+                chatSocket = null;
             };
+        }
+
+        function appendChatMessage(box, msg, mentorInitials, mentorGradient) {
+            // Check if my message (assuming our own name/ID matches logic in backend or fallback to simple sent/received style based on is_sender properties)
+            // But from WS event we get sender_id. It's easier if backend sends `is_mine = true` but we don't have that in onmessage.
+            // Let's rely on matching sender_id (we can just assume if sender_id !== peerId it's ours, because it's a 1-to-1 room!).
+            const isMine = (activeMentor && msg.sender_id !== activeMentor.userId);
+
+            if (isMine) {
+                box.innerHTML += `
+                <div class="chat-msg sent">
+                    <div class="chat-bubble">${msg.message}
+                        <div style="font-size:9px;opacity:0.6;margin-top:4px;text-align:right;">${msg.timestamp || ''}</div>
+                    </div>
+                </div>`;
+            } else {
+                box.innerHTML += `
+                <div class="chat-msg">
+                    <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${mentorGradient}">${mentorInitials}</div>
+                    <div class="chat-bubble">${msg.message}
+                        <div style="font-size:9px;opacity:0.6;margin-top:4px;">${msg.timestamp || ''}</div>
+                    </div>
+                </div>`;
+            }
         }
 
         function renderMentors(mentors) {
@@ -3086,17 +3264,23 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
                         </div>
                     </div>
                     <p style="font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: var(--muted); height: 60px; overflow: hidden;">${m.bio}</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
                         ${m.expertise.map(e => '<span class="tag-v2">' + e + '</span>').join('')}
                     </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-sm" onclick="chatWithMentor(${m.id})" style="background: rgba(0,210,255,0.1); color: var(--accent); border: 1px solid rgba(0,210,255,0.3); font-weight: 700; border-radius: 8px; padding: 8px 14px; flex:1;">
+                            <i class="fas fa-comment"></i> Chat
+                        </button>
+                        <button class="btn btn-sm" onclick="openBookSessionForMentor(${m.id})" style="background: linear-gradient(135deg,var(--accent-purple),var(--accent)); color: #fff; font-weight: 800; border-radius: 8px; padding: 8px 14px; flex:1;">
+                            <i class="fas fa-calendar-plus"></i> Book
+                        </button>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
                         <div style="display: flex; gap: 12px; font-size: 12px; color: var(--muted);">
                             <span><i class="fas fa-star" style="color: #fbbf24; margin-right: 4px;"></i>${m.rating}</span>
                             <span><i class="fas fa-clock" style="margin-right: 4px;"></i>${m.sessions} Sessions</span>
                         </div>
-                        <button class="btn btn-sm" onclick="chatWithMentor(${m.id})" style="background: var(--accent); color: #000; font-weight: 800; border-radius: 8px; padding: 8px 16px;">
-                            <i class="fas fa-comment"></i> Chat
-                        </button>
+                        <span style="font-size:11px;color:var(--accent3);"><i class="fas fa-circle" style="font-size:7px;"></i> Available</span>
                     </div>
                 </div>
             `).join('');
@@ -3108,7 +3292,7 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             renderMentors(type === 'all' ? MENTORS : MENTORS.filter(m => m.type === type));
         }
 
-        function chatWithMentor(mentorId) {
+        async function chatWithMentor(mentorId) {
             const mentor = MENTORS.find(m => m.id === mentorId);
             if (!mentor) return;
             activeMentor = mentor;
@@ -3117,29 +3301,236 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             document.querySelector('#chat-modal p').innerHTML = `${mentor.title}`;
 
             const box = document.getElementById('chat-messages');
-            const firstName = mentor.name.startsWith('Dr.') ? mentor.name.split(' ')[1] : mentor.name.split(' ')[0];
-            box.innerHTML = `
-                <div class="chat-msg">
-                    <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${mentor.gradient}">${mentor.initials}</div>
-                    <div class="chat-bubble">Hi, I'm ${mentor.name.startsWith('Dr.') ? mentor.name : firstName}. How can I help you today?</div>
-                </div>
-            `;
+            box.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>`;
 
-            initChatSocket();
             openModal('chat-modal');
+
+            // If we have a backend ID, resolve it to the user ID
+            if (mentor.backendId) {
+                try {
+                    const res = await fetch('/api/mentorship/chat/peer/' + mentor.backendId + '/', { credentials: 'include' });
+                    if (res.ok) {
+                        const data = await res.json();
+                        activeMentor.userId = data.user_id;
+                        initChatSocket(activeMentor.userId);
+                    } else {
+                        box.innerHTML = `<div style="text-align:center;padding:20px;color:var(--danger)">Error: Could not connect to mentor</div>`;
+                    }
+                } catch (e) {
+                    box.innerHTML = `<div style="text-align:center;padding:20px;color:var(--danger)">Connection Error</div>`;
+                }
+            } else {
+                // Demo mentor fallback
+                const firstName = mentor.name.startsWith('Dr.') ? mentor.name.split(' ')[1] : mentor.name.split(' ')[0];
+                box.innerHTML = `
+                    <div class="chat-msg">
+                        <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${mentor.gradient}">${mentor.initials}</div>
+                        <div class="chat-bubble">Hi, I'm ${mentor.name.startsWith('Dr.') ? mentor.name : firstName}. How can I help you today?</div>
+                    </div>`;
+                // No real socket initialization, demo mode
+            }
+        }
+
+        // Set today's date as minimum for session booking
+        function initBookingModal() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const minDate = tomorrow.toISOString().split('T')[0];
+            const dateInput = document.getElementById('book-session-date');
+            if (dateInput) {
+                dateInput.min = minDate;
+                dateInput.value = minDate;
+            }
+            // Clear error
+            const errDiv = document.getElementById('book-session-error');
+            if (errDiv) errDiv.style.display = 'none';
+            // Reset button
+            const btn = document.getElementById('book-session-btn');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm &amp; Book Session'; }
         }
 
         function openBookSession() {
             closeModal('chat-modal');
+            initBookingModal();
             if (activeMentor) {
-                document.getElementById('booking-mentor-name').textContent = "with " + activeMentor.name;
+                document.getElementById('booking-mentor-name').innerHTML =
+                    `<i class="fas fa-user-tie" style="color:var(--accent);margin-right:6px;"></i> Booking session with <strong style="color:var(--text)">${activeMentor.name}</strong> &mdash; ${activeMentor.title}`;
             }
             openModal('book-session-modal');
         }
 
-        function bookSession() {
-            showToast('Session booked successfully! A confirmation email will be sent shortly.', 'success');
-            closeModal('book-session-modal');
+        function openBookSessionForMentor(mentorId) {
+            const mentor = MENTORS.find(m => m.id === mentorId);
+            if (!mentor) return;
+            activeMentor = mentor;
+            initBookingModal();
+            document.getElementById('booking-mentor-name').innerHTML =
+                `<i class="fas fa-user-tie" style="color:var(--accent);margin-right:6px;"></i> Booking session with <strong style="color:var(--text)">${mentor.name}</strong> &mdash; ${mentor.title}`;
+            openModal('book-session-modal');
+        }
+
+        async function bookSession() {
+            const topic = document.getElementById('book-session-topic').value.trim();
+            const dateVal = document.getElementById('book-session-date').value;
+            const timeVal = document.getElementById('book-session-time').value;
+            const sessionType = document.getElementById('book-session-type').value;
+            const duration = parseInt(document.getElementById('book-session-duration').value);
+            const notes = document.getElementById('book-session-notes').value.trim();
+            const errDiv = document.getElementById('book-session-error');
+            const btn = document.getElementById('book-session-btn');
+
+            // Validation
+            if (!topic) {
+                errDiv.textContent = '⚠️ Please enter a session topic.';
+                errDiv.style.display = 'block'; return;
+            }
+            if (!dateVal) {
+                errDiv.textContent = '⚠️ Please select a session date.';
+                errDiv.style.display = 'block'; return;
+            }
+            errDiv.style.display = 'none';
+
+            // Build ISO datetime string
+            const sessionDatetime = `${dateVal}T${timeVal}:00`;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+
+            // If we have a real mentor ID from the backend, use it; otherwise show success for demo mentors
+            const mentorBackendId = activeMentor ? activeMentor.backendId : null;
+
+            if (!mentorBackendId) {
+                // Demo mode — no backend mentor profile exists yet, show success toast
+                setTimeout(() => {
+                    closeModal('book-session-modal');
+                    showToast(`Session booked with ${activeMentor ? activeMentor.name : 'mentor'} on ${dateVal} at ${timeVal}! 🎉`, 'success');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm &amp; Book Session';
+                }, 800);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/mentorship/book-session/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        mentor_id: mentorBackendId,
+                        topic: topic,
+                        session_type: sessionType,
+                        session_date: sessionDatetime,
+                        duration_minutes: duration,
+                        notes: notes
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    closeModal('book-session-modal');
+                    showToast(`Session booked successfully! 🎉 ID: #${data.session_id}`, 'success');
+                } else {
+                    errDiv.textContent = '❌ ' + (data.error || 'Booking failed. Please try again.');
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm &amp; Book Session';
+                }
+            } catch (err) {
+                errDiv.textContent = '❌ Network error. Please check connection and try again.';
+                errDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-calendar-check"></i> Confirm &amp; Book Session';
+            }
+        }
+
+        /* My Sessions */
+        function showMySessions() {
+            document.querySelectorAll('#sec-mentors .tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById('mentor-tab-sessions').classList.add('active');
+            document.getElementById('mentors-grid').style.display = 'none';
+            document.getElementById('my-sessions-panel').style.display = 'block';
+            loadMySessions();
+        }
+
+        function filterMentors(type) {
+            document.querySelectorAll('#sec-mentors .tab-item').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('mentors-grid').style.display = '';
+            document.getElementById('my-sessions-panel').style.display = 'none';
+            renderMentors(type === 'all' ? MENTORS : MENTORS.filter(m => m.type === type));
+        }
+
+        const SESSION_STATUS_STYLES = {
+            pending: { color: '#fbbf24', bg: 'rgba(245,158,11,0.1)', icon: 'fa-clock', label: 'Pending' },
+            confirmed: { color: 'var(--accent3)', bg: 'rgba(16,185,129,0.1)', icon: 'fa-check-circle', label: 'Confirmed' },
+            completed: { color: 'var(--accent)', bg: 'rgba(0,210,255,0.1)', icon: 'fa-star', label: 'Completed' },
+            cancelled: { color: 'var(--danger)', bg: 'rgba(239,68,68,0.1)', icon: 'fa-times-circle', label: 'Cancelled' }
+        };
+
+        async function loadMySessions() {
+            const container = document.getElementById('my-sessions-list');
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);"><i class="fas fa-spinner fa-spin" style="font-size:28px;margin-bottom:12px;display:block;"></i>Loading your sessions...</div>';
+            try {
+                const res = await fetch('/api/mentorship/my-sessions/', { credentials: 'include' });
+                if (!res.ok) throw new Error('Not authenticated');
+                const data = await res.json();
+                const sessions = data.sessions || [];
+                if (sessions.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center;padding:60px 20px;">
+                            <div style="font-size:56px;margin-bottom:16px;">📅</div>
+                            <h3 style="font-family:var(--font-head);font-size:20px;margin-bottom:8px;">No sessions booked yet</h3>
+                            <p style="color:var(--muted);font-size:14px;margin-bottom:24px;">Browse mentors and book your first mentorship session!</p>
+                            <button class="btn btn-primary" onclick="filterMentors('all')"><i class="fas fa-user-friends"></i> Browse Mentors</button>
+                        </div>`;
+                    return;
+                }
+                container.innerHTML = sessions.map(s => {
+                    const st = SESSION_STATUS_STYLES[s.status] || SESSION_STATUS_STYLES.pending;
+                    const sessionDate = new Date(s.session_date);
+                    const dateStr = sessionDate.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    const timeStr = sessionDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                    const typeIcons = { video: '🎥', audio: '🎙️', text: '💬' };
+                    const mentorName = s.mentor ? s.mentor.name : 'Mentor';
+                    const mentorInitials = mentorName.replace('Dr. ', '').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+                    return `
+                    <div class="card" style="margin-bottom:16px;padding:24px;border-left:3px solid ${st.color};">
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;gap:14px;">
+                                <div class="user-avatar" style="width:48px;height:48px;font-size:16px;border-radius:12px;">${mentorInitials}</div>
+                                <div>
+                                    <div style="font-family:var(--font-head);font-size:16px;font-weight:700;">${s.topic}</div>
+                                    <div style="font-size:13px;color:var(--muted);margin-top:2px;">${typeIcons[s.session_type] || '🎥'} ${s.session_type === 'video' ? 'Video Call' : s.session_type === 'audio' ? 'Audio Call' : 'Text Chat'} with ${mentorName}</div>
+                                </div>
+                            </div>
+                            <span style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;background:${st.bg};color:${st.color};border:1px solid ${st.color};">
+                                <i class="fas ${st.icon}"></i> ${st.label}
+                            </span>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                            <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                                <i class="fas fa-calendar" style="color:var(--accent);"></i>
+                                <span>${dateStr}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                                <i class="fas fa-clock" style="color:var(--accent2);"></i>
+                                <span>${timeStr} &bull; ${s.duration_minutes} min</span>
+                            </div>
+                            ${s.meeting_link ? `<div style="display:flex;align-items:center;gap:8px;font-size:13px;"><i class="fas fa-video" style="color:var(--accent3);"></i><a href="${s.meeting_link}" target="_blank" style="color:var(--accent3);">Join Meeting</a></div>` : ''}
+                        </div>
+                        ${s.notes ? `<div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--muted);"><i class="fas fa-sticky-note" style="margin-right:6px;"></i>${s.notes}</div>` : ''}
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:40px;">
+                        <i class="fas fa-lock" style="font-size:40px;color:var(--muted);margin-bottom:12px;display:block;"></i>
+                        <p style="color:var(--muted);">Please log in to view your booked sessions.</p>
+                    </div>`;
+            }
         }
 
         function sendChat() {
@@ -3147,25 +3538,33 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
             const msg = inp.value.trim();
             if (!msg) return;
 
-            const box = document.getElementById('chat-messages');
-            box.innerHTML += `
-            <div class="chat-msg sent">
-                <div class="chat-bubble">${msg}</div>
-            </div>`;
-            box.scrollTop = box.scrollHeight;
-            inp.value = "";
+            if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                chatSocket.send(JSON.stringify({
+                    message: msg
+                }));
+                inp.value = "";
+            } else {
+                // Demo fallback
+                const box = document.getElementById('chat-messages');
+                box.innerHTML += `
+                <div class="chat-msg sent">
+                    <div class="chat-bubble">${msg}</div>
+                </div>`;
+                box.scrollTop = box.scrollHeight;
+                inp.value = "";
 
-            if (!chatSocket || chatSocket.readyState !== WebSocket.OPEN) {
-                console.error("WebSocket not connected");
-                return;
+                setTimeout(() => {
+                    if (!activeMentor) return;
+                    const initials = activeMentor.initials;
+                    const gradient = activeMentor.gradient;
+                    box.innerHTML += `
+                    <div class="chat-msg">
+                        <div class="user-avatar" style="width:32px;height:32px;font-size:11px;flex-shrink:0;background:${gradient}">${initials}</div>
+                        <div class="chat-bubble">I am a demo mentor profile. To test real-time chat, register a mentor account and chat with them!</div>
+                    </div>`;
+                    box.scrollTop = box.scrollHeight;
+                }, 1000);
             }
-
-            chatSocket.send(JSON.stringify({
-                event_type: "message",
-                message: msg,
-                sender_id: "student",
-                receiver_id: activeMentor ? activeMentor.id : null
-            }));
         }
 
         function getCookie(name) {
@@ -3184,71 +3583,168 @@ ${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text
         }
 
         /* ============ COURSES & TESTS ============ */
+        async function fetchCourses(program = 'all') {
+            try {
+                const res = await fetch(`/api/courses/?program=${program}`, { headers: { "X-CSRFToken": getCsrfToken() } });
+                if (res.ok) {
+                    const data = await res.json();
+                    COURSES = data.courses || [];
+                    renderCourses(COURSES);
+                }
+            } catch (e) {
+                console.error('Failed to fetch courses:', e);
+            }
+        }
+
         function renderCourses(list) {
             document.getElementById('courses-grid').innerHTML = list.map(c => `
 <div class="course-card"><div class="course-thumb">${c.icon}<div class="course-provider"><span class="badge badge-cyan">${c.provider}</span></div></div>
-<div class="course-body"><div class="course-title">${c.title}</div><div class="course-info"><i class="far fa-clock"></i> ${c.duration} • ${c.modules} modules</div>
+<div class="course-body"><div class="course-title">${c.title}</div><div class="course-info"><i class="far fa-clock"></i> ${c.duration} • Program: ${c.target_program}</div>
 <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm" style="flex:1" onclick="playCourse(${c.id})"><i class="fas fa-play"></i> Start</button><button class="btn btn-purple btn-sm" style="flex:1" onclick="startTest(${c.id})"><i class="fas fa-pen"></i> Test</button></div>
 </div></div>`).join('');
         }
         function filterCourses(cat) {
-            document.querySelectorAll('#sec-courses .tab-item').forEach(t => t.classList.remove('active')); event.target.classList.add('active');
-            renderCourses(cat === 'all' ? COURSES : COURSES.filter(c => c.category === cat));
+            document.querySelectorAll('#sec-courses .tab-item').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            let filtered = COURSES;
+            if (cat !== 'all') {
+                if (['web', 'data', 'cloud', 'mobile'].includes(cat)) {
+                    filtered = COURSES.filter(c => c.category === cat);
+                } else {
+                    filtered = COURSES.filter(c => c.target_program === cat);
+                }
+            }
+            renderCourses(filtered);
         }
         function playCourse(id) {
             const c = COURSES.find(x => x.id === id); if (!c) return;
             document.getElementById('modal-course-title').textContent = c.title;
-            let embedId = c.videoId;
+            let embedId = c.provider_url || '';
             if (embedId.includes('watch?v=')) {
                 embedId = embedId.split('watch?v=')[1].split('&')[0];
             } else if (embedId.includes('youtu.be/')) {
                 embedId = embedId.split('youtu.be/')[1].split('?')[0];
             }
-            
-            // Using youtube-nocookie.com which often bypasses embedding restrictions that cause Error 153
+
             const iframe = document.getElementById('course-iframe');
-            iframe.src = 'https://www.youtube-nocookie.com/embed/' + embedId + '?autoplay=1&rel=0&modestbranding=1';
+            if (embedId) {
+                iframe.src = 'https://www.youtube-nocookie.com/embed/' + embedId + '?autoplay=1&rel=0&modestbranding=1';
+            } else {
+                iframe.src = "about:blank";
+                iframe.parentElement.innerHTML += "<p style='color:white;text-align:center;padding:20px'>No valid video URL found.</p>";
+            }
             openModal('video-modal');
         }
-        function startTest(courseId) {
-            const c = COURSES.find(x => x.id === courseId); if (!c || !c.testQuestions) return;
-            currentTestCourseId = courseId; testAnswers = {}; testTimeLeft = c.testQuestions.length * 60;
-            const area = document.getElementById('skill-test-area'); area.style.display = 'block';
-            area.innerHTML = `<div class="test-container"><div class="test-header"><div><h3 style="font-family:var(--font-head);font-size:18px">${c.title} — Skill Test</h3><p style="font-size:12px;color:var(--muted)">${c.testQuestions.length} questions • ${c.testQuestions.length} minutes</p></div><div class="test-timer" id="test-timer">${formatTime(testTimeLeft)}</div></div>
-<div id="test-questions">${c.testQuestions.map((q, i) => `
-<div class="question-card"><div class="question-num">Question ${i + 1} of ${c.testQuestions.length}</div><div class="question-text">${q.q}</div>
-${q.options.map((o, oi) => `<div class="option" onclick="selectAnswer(${i},${oi},this)"><div class="option-marker">${String.fromCharCode(65 + oi)}</div>${o}</div>`).join('')}</div>`).join('')}</div>
-<button class="btn btn-primary btn-full" style="margin-top:20px" onclick="submitTest()"><i class="fas fa-check"></i> Submit Test</button></div>`;
-            area.scrollIntoView({ behavior: 'smooth' });
+
+        let antiCheatActive = false;
+
+        function handleAntiCheat() {
+            if (!antiCheatActive) return;
+            if (document.hidden || !document.hasFocus()) {
+                showToast("TAB SWITCH DETECTED! Test Auto-Submitted.", "error");
+                antiCheatActive = false;
+                submitTest();
+            }
+        }
+
+        function cancelTest() {
+            // "If a student cancels or exits the test, it should be restarted from the beginning when they attempt again."
             if (testTimer) clearInterval(testTimer);
-            testTimer = setInterval(() => { testTimeLeft--; document.getElementById('test-timer').textContent = formatTime(testTimeLeft); if (testTimeLeft <= 0) { clearInterval(testTimer); submitTest(); } }, 1000);
+            antiCheatActive = false;
+            window.removeEventListener('blur', handleAntiCheat);
+            document.removeEventListener('visibilitychange', handleAntiCheat);
+            document.getElementById('skill-test-area').style.display = 'none';
+            testAnswers = {};
+            currentTestCourseId = null;
+        }
+
+        async function startTest(courseId) {
+            const c = COURSES.find(x => x.id === courseId); if (!c) return;
+            const area = document.getElementById('skill-test-area');
+            area.style.display = 'block';
+            area.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin fa-2x" style="color:var(--accent);"></i><p style="margin-top:16px;">Loading test...</p></div>';
+            area.scrollIntoView({ behavior: 'smooth' });
+
+            try {
+                const res = await fetch(`/api/courses/${courseId}/test/`, { headers: { "X-CSRFToken": getCsrfToken() } });
+                const data = await res.json();
+                if (!res.ok) {
+                    area.innerHTML = `<div class="card" style="text-align:center;border-color:var(--danger)">
+                        <p style="color:var(--danger);font-weight:600"><i class="fas fa-exclamation-triangle"></i> ${data.error}</p>
+                        <button class="btn btn-secondary" style="margin-top:12px" onclick="cancelTest()">Close</button>
+                    </div>`;
+                    return;
+                }
+
+                // Initialize Test
+                currentTestCourseId = courseId;
+                testAnswers = {};
+                testTimeLeft = data.time_limit_minutes * 60;
+
+                // Mount Anti-cheat
+                antiCheatActive = true;
+                window.addEventListener('blur', handleAntiCheat);
+                document.addEventListener('visibilitychange', handleAntiCheat);
+
+                area.innerHTML = `<div class="test-container" style="border: 2px solid var(--accent); position: relative;">
+                <div style="position:absolute;top:0;left:0;right:0;background:var(--danger);color:#fff;text-align:center;font-size:12px;padding:4px 0;font-weight:800;">
+                    <i class="fas fa-eye"></i> STRICT PROCTORING ACTIVE. DO NOT SWITCH TABS.
+                </div>
+                <div class="test-header" style="margin-top:24px;"><div><h3 style="font-family:var(--font-head);font-size:18px">${data.title}</h3><p style="font-size:12px;color:var(--muted)">${data.questions.length} questions • ${data.time_limit_minutes} minutes</p></div><div class="test-timer" id="test-timer">${formatTime(testTimeLeft)}</div></div>
+<div id="test-questions">${data.questions.map((q, i) => `
+<div class="question-card"><div class="question-num">Question ${i + 1} of ${data.questions.length}</div><div class="question-text">${q.question}</div>
+${q.options.map((o, oi) => `<div class="option" onclick="selectAnswer(${i},${oi},this)"><div class="option-marker">${String.fromCharCode(65 + oi)}</div>${o}</div>`).join('')}</div>`).join('')}</div>
+<div style="display:flex;gap:12px;margin-top:20px">
+    <button class="btn btn-secondary" style="flex:1" onclick="if(confirm('Are you sure you want to cancel? Progress will be lost.')) cancelTest()"><i class="fas fa-times"></i> Cancel Test</button>
+    <button class="btn btn-primary" style="flex:2" onclick="submitTest()"><i class="fas fa-check"></i> Submit Test</button>
+</div>
+</div>`;
+                area.scrollIntoView({ behavior: 'smooth' });
+                if (testTimer) clearInterval(testTimer);
+                testTimer = setInterval(() => { testTimeLeft--; const tDiv = document.getElementById('test-timer'); if (tDiv) tDiv.textContent = formatTime(testTimeLeft); if (testTimeLeft <= 0) { clearInterval(testTimer); submitTest(); } }, 1000);
+            } catch (e) {
+                area.innerHTML = '<p style="color:var(--danger);">Error loading test.</p>';
+            }
         }
         function formatTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
         function selectAnswer(qi, oi, el) {
             el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
             el.classList.add('selected'); testAnswers[qi] = oi;
         }
-        function submitTest() {
+        async function submitTest() {
             if (testTimer) clearInterval(testTimer);
-            const c = COURSES.find(x => x.id === currentTestCourseId); if (!c) return;
-            let correct = 0; c.testQuestions.forEach((q, i) => { if (testAnswers[i] === q.correct) correct++; });
-            const score = Math.round(correct / c.testQuestions.length * 100), passed = score >= 70;
-            c.testQuestions.forEach((q, i) => {
-                const qcard = document.querySelectorAll('.question-card')[i]; if (!qcard) return;
-                qcard.querySelectorAll('.option').forEach((o, oi) => {
-                    o.style.pointerEvents = 'none';
-                    if (oi === q.correct) o.classList.add('correct');
-                    else if (testAnswers[i] === oi) o.classList.add('wrong');
-                });
-            });
+            antiCheatActive = false;
+            window.removeEventListener('blur', handleAntiCheat);
+            document.removeEventListener('visibilitychange', handleAntiCheat);
+
             const area = document.getElementById('skill-test-area');
-            area.querySelector('.test-container').innerHTML += `
-<div class="card" style="text-align:center;margin-top:24px;border-color:${passed ? 'var(--accent3)' : 'var(--danger)'}">
-<div style="font-size:48px;margin-bottom:12px">${passed ? '🏆' : '📝'}</div>
-<h2 style="font-family:var(--font-head)">${passed ? 'Congratulations!' : 'Keep Practicing!'}</h2>
-<p style="color:var(--muted);margin:8px 0">You scored <strong style="color:${passed ? 'var(--accent3)' : 'var(--danger)'}">
-${score}%</strong> (${correct}/${c.testQuestions.length} correct)</p>
-${passed ? `<p style="color:var(--accent3);margin-bottom:16px">✓ You passed! Certificate earned.</p><button class="btn btn-primary" onclick="showCertificate('${c.title}',${score})"><i class="fas fa-certificate"></i> View Certificate</button>` : `<p style="color:var(--danger);margin-bottom:16px">You need 70% to pass. Try again!</p><button class="btn btn-secondary" onclick="startTest(${currentTestCourseId})"><i class="fas fa-redo"></i> Retry Test</button>`}</div>`;
+
+            // disable options
+            area.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
+            const submitBtns = area.querySelectorAll('button');
+            submitBtns.forEach(b => b.disabled = true);
+
+            try {
+                const res = await fetch(`/api/courses/${currentTestCourseId}/test/submit/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+                    body: JSON.stringify({ answers: testAnswers })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    area.innerHTML = `
+<div class="card" style="text-align:center;margin-top:24px;border-color:${data.passed ? 'var(--accent3)' : 'var(--danger)'}">
+<div style="font-size:48px;margin-bottom:12px">${data.passed ? '🏆' : '📝'}</div>
+<h2 style="font-family:var(--font-head)">${data.passed ? 'Congratulations!' : 'Keep Practicing!'}</h2>
+<p style="color:var(--muted);margin:8px 0">You scored <strong style="color:${data.passed ? 'var(--accent3)' : 'var(--danger)'}">
+${data.score}%</strong> (${data.correct_count}/${data.total_questions} correct)</p>
+${data.passed ? `<p style="color:var(--accent3);margin-bottom:16px">✓ You passed! Certificate earned.</p><button class="btn btn-primary" onclick="showCertificate('Course Test',${data.score})"><i class="fas fa-certificate"></i> View Certificate</button>` : `<p style="color:var(--danger);margin-bottom:16px">Try again!</p><button class="btn btn-secondary" onclick="startTest(${currentTestCourseId})"><i class="fas fa-redo"></i> Retry Test</button>`}</div>`;
+                } else {
+                    area.innerHTML += `<p style="color:var(--danger)">Error saving results: ${data.error}</p>`;
+                }
+            } catch (e) {
+                area.innerHTML += `<p style="color:var(--danger)">Network error.</p>`;
+            }
         }
         function showCertificate(courseName, score) {
             document.getElementById('cert-course-name').textContent = courseName;
@@ -3330,18 +3826,18 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
         document.addEventListener('DOMContentLoaded', () => {
             renderJobs(JOBS);
             renderMentors(MENTORS);
-            renderCourses(COURSES);
+            fetchCourses();
             renderProjects(PROJECTS);
-            
+
             // Auto-show dashboard or mentors based on current task
-            showSection('mentors'); 
+            showSection('dashboard');
         });
         function showResumeResults(score, sections, improvements, ats) {
             document.getElementById('resume-upload-card').style.display = 'none';
             document.getElementById('resume-tips').style.display = 'none';
             document.getElementById('resume-results').style.display = 'block';
             document.getElementById('score-num').textContent = score;
-            
+
             // Set top right badge
             const topBadge = document.getElementById('top-score-badge');
             topBadge.textContent = score + '/100';
@@ -3352,15 +3848,15 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
             topBadge.style.borderRadius = '100px';
 
             const circle = document.getElementById('main-score-circle');
-            setTimeout(() => { 
-                circle.style.background = `conic-gradient(var(--accent) ${score * 3.6}deg, #1e293b ${score * 3.6}deg)`; 
+            setTimeout(() => {
+                circle.style.background = `conic-gradient(var(--accent) ${score * 3.6}deg, #1e293b ${score * 3.6}deg)`;
             }, 100);
 
             document.getElementById('score-text').textContent = score >= 85 ? 'Excellent — Ready for top companies! 🚀' : score >= 65 ? 'Good — A few improvements needed' : score >= 40 ? 'Fair — Needs significant improvement' : 'Poor — Major revisions needed';
-            
+
             const names = { contact: 'Contact Info', education: 'Education', skills: 'Skills', experience: 'Experience', projects: 'Projects', summary: 'Summary' };
             const maxes = { contact: 10, education: 10, skills: 20, experience: 15, projects: 20, summary: 15 };
-            
+
             document.getElementById('score-breakdown').innerHTML = Object.entries(sections).map(([k, v]) => {
                 const pct = Math.round(v / maxes[k] * 100);
                 const isHigh = pct === 100;
@@ -3375,7 +3871,7 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                     </div>
                 </div>`;
             }).join('');
-            
+
             document.getElementById('improvements-list').innerHTML = improvements.slice(0, 5).map(i => `<div style="display:flex;gap:10px;margin-bottom:10px;font-size:13px"><span style="color:#a78bfa;flex-shrink:0">→</span>${i}</div>`).join('');
         }
         function resetResume() {
@@ -3400,18 +3896,18 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                 const data = await res.json();
                 const list = document.getElementById('notif-list');
                 const dot = document.getElementById('notif-dot');
-                
+
                 if (data.unread_count > 0) {
                     dot.classList.add('active');
                 } else {
                     dot.classList.remove('active');
                 }
-                
+
                 if (data.notifications.length === 0) {
                     list.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>`;
                     return;
                 }
-                
+
                 list.innerHTML = data.notifications.map(n => `
                     <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="markNoteRead(${n.id})">
                         <span class="notif-title">${n.title}</span>
@@ -3427,11 +3923,11 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
         function toggleNotifDropdown() {
             const d = document.getElementById('notif-dropdown');
             const isShow = d.classList.contains('show');
-            
+
             if (!isShow) {
                 fetchNotifications();
                 d.classList.add('show');
-                
+
                 const closeHandler = (e) => {
                     if (!d.contains(e.target) && !document.getElementById('notif-bell-btn').contains(e.target)) {
                         d.classList.remove('show');
@@ -3453,7 +3949,7 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                     body: JSON.stringify({ id: id })
                 });
                 fetchNotifications();
-            } catch (e) {}
+            } catch (e) { }
         }
 
         async function markAllNotesRead() {
@@ -3465,7 +3961,7 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                     body: JSON.stringify({}) // Empty body marks all as read
                 });
                 fetchNotifications();
-            } catch (e) {}
+            } catch (e) { }
         }
 
         /* ============ SETTINGS ============ */
@@ -3503,21 +3999,21 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                 const data = await res.json();
                 if (res.ok) {
                     showToast('Profile updated successfully!', 'success');
-                    
+
                     const newName = payload.first_name || 'Student';
-                    
+
                     // Update welcome text if name changed
                     const welcome = document.querySelector('#sec-dashboard .section-title');
                     if (welcome) {
                         welcome.textContent = `Welcome back, ${newName}! 👋`;
                     }
-                    
+
                     // Update sidebar name
                     const sidebarName = document.getElementById('sidebar-name');
                     if (sidebarName) {
                         sidebarName.textContent = newName;
                     }
-                    
+
                     // Update avatar
                     const avatar = document.getElementById('sidebar-avatar');
                     if (avatar && payload.first_name) {
@@ -3608,7 +4104,125 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                 });
             }
         });
+
+        async function applyMentor(event) {
+            event.preventDefault();
+            const btn = document.getElementById('apply-mentor-btn');
+            const err = document.getElementById('apply-mentor-error');
+            const fileInput = document.getElementById('mentor-id-doc');
+
+            if (!fileInput.files.length) {
+                err.textContent = "Please upload a College/Company ID for verification.";
+                err.style.display = 'block';
+                return;
+            }
+
+            err.style.display = 'none';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            const formData = new FormData();
+            formData.append('mentor_type', document.getElementById('mentor-type').value);
+            formData.append('years_experience', document.getElementById('mentor-exp').value);
+            formData.append('company', document.getElementById('mentor-company').value.trim());
+            formData.append('designation', document.getElementById('mentor-title').value.trim());
+            formData.append('expertise', document.getElementById('mentor-expertise').value.trim());
+            formData.append('bio', document.getElementById('mentor-bio').value.trim());
+            formData.append('college_id', fileInput.files[0]);
+
+            try {
+                const res = await fetch('/api/mentorship/apply/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCsrfToken() },
+                    credentials: 'include',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    closeModal('apply-mentor-modal');
+                    showToast('Application submitted! Pending admin verification.', 'success');
+                    document.getElementById('apply-mentor-form').reset();
+                } else {
+                    err.textContent = data.error || 'Failed to submit application.';
+                    err.style.display = 'block';
+                }
+            } catch (error) {
+                err.textContent = 'Network error. Please try again.';
+                err.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+            }
+        }
     </script>
+
+    <!-- Mentor Application Modal -->
+    <div class="modal-overlay" id="apply-mentor-modal">
+        <div class="modal" style="max-width:550px">
+            <button class="modal-close" onclick="closeModal('apply-mentor-modal')"><i class="fas fa-times"></i></button>
+            <div class="modal-title"><i class="fas fa-chalkboard-teacher" style="color:var(--accent);"></i> Become a
+                Mentor</div>
+            <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Share your expertise and help guide
+                students. Please provide your details and College ID verification.</p>
+
+            <form id="apply-mentor-form" onsubmit="applyMentor(event); return false;" autocomplete="off">
+                <div id="apply-mentor-error" class="error-msg" style="display:none;margin-bottom:16px;"></div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Role / Type</label>
+                        <select class="form-input" id="mentor-type" required>
+                            <option value="senior">Senior Student</option>
+                            <option value="alumni">Alumni</option>
+                            <option value="professional">Industry Professional</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Years of Exp.</label>
+                        <input type="number" id="mentor-exp" class="form-input" min="0" value="0" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company/Institution</label>
+                        <input type="text" id="mentor-company" class="form-input"
+                            placeholder="e.g. Google or IIT Madras" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="mentor-title" class="form-input" placeholder="e.g. Software Engineer"
+                            required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Expertise (comma separated)</label>
+                    <input type="text" id="mentor-expertise" class="form-input"
+                        placeholder="e.g. React, Python, Placement Prep" required>
+                </div>
+                <div class="form-group">
+                    <label>Short Bio</label>
+                    <textarea id="mentor-bio" class="form-input" rows="3"
+                        placeholder="Tell students how you can help them..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Upload College/Company ID (Required)</label>
+                    <div
+                        style="display:flex; align-items:center; gap:12px; background:var(--surface2); padding:10px 14px; border-radius:8px; border:1px solid var(--border);">
+                        <input type="file" id="mentor-id-doc" accept=".pdf" required
+                            style="width:100%; color:var(--text); font-size:13px;">
+                    </div>
+                    <small style="color:var(--muted);font-size:11px;display:block;margin-top:6px;"><i
+                            class="fas fa-shield-alt"></i> Strictly for backend verification only.</small>
+                </div>
+
+                <button type="submit" id="apply-mentor-btn" class="btn btn-primary btn-full" style="margin-top:10px;">
+                    <i class="fas fa-paper-plane"></i> Submit Application
+                </button>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

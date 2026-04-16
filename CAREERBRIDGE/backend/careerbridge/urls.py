@@ -49,6 +49,8 @@ urlpatterns = [
 
     # Mentorship API
     path('api/mentorship/', include('mentorship.urls')),
+    # Courses API
+    path('api/courses/', include('courses.urls')),
     # Projects API
     path('api/projects/', include('projects.urls')),
 
