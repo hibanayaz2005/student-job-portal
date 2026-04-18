@@ -23,6 +23,9 @@ from django.contrib.auth.hashers import make_password, check_password
 # REGISTER
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
+import hashlib
+from .forms import StudentRegistrationForm
+from verification.models import VerificationDocument
 
 
 
@@ -422,3 +425,49 @@ def google_login(request):
     handle the callback. For now it simply returns a placeholder message.
     """
     return HttpResponse("Google sign-in is not configured yet.")
+
+
+def student_registration(request):
+    """View to handle student registration with Aadhaar and College ID verification."""
+    if request.method == 'POST':
+        form = StudentRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                # 1. Create the User account
+                User = get_user_model()
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    email=form.cleaned_data['email'],
+                    password=form.cleaned_data['password'],
+                    first_name=form.cleaned_data['full_name'],
+                    role='student'
+                )
+
+                # 2. Update the StudentProfile (Profile is auto-created by signals)
+                profile = user.student_profile
+                profile.college_name = form.cleaned_data['college_name']
+                profile.branch = form.cleaned_data['branch']
+                profile.year_of_study = form.cleaned_data['year_of_study']
+                profile.save()
+
+                # 3. Handle Aadhaar Security: Store SHA-256 hash, not the raw number
+                aadhaar_raw = form.cleaned_data['aadhaar_number']
+                aadhaar_hash = hashlib.sha256(aadhaar_raw.encode()).hexdigest()
+
+                # 4. Save the Verification Document (College ID)
+                VerificationDocument.objects.create(
+                    student=profile,
+                    doc_type='college_id',
+                    document_file=form.cleaned_data['college_id_card'],
+                    aadhaar_hash=aadhaar_hash,
+                    status='pending'
+                )
+
+                messages.success(request, "Registration successful! Your profile is pending verification.")
+                return redirect('accounts-login')
+            except Exception as e:
+                messages.error(request, f"An error occurred: {str(e)}")
+    else:
+        form = StudentRegistrationForm()
+
+    return render(request, 'accounts/register_student.html', {'form': form})

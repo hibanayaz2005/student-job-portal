@@ -12,7 +12,8 @@ from .views import (
     google_login,
     PasswordResetRequestView,
     password_reset_confirm_page,
-    ChangePasswordView
+    ChangePasswordView,
+    student_registration
 )
 
 app_name = "accounts"
@@ -40,6 +41,7 @@ urlpatterns = [
     # Web pages
     path("login-page/", login_page, name="login-page"),
     path("settings/", settings_page, name="settings"),
+    path("register-student/", student_registration, name="register-student"),
     path("logout/", logout_page, name="logout"),
 
     # OAuth

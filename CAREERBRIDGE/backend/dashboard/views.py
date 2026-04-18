@@ -19,6 +19,8 @@ from jobs.models import Job, Application
 from courses.models import Course
 from resume.models import ResumeAnalysis
 from .models import OTPVerification
+from courses.models import TestAttempt, CourseProgress
+from accounts.models import StudentProfile
 
 import requests
 
@@ -259,6 +261,85 @@ def home(request):
 
     return render(request, 'dashboard/home.html', context)
 
-    def student_portal(request):
-        return render(request, 'dashboard/student-portal.html')
+def student_portal(request):
+    return render(request, 'dashboard/student-portal.html')
+
+
+def analytics_dashboard(request):
+    """View to render the High-Engagement Real-Time Analytics Dashboard."""
+    # Add any initial context data if needed
+    context = {
+        'total_users': get_user_model().objects.count(),
+        'total_jobs': Job.objects.count(),
+        'active_mentors': StudentProfile.objects.filter(user__role='student').count(), # Using students as proxy for now
+    }
+    return render(request, 'dashboard/analytics.html', context)
+
+
+def leaderboard_view(request):
+    """Returns top 5 students based on their cumulative test scores."""
+    top_students = TestAttempt.objects.filter(passed=True) \
+        .values('student__user__first_name', 'student__user__username') \
+        .annotate(total_score=Count('id')) \
+        .order_by('-total_score')[:5]
+    
+    data = [
+        {
+            "name": s['student__user__first_name'] or s['student__user__username'],
+            "score": s['total_score']
+        } for s in top_students
+    ]
+    return JsonResponse({"leaderboard": data})
+
+
+def dashboard_stats_view(request):
+    """Returns summary stats for the logged-in student."""
+    if not request.user.is_authenticated or request.user.role != 'student':
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+    
+    profile = request.user.student_profile
+    
+    # Progress: (completed courses / total available courses relevant to program)
+    total_relevant = Course.objects.filter(target_program__in=[profile.user.role, 'Any']).count() or 1
+    completed = CourseProgress.objects.filter(student=profile, status='completed').count()
+    progress_pct = int((completed / total_relevant) * 100)
+    
+    return JsonResponse({
+        "streak": profile.daily_streak,
+        "progress": progress_pct,
+        "verified_skills": profile.skills,
+        "name": profile.user.first_name or profile.user.username
+    })
+
+
+def get_realtime_jobs(request):
+    """Integrated personalized job search based on student branch."""
+    # 1. Configuration
+    APP_ID = settings.ADZUNA_APP_ID
+    APP_KEY = settings.ADZUNA_APP_KEY
+    
+    # 2. Get User Info
+    user_branch = "BCA"
+    if request.user.is_authenticated and hasattr(request.user, 'student_profile'):
+        user_branch = request.user.student_profile.branch or "BCA"
+    
+    # 3. Define keywords per branch
+    branch_keywords = {
+        "BCA": "Software", "B.Tech": "Engineer", 
+        "BBA": "Management", "BCom": "Finance"
+    }
+    
+    search_query = branch_keywords.get(user_branch, "Internship")
+    
+    # 4. Call API (Filtering for India 'in')
+    url = f"https://api.adzuna.com/v1/api/jobs/in/search/1?app_id={APP_ID}&app_key={APP_KEY}&what={search_query}"
+    
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+        job_list = data.get('results', [])
+    except:
+        job_list = [] # Fallback if API is down
+
+    return render(request, 'dashboard/student-portal.html', {'jobs': job_list, 'branch': user_branch})
 

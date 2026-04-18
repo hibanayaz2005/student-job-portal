@@ -10,6 +10,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 
+from .services import fetch_adzuna_jobs
+
 class JobListView(APIView):
     permission_classes = [AllowAny]
 
@@ -23,36 +25,18 @@ class JobListView(APIView):
                 qs = qs.filter(eligible_years__contains=[y])
             except Exception:
                 pass
-        if not qs.exists():
-            # return a few sample jobs so the UI is not empty
-            sample = [
-                {
-                    'id': 0,
-                    'employer': None,
-                    'title': 'Frontend Developer Intern',
-                    'description': 'React, JavaScript, CSS. Work on real products used by millions.',
-                    'job_type': 'internship',
-                    'eligible_years': [3,4],
-                    'location': 'Chennai',
-                    'deadline': '2026-12-31',
-                    'created_at': None,
-                },
-                {
-                    'id': 1,
-                    'employer': None,
-                    'title': 'Data Science Research Intern',
-                    'description': 'Python, ML, Data Analysis. Stipend + LOR.',
-                    'job_type': 'internship',
-                    'eligible_years': [2,3,4],
-                    'location': 'IIT Madras Research Park',
-                    'deadline': '2026-11-30',
-                    'created_at': None,
-                }
-            ]
-            return Response(sample)
-
+        
         serializer = JobSerializer(qs, many=True)
-        return Response(serializer.data)
+        local_jobs = serializer.data
+
+        # Fetch external jobs from Adzuna
+        try:
+            external_jobs = fetch_adzuna_jobs()
+            combined_jobs = local_jobs + external_jobs
+        except Exception:
+            combined_jobs = local_jobs
+
+        return Response(combined_jobs)
 
 
 class JobCreateView(APIView):

@@ -38,6 +38,8 @@ class StudentProfile(models.Model):
     aptitude_passed = models.BooleanField(default=False)
     resume_score = models.IntegerField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
+    daily_streak = models.IntegerField(default=0)
+    last_activity_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.college_name}"
@@ -91,3 +93,26 @@ def create_user_profiles(sender, instance, created, **kwargs):
                     'industry': ''
                 }
             )
+
+@receiver(post_save, sender='courses.TestAttempt')
+def update_skills_on_test_pass(sender, instance, **kwargs):
+    """Automatically adds the course's category as a skill when a test is passed."""
+    if instance.passed:
+        profile = instance.student
+        course = instance.test.course
+        skill_to_add = course.category
+        
+        if skill_to_add and skill_to_add not in profile.skills:
+            profile.skills.append(skill_to_add)
+            profile.save()
+            
+            # Update streak
+            from django.utils import timezone
+            today = timezone.now().date()
+            if profile.last_activity_date != today:
+                if profile.last_activity_date == today - timezone.timedelta(days=1):
+                    profile.daily_streak += 1
+                else:
+                    profile.daily_streak = 1
+                profile.last_activity_date = today
+                profile.save()

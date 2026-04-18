@@ -191,3 +191,7 @@ CHANNEL_LAYERS = {
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+# Adzuna API Credentials
+ADZUNA_APP_ID = os.environ.get("ADZUNA_APP_ID", "d5c48b7b") # Placeholder ID
+ADZUNA_APP_KEY = os.environ.get("ADZUNA_APP_KEY", "b35f299c8f8e8f8e8f8e8f8e8f8e8f8e") # Placeholder Key

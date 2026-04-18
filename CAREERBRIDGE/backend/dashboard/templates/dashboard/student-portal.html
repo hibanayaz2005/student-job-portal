@@ -104,6 +104,57 @@
             background: var(--accent)
         }
 
+        /* PREMIUM UI ELEMENTS */
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .pulse-dot::after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            background-color: #10b981;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.7); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.5s;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .card:hover::before {
+            left: 150%;
+        }
+
+        .card {
+            overflow: hidden;
+            position: relative;
+        }
+
         /* AUTH OVERLAY */
         #auth-overlay {
             position: fixed;
@@ -2073,6 +2124,23 @@
                     </div>
                     <div id="str-text" style="font-size:11px;margin-top:4px;color:var(--muted)"></div>
                 </div>
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label>Verify Identity (Aadhaar / College ID)</label>
+                    <div id="scan-container" style="position: relative; background: var(--surface2); border: 1px solid var(--border); padding: 20px; border-radius: 16px; text-align: center; transition: all 0.3s ease;">
+                        <input type="file" id="verif-doc" style="display:none" onchange="simulateVerification()">
+                        <div id="scan-label" onclick="document.getElementById('verif-doc').click()" style="cursor:pointer">
+                            <i class="fas fa-id-card" style="font-size: 32px; color: var(--accent); margin-bottom: 12px; display: block;"></i>
+                            <p style="font-size: 13px; color: var(--text); font-weight: 600;">Upload ID for AI Verification</p>
+                            <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Supports PDF, PNG, JPG (Max 5MB)</p>
+                        </div>
+                        <div id="scan-progress-box" style="display:none; padding: 10px 0;">
+                            <p id="scan-status" style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Scanning document...</p>
+                            <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden;">
+                                <div id="scan-bar" class="progress-fill fill-cyan" style="width:0%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button type="submit" id="reg-btn" class="btn btn-primary btn-full">
                     <i class="fas fa-user-plus"></i> <span id="reg-btn-text">Create Account</span>
                 </button>
@@ -2214,6 +2282,17 @@
                 </div><button class="btn btn-primary btn-sm" onclick="showSection('jobs')"><i class="fas fa-search"></i>
                     Find Jobs</button>
             </div>
+
+            <!-- PRIORITY ACTION BANNER -->
+            <div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid var(--accent); margin-bottom: 32px; position: relative; overflow: hidden;">
+                <div style="position: relative; z-index: 1;">
+                    <div class="badge badge-cyan" style="margin-bottom: 12px;">PRIORITY ACTION</div>
+                    <h2 style="font-family: var(--font-head); margin-bottom: 8px;">Finish your "Django Masterclass" Test</h2>
+                    <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">You are only 1 test away from a <span style="color: var(--accent3); font-weight: bold;">Verified Python Badge</span> on your resume.</p>
+                    <button class="btn btn-primary" onclick="showSection('courses')">Resume Learning <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <i class="fas fa-graduation-cap" style="position: absolute; right: -20px; bottom: -20px; font-size: 150px; color: rgba(0, 210, 255, 0.05); transform: rotate(-15deg);"></i>
+            </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:rgba(0,229,255,0.1);color:var(--accent)"><i
@@ -2315,6 +2394,16 @@
                         </div>
                     </div>
                 </div>
+                <!-- COMMUNITY PULSE -->
+                <div class="card" style="position: relative; overflow: hidden;">
+                    <div class="card-header">
+                        <h3 style="font-family: var(--font-head); font-weight: 700;">Community Pulse</h3>
+                        <span class="pulse-dot"></span>
+                    </div>
+                    <div id="live-activity-feed" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                        <!-- Updated Dynamically by updateActivityFeed() -->
+                    </div>
+                </div>
             </div>
             <div class="card" style="margin-top:20px">
                 <div class="card-header">
@@ -2322,11 +2411,13 @@
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
                     <div>
-                        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span
-                                style="font-size:13px">Python</span><span
-                                style="font-size:13px;color:var(--accent3)">92%</span></div>
-                        <div class="progress">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+                            <span style="font-size:13px">Python (vs. Industry standard)</span>
+                            <span style="font-size:13px; color:var(--accent)">You: 92% / Job Req: 85%</span>
+                        </div>
+                        <div class="progress" style="height: 10px; position: relative;">
                             <div class="progress-fill fill-green" style="width:92%"></div>
+                            <div style="position: absolute; left: 85%; height: 10px; width: 2px; background: white; z-index: 2;"></div>
                         </div>
                     </div>
                     <div>
@@ -3034,6 +3125,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script>
+        /* ============ GLOBALS ============ */
+        const CURRENT_USER_ID = parseInt("{{ request.user.id|default:0 }}");
+        let USER_SKILLS = "{{ request.user.student_profile.skills|default:'' }}";
+
+        function calculateSkillMatch(jobSkills, userSkills) {
+            if (!jobSkills || !userSkills) return 0;
+            const u = userSkills.toLowerCase().split(',').map(s => s.trim()).filter(s => s);
+            if (u.length === 0) return 0;
+            const matches = jobSkills.filter(s => u.includes(s.toLowerCase()));
+            return Math.round((matches.length / jobSkills.length) * 100);
+        }
+
         /* ============ DATA ============ */
         const JOBS = [
             { id: 1, title: "Frontend Developer Intern", company: "Zoho Corporation", location: "Chennai", type: "internship", eligible: "3rd & 4th Year", description: "Build modern web interfaces using React and JavaScript. Work on real products used by millions worldwide.", skills: ["React", "JavaScript", "CSS", "HTML"], salary: "₹15,000–20,000/mo", deadline: "2026-03-25", logo: "Z", color: "var(--accent)" },
@@ -4442,7 +4545,56 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                     else showToast('Please upload a PDF file', 'error');
                 });
             }
+            
+            // Start Community Pulse
+            updateActivityFeed();
+            setInterval(updateActivityFeed, 4000);
+            
+            // Animate Stats
+            animateCounters();
         });
+
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-value');
+            counters.forEach(counter => {
+                const targetText = counter.innerText.trim();
+                const target = +targetText;
+                if (isNaN(target)) return;
+                
+                let count = 0;
+                const updateCount = () => {
+                    const increment = target / 50;
+                    if (count < target) {
+                        count += increment;
+                        counter.innerText = Math.ceil(count);
+                        setTimeout(updateCount, 20);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCount();
+            });
+        }
+
+        function updateActivityFeed() {
+            const activities = [
+                "Rahul K. just got shortlisted for Zoho!",
+                "Priya D. completed 'React for Beginners'",
+                "New Mentor Dr. Smith joined the platform",
+                "5 students applied for 'Frontend Intern'",
+                "Amit S. earned a 'Python Verified' badge"
+            ];
+            const feed = document.getElementById('live-activity-feed');
+            if (!feed) return;
+            const randomIdx = Math.floor(Math.random() * activities.length);
+            
+            const item = document.createElement('div');
+            item.style.cssText = "font-size: 12px; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease;";
+            item.innerHTML = `<i class="fas fa-bolt" style="color: var(--warn); margin-right: 8px;"></i> ${activities[randomIdx]}`;
+            
+            feed.prepend(item);
+            if (feed.children.length > 5) feed.lastChild.remove();
+        }
 
         async function applyMentor(event) {
             event.preventDefault();
