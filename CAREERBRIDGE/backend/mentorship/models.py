@@ -23,6 +23,7 @@ class MentorProfile(models.Model):
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Session pricing per hour")
     is_available = models.BooleanField(default=True)
     is_approved = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=20, blank=True, help_text="WhatsApp number for direct contact")
     college_id = models.FileField(upload_to='mentors/id_cards/', blank=True, null=True, help_text="Upload College ID for verification")
     created_at = models.DateTimeField(auto_now_add=True)
 

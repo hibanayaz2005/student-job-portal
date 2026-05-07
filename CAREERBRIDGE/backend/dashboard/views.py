@@ -133,7 +133,15 @@ def verify_aadhaar_otp(request):
 
 @ensure_csrf_cookie
 def student_portal(request):
-    return render(request, 'dashboard/student-portal.html')
+    context = {}
+    if request.user.is_authenticated:
+        try:
+            from mentorship.models import MentorProfile
+            mentor = MentorProfile.objects.get(user=request.user)
+            context['mentor_profile'] = mentor
+        except:
+            context['mentor_profile'] = None
+    return render(request, 'dashboard/student-portal.html', context)
 
 
 def home(request):
@@ -261,8 +269,7 @@ def home(request):
 
     return render(request, 'dashboard/home.html', context)
 
-def student_portal(request):
-    return render(request, 'dashboard/student-portal.html')
+
 
 
 def analytics_dashboard(request):

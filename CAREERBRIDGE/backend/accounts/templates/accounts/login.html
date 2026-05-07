@@ -34,8 +34,9 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
       position: relative;
+      padding: 40px 20px;
     }
 
     /* Animated Background Blobs */
@@ -73,6 +74,18 @@
       max-width: 440px;
       padding: 20px;
       z-index: 10;
+      animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .glass-card {
@@ -330,5 +343,17 @@
       </div>
     </div>
   </div>
+  <script>
+    document.addEventListener('mousemove', (e) => {
+      const card = document.querySelector('.glass-card');
+      const blobs = document.querySelectorAll('.blob');
+      const mouseX = e.clientX, mouseY = e.clientY;
+      const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
+      const moveX = (mouseX - centerX) / 80, moveY = (mouseY - centerY) / 80;
+      if (card) card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      if (blobs[0]) blobs[0].style.transform = `translate(${-moveX * 2}px, ${-moveY * 2}px) scale(1.1)`;
+      if (blobs[1]) blobs[1].style.transform = `translate(${moveX * 1.5}px, ${moveY * 1.5}px) scale(1.1)`;
+    });
+  </script>
 </body>
 </html>

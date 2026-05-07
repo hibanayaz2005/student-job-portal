@@ -54,12 +54,25 @@ def application_analytics(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=MentorSession)
 def mentor_session_notification(sender, instance, created, **kwargs):
-    if not created and instance.status == 'confirmed':
-        # When mentor accepts tutoring request
+    if created:
+        # Notify MENTOR when a session is booked
+        notif = Notification.objects.create(
+            user=instance.mentor.user,
+            title="New Session Booking! 📅",
+            message=f"Student {instance.student.user.get_full_name() or instance.student.user.username} has booked a session on '{instance.topic}' for {instance.session_date.strftime('%Y-%m-%d %H:%M')}."
+        )
+        send_ws_notification(instance.mentor.user.id, {
+            "title": notif.title,
+            "message": notif.message,
+            "id": notif.id,
+            "type": "new_booking"
+        })
+    elif instance.status == 'confirmed':
+        # Notify STUDENT when mentor accepts tutoring request
         notif = Notification.objects.create(
             user=instance.student.user,
             title="Tutoring Request Accepted! ✅",
-            message=f"Mentor {instance.mentor.user.get_full_name()} has accepted your request for '{instance.topic}'."
+            message=f"Mentor {instance.mentor.user.get_full_name() or instance.mentor.user.username} has accepted your request for '{instance.topic}'."
         )
         send_ws_notification(instance.student.user.id, {
             "title": notif.title,
