@@ -2364,6 +2364,11 @@
             </div>
             <div class="nav-section">
                 <div class="nav-label">SYSTEM</div>
+                <a href="{% url 'analytics_dashboard' %}" style="text-decoration:none;">
+                    <div class="nav-item">
+                        <i class="fas fa-chart-line"></i><span>Live Analytics</span>
+                    </div>
+                </a>
                 <div class="nav-item" onclick="showSection('admin')">
                     <i class="fas fa-shield-alt"></i><span>Admin Panel</span>
                 </div>
@@ -4927,9 +4932,8 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
                 });
             }
             
-            // Start Community Pulse
-            updateActivityFeed();
-            setInterval(updateActivityFeed, 4000);
+            // Start Community Pulse via WebSockets
+            initAnalyticsSocket();
             
             // Animate Stats
             animateCounters();
@@ -4957,24 +4961,70 @@ ${p.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="joinPro
             });
         }
 
-        function updateActivityFeed() {
-            const activities = [
-                "Rahul K. just got shortlisted for Zoho!",
-                "Priya D. completed 'React for Beginners'",
-                "New Mentor Dr. Smith joined the platform",
-                "5 students applied for 'Frontend Intern'",
-                "Amit S. earned a 'Python Verified' badge"
-            ];
-            const feed = document.getElementById('live-activity-feed');
-            if (!feed) return;
-            const randomIdx = Math.floor(Math.random() * activities.length);
+        function initAnalyticsSocket() {
+            const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+            const wsHost = window.location.host;
+            const analyticsSocket = new WebSocket(`${wsProtocol}${wsHost}/ws/analytics/`);
             
-            const item = document.createElement('div');
-            item.style.cssText = "font-size: 12px; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease;";
-            item.innerHTML = `<i class="fas fa-bolt" style="color: var(--warn); margin-right: 8px;"></i> ${activities[randomIdx]}`;
+            analyticsSocket.onopen = () => console.log("Analytics Stream Connected to Student Dashboard");
             
-            feed.prepend(item);
-            if (feed.children.length > 5) feed.lastChild.remove();
+            analyticsSocket.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                const feed = document.getElementById('live-activity-feed');
+                if (!feed) return;
+                
+                let icon = 'fa-bolt';
+                let color = 'var(--warn)';
+                let desc = '';
+
+                if (data.type === 'test_pass') {
+                    icon = 'fa-certificate'; color = '#10b981';
+                    desc = `${data.user} passed ${data.course} with ${data.score}%`;
+                } else if (data.type === 'new_app') {
+                    icon = 'fa-paper-plane'; color = '#7c3aed';
+                    desc = `${data.user} applied to ${data.job} at ${data.company}`;
+                } else if (data.type === 'new_job') {
+                    icon = 'fa-briefcase'; color = '#00e5ff';
+                    desc = `New opening: ${data.title} posted`;
+                } else {
+                    desc = "Platform activity detected.";
+                }
+
+                if (desc) {
+                    const item = document.createElement('div');
+                    item.style.cssText = "font-size: 12px; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease;";
+                    item.innerHTML = `<i class="fas ${icon}" style="color: ${color}; margin-right: 8px;"></i> ${desc}`;
+                    
+                    feed.prepend(item);
+                    if (feed.children.length > 5) feed.lastChild.remove();
+                }
+                
+                // Real-Time Stats Update Simulation
+                const dashApps = document.querySelectorAll('.stat-value')[1]; // Applications Sent
+                const dashCourses = document.querySelectorAll('.stat-value')[2]; // Courses Completed
+                
+                if (data.type === 'new_app' && dashApps) {
+                    dashApps.innerText = parseInt(dashApps.innerText) + 1;
+                    dashApps.style.color = '#7c3aed';
+                    setTimeout(() => dashApps.style.color = 'var(--text)', 1000);
+                } else if (data.type === 'test_pass' && dashCourses) {
+                    dashCourses.innerText = parseInt(dashCourses.innerText) + 1;
+                    dashCourses.style.color = '#10b981';
+                    setTimeout(() => dashCourses.style.color = 'var(--text)', 1000);
+                }
+            };
+            
+            // Jitter for 'Live' effect even when no socket events occur
+            setInterval(() => {
+                const feed = document.getElementById('live-activity-feed');
+                if (!feed) return;
+                if (feed.children.length === 0) {
+                     const item = document.createElement('div');
+                     item.style.cssText = "font-size: 12px; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease;";
+                     item.innerHTML = `<i class="fas fa-spinner fa-spin" style="color: var(--accent); margin-right: 8px;"></i> Syncing with platform...`;
+                     feed.prepend(item);
+                }
+            }, 5000);
         }
 
         async function applyMentor(event) {
