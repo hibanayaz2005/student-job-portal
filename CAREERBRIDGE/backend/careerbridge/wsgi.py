@@ -15,7 +15,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'careerbridge.settings')
 
 application = get_wsgi_application()
 
-try:
-    call_command('migrate', interactive=False)
-except Exception as e:
-    print("Migration failed during startup:", e)
+import time
+import sys
+
+max_retries = 5
+for i in range(max_retries):
+    try:
+        call_command('migrate', interactive=False)
+        print("Migrations applied successfully!")
+        break
+    except Exception as e:
+        print(f"Migration failed during startup (attempt {i+1}/{max_retries}): {e}")
+        if "database is locked" in str(e).lower() or "operationalerror" in str(e).lower():
+            time.sleep(2)  # Wait for the other worker to finish migrating
+        else:
+            break
+
