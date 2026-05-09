@@ -9,8 +9,10 @@ from django.contrib.auth import get_user_model
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -32,6 +34,7 @@ from verification.models import VerificationDocument
 # =========================
 # REGISTER
 # =========================
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
 
     permission_classes = [AllowAny]
@@ -119,6 +122,7 @@ class RegisterView(APIView):
             return Response({"error": str(e)}, status=500)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = [AllowAny]
     

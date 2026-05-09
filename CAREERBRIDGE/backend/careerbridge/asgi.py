@@ -13,7 +13,13 @@ django.setup()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
+from django.core.management import call_command
 from dashboard.routing import websocket_urlpatterns
+
+try:
+    call_command('migrate', interactive=False)
+except Exception as e:
+    print("Migration failed during ASGI startup:", e)
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
