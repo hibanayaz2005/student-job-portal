@@ -23,7 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_PRODUCTION = bool(os.environ.get('RENDER', False))
+DEBUG = not IS_PRODUCTION
 
 ALLOWED_HOSTS = ['*']
 
@@ -136,9 +137,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-# Use CompressedStaticFilesStorage (NOT Manifest variant) — ManifestStaticFiles
-# crashes the app on startup if any referenced static file is missing.
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# Django 6.0 uses STORAGES dict instead of the removed STATICFILES_STORAGE setting
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 WHITENOISE_MANIFEST_STRICT = False
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -179,9 +186,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Session & CSRF settings
 # Render serves over HTTPS — cookies must be marked Secure so the browser sends them back
-IS_PRODUCTION = os.environ.get('RENDER', False)  # Render sets this env var automatically
-SESSION_COOKIE_SECURE = bool(IS_PRODUCTION)
-CSRF_COOKIE_SECURE = bool(IS_PRODUCTION)
+SESSION_COOKIE_SECURE = IS_PRODUCTION
+CSRF_COOKIE_SECURE = IS_PRODUCTION
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
