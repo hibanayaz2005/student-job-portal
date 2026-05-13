@@ -51,9 +51,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -132,11 +132,11 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -174,16 +174,19 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# Session settings
-SESSION_COOKIE_SECURE = False
+# Session & CSRF settings
+# Render serves over HTTPS — cookies must be marked Secure so the browser sends them back
+IS_PRODUCTION = os.environ.get('RENDER', False)  # Render sets this env var automatically
+SESSION_COOKIE_SECURE = bool(IS_PRODUCTION)
+CSRF_COOKIE_SECURE = bool(IS_PRODUCTION)
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False   # Allow JS to read csrftoken cookie
-CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://*.onrender.com', 'https://*.127.0.0.1', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com', 'http://*.onrender.com', 'http://localhost:8000', 'http://127.0.0.1:8000']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 86400  # 24 hours
 
 # Channels
 CHANNEL_LAYERS = {
