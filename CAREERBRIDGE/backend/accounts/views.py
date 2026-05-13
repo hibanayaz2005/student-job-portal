@@ -127,37 +127,48 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        identifier = request.data.get('email') or request.data.get('identifier')
-        password = request.data.get('password')
+        try:
+            identifier = request.data.get('email') or request.data.get('identifier')
+            password = request.data.get('password')
 
-        if not identifier or not password:
-            return Response({'error': 'Email/Username and password required'}, status=400)
+            if not identifier or not password:
+                return Response({'error': 'Email/Username and password required'}, status=400)
 
-        # Use Django's authenticate which handles backends automatically
-        from django.contrib.auth import authenticate
-        user = authenticate(request, username=identifier, password=password)
-        
-        if not user:
-            return Response({'error': 'Invalid email/username or password'}, status=401)
+            from django.contrib.auth import authenticate
+            user = authenticate(request, username=identifier, password=password)
+            
+            if not user:
+                return Response({'error': 'Invalid email/username or password'}, status=401)
 
-        if not user.is_active:
-            return Response({'error': 'This account is inactive'}, status=401)
+            if not user.is_active:
+                return Response({'error': 'This account is inactive'}, status=401)
 
-        auth_login(request, user)
-        
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'success': True,
-            'message': 'Welcome back!',
-            'user': {
-                'username': user.username,
-                'email': user.email,
-                'name': user.get_full_name(),
-                'role': user.role
-            },
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        })
+            auth_login(request, user)
+            
+            try:
+                refresh = RefreshToken.for_user(user)
+                refresh_str = str(refresh)
+                access_str = str(refresh.access_token)
+            except Exception as jwt_err:
+                print(f"JWT generation failed: {jwt_err}")
+                refresh_str = ''
+                access_str = ''
+
+            return Response({
+                'success': True,
+                'message': 'Welcome back!',
+                'user': {
+                    'username': user.username,
+                    'email': user.email,
+                    'name': user.get_full_name(),
+                    'role': getattr(user, 'role', 'student')
+                },
+                'refresh': refresh_str,
+                'access': access_str,
+            })
+        except Exception as e:
+            print(f"Login error: {e}")
+            return Response({'error': 'Login failed. Please try again.'}, status=500)
 
 # =========================
 # PASSWORD RESET API

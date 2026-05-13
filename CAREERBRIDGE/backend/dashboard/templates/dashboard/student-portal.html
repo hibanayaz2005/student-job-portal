@@ -3442,10 +3442,17 @@
             }
         }
         function getCsrfToken() {
+            // 1. Try cookie (works after first page load)
             let token = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('csrftoken='))?.split('=')?.[1];
+            // 2. Fall back to hidden input injected by Django template
             if (!token) {
                 const hiddenToken = document.querySelector('input[name="csrfmiddlewaretoken"]');
                 if (hiddenToken) token = hiddenToken.value;
+            }
+            // 3. Fall back to meta tag
+            if (!token) {
+                const meta = document.querySelector('meta[name="csrf-token"]');
+                if (meta) token = meta.getAttribute('content');
             }
             return token || '';
         }
@@ -3454,6 +3461,9 @@
             const e = document.getElementById('login-email').value.trim();
             const p = document.getElementById('login-pass').value;
             if (!e || !p) { showToast('Please fill in all fields', 'error'); return false; }
+
+            const loginBtn = document.querySelector('#login-form button[type="submit"]') || document.querySelector('#login-form .btn-primary');
+            if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'Signing in...'; }
 
             try {
                 const res = await fetch('/api/auth/login/', {
@@ -3465,22 +3475,38 @@
                     credentials: 'include',
                     body: JSON.stringify({ email: e, password: p })
                 });
-                const data = await res.json();
+
+                // Use text() first so a non-JSON HTML response doesn't crash us
+                const text = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (parseErr) {
+                    console.error('Login non-JSON response (status ' + res.status + '):', text.substring(0, 500));
+                    const msg = 'Server error (' + res.status + '). Please try again.';
+                    showToast(msg, 'error');
+                    document.getElementById('login-error').style.display = 'flex';
+                    document.getElementById('login-error-text').textContent = msg;
+                    return false;
+                }
 
                 if (res.ok && data.success) {
                     showToast('Welcome back! 🎉', 'success');
                     setTimeout(() => window.location.href = '/', 1000);
                 } else {
-                    const msg = data.error || 'Invalid credentials';
+                    const msg = data.error || data.detail || 'Invalid credentials';
                     showToast(msg, 'error');
                     document.getElementById('login-error').style.display = 'flex';
                     document.getElementById('login-error-text').textContent = msg;
                 }
             } catch (err) {
-                console.error('Login error:', err);
-                showToast('Error connecting to server', 'error');
+                console.error('Login fetch error:', err);
+                const msg = 'Cannot reach server. Check your connection.';
+                showToast(msg, 'error');
                 document.getElementById('login-error').style.display = 'flex';
-                document.getElementById('login-error-text').textContent = 'Error connecting to server';
+                document.getElementById('login-error-text').textContent = msg;
+            } finally {
+                if (loginBtn) { loginBtn.disabled = false; loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login'; }
             }
             return false;
         }
