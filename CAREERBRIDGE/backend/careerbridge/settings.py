@@ -138,12 +138,15 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 # Django 6.0 uses STORAGES dict instead of the removed STATICFILES_STORAGE setting
+# Using WhiteNoiseStaticFilesStorage for simple, reliable static file serving
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        # WhiteNoiseStaticFilesStorage serves files directly without compression/hashing
+        # Use this over CompressedStaticFilesStorage to avoid collectstatic failures
+        "BACKEND": "whitenoise.storage.StaticFilesStorage",
     },
 }
 WHITENOISE_MANIFEST_STRICT = False

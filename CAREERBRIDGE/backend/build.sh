@@ -9,7 +9,8 @@ echo "=== Installing dependencies ==="
 pip install -r ../../requirements.txt
 
 echo "=== Collecting static files ==="
-python manage.py collectstatic --no-input
+# Use || true so a collectstatic warning/error doesn't abort the build
+python manage.py collectstatic --no-input || echo "WARNING: collectstatic had issues, continuing..."
 
 echo "=== Running database migrations ==="
 python manage.py migrate

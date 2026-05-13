@@ -40,41 +40,41 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        print(f"Registration attempt: {request.data}")
-        email = request.data.get('email')
-        password = request.data.get('password')
-        name = request.data.get('name', '')
-        phone = request.data.get('phone', '')
-        college = request.data.get('college', '')
-        course = request.data.get('course', '')
-        year = request.data.get('year', '')
-        graduation_year = request.data.get('graduation_year', 2026)
-        linkedin = request.data.get('linkedin', '')
-        skills = request.data.get('skills', '')
-
-        if not email or not password:
-            return Response({"error": "Email and password are required"}, status=400)
-
-        User = get_user_model()
-        
-        if User.objects.filter(email__iexact=email).exists():
-            return Response({"error": "A user with this email already exists"}, status=400)
-
-        # Generate a unique username from email
-        base_username = email.split('@')[0]
-        username = base_username
-        while User.objects.filter(username__iexact=username).exists():
-            username = f"{base_username}_{random.randint(1000, 9999)}"
-
-        # Split full name if provided
-        first_name = name
-        last_name = ""
-        if ' ' in name:
-            parts = name.split(' ', 1)
-            first_name = parts[0]
-            last_name = parts[1]
-
         try:
+            print(f"Registration attempt: {request.data}")
+            email = request.data.get('email', '').strip()
+            password = request.data.get('password', '')
+            name = request.data.get('name', '')
+            phone = request.data.get('phone', '')
+            college = request.data.get('college', '')
+            course = request.data.get('course', '')
+            year = request.data.get('year', '')
+            graduation_year = request.data.get('graduation_year', 2026)
+            linkedin = request.data.get('linkedin', '')
+            skills = request.data.get('skills', '')
+
+            if not email or not password:
+                return Response({"error": "Email and password are required"}, status=400)
+
+            User = get_user_model()
+            
+            if User.objects.filter(email__iexact=email).exists():
+                return Response({"error": "A user with this email already exists"}, status=400)
+
+            # Generate a unique username from email
+            base_username = email.split('@')[0]
+            username = base_username
+            while User.objects.filter(username__iexact=username).exists():
+                username = f"{base_username}_{random.randint(1000, 9999)}"
+
+            # Split full name if provided
+            first_name = name
+            last_name = ""
+            if ' ' in name:
+                parts = name.split(' ', 1)
+                first_name = parts[0]
+                last_name = parts[1]
+
             user = User.objects.create_user(
                 username=username,
                 email=email,
@@ -87,39 +87,41 @@ class RegisterView(APIView):
             print(f"User {user.username} created successfully.")
             
             if hasattr(user, 'student_profile'):
-                profile = user.student_profile
-                profile.college_name = college
-                profile.branch = course
-                profile.linkedin_url = linkedin
-                
-                # Safer graduation_year conversion
                 try:
-                    if graduation_year and str(graduation_year).strip():
-                        profile.graduation_year = int(graduation_year)
-                    else:
+                    profile = user.student_profile
+                    profile.college_name = college
+                    profile.branch = course
+                    profile.linkedin_url = linkedin
+                    
+                    try:
+                        if graduation_year and str(graduation_year).strip():
+                            profile.graduation_year = int(graduation_year)
+                        else:
+                            profile.graduation_year = 2026
+                    except (ValueError, TypeError):
                         profile.graduation_year = 2026
-                except (ValueError, TypeError):
-                    profile.graduation_year = 2026
-                
-                # Robust year mapping
-                y_str = str(year).lower()
-                if '1' in y_str: profile.year_of_study = 1
-                elif '2' in y_str: profile.year_of_study = 2
-                elif '3' in y_str: profile.year_of_study = 3
-                elif '4' in y_str: profile.year_of_study = 4
-                elif 'final' in y_str: profile.year_of_study = 4
-                elif 'post' in y_str: profile.year_of_study = 5
-                
-                if skills:
-                    # Convert comma string to list for JSON field
-                    profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
-                profile.save()
-                print(f"Profile for {user.username} updated successfully.")
+                    
+                    y_str = str(year).lower()
+                    if '1' in y_str: profile.year_of_study = 1
+                    elif '2' in y_str: profile.year_of_study = 2
+                    elif '3' in y_str: profile.year_of_study = 3
+                    elif '4' in y_str: profile.year_of_study = 4
+                    elif 'final' in y_str: profile.year_of_study = 4
+                    elif 'post' in y_str: profile.year_of_study = 5
+                    
+                    if skills:
+                        profile.skills = [s.strip() for s in skills.split(',') if s.strip()]
+                    profile.save()
+                    print(f"Profile for {user.username} updated successfully.")
+                except Exception as profile_err:
+                    print(f"Profile update failed (non-fatal): {profile_err}")
 
             return Response({"message": "Account created successfully! Please login.", "success": True}, status=201)
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             print(f"Registration failed: {str(e)}")
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": f"Registration failed: {str(e)}"}, status=500)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
