@@ -416,18 +416,26 @@ def apply_mentor(request):
         college_id_file.seek(0)
 
     expertise = [e.strip() for e in expertise_str.split(',') if e.strip()]
-    
-    mentor = MentorProfile.objects.create(
-        user=user,
-        mentor_type=request.POST.get('mentor_type', 'senior'),
-        company=request.POST.get('company', ''),
-        designation=request.POST.get('designation', ''),
-        years_experience=int(request.POST.get('years_experience', 0)),
-        bio=request.POST.get('bio', ''),
-        expertise=expertise,
-        college_id=college_id_file,
-        phone_number=request.POST.get('phone_number', ''),
-        is_approved=True  # Instant verification
-    )
-    
+
+    try:
+        years_exp = int(request.POST.get('years_experience', 0) or 0)
+    except (ValueError, TypeError):
+        years_exp = 0
+
+    try:
+        mentor = MentorProfile.objects.create(
+            user=user,
+            mentor_type=request.POST.get('mentor_type', 'senior'),
+            company=request.POST.get('company', ''),
+            designation=request.POST.get('designation', ''),
+            years_experience=years_exp,
+            bio=request.POST.get('bio', ''),
+            expertise=expertise,
+            college_id=college_id_file,
+            phone_number=request.POST.get('phone_number', ''),
+            is_approved=True  # Instant verification
+        )
+    except Exception as e:
+        return Response({'error': f'Failed to create mentor profile: {str(e)}'}, status=500)
+
     return Response({'message': 'Application approved instantly! You are now a verified mentor.'}, status=201)

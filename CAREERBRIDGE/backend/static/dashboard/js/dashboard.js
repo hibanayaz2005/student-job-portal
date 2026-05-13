@@ -234,7 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
       headers: csrftoken ? { 'X-CSRFToken': csrftoken } : {},
       body: formData,
       credentials: 'same-origin'
-    }).then(r => r.json());
+    }).then(async r => {
+      if (!r.ok) {
+        let errMsg = `Server error: ${r.status}`;
+        try {
+          const errData = await r.json();
+          errMsg = errData.detail || errData.error || errMsg;
+        } catch (e) { /* non-JSON error body */ }
+        throw new Error(errMsg);
+      }
+      return r.json();
+    });
   }
 
   // utility to read cookie
@@ -442,13 +452,20 @@ document.addEventListener('DOMContentLoaded', () => {
     input.addEventListener('change', () => {
       const f = input.files[0];
       if (!f) return;
+      zone.style.opacity = '0.6';
+      zone.style.pointerEvents = 'none';
       const fd = new FormData();
       fd.append('document', f);
       fd.append('doc_type', docType);
       postFile('/api/verify/submit/', fd).then(data => {
-        alert('Document uploaded for verification');
+        alert('Document uploaded for verification!');
         window.location.reload();
-      }).catch(err => { console.error(err); alert('Upload failed'); });
+      }).catch(err => {
+        console.error(err);
+        alert('Upload failed: ' + (err.message || 'Unknown error'));
+        zone.style.opacity = '';
+        zone.style.pointerEvents = '';
+      });
     });
   });
 

@@ -2278,18 +2278,20 @@
                 <div class="form-group" style="margin-bottom: 24px;">
                     <label>Verify Identity (Aadhaar / College ID)</label>
                     <div id="scan-container" style="position: relative; background: var(--surface2); border: 1px solid var(--border); padding: 20px; border-radius: 16px; text-align: center; transition: all 0.3s ease;">
-                        <input type="file" id="verif-doc" style="display:none" onchange="simulateVerification()">
+                        <input type="file" id="verif-doc" accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="simulateVerification()">
                         <div id="scan-label" onclick="document.getElementById('verif-doc').click()" style="cursor:pointer">
                             <i class="fas fa-id-card" style="font-size: 32px; color: var(--accent); margin-bottom: 12px; display: block;"></i>
-                            <p style="font-size: 13px; color: var(--text); font-weight: 600;">Upload ID for AI Verification</p>
+                            <p style="font-size: 13px; color: var(--text); font-weight: 600;">Upload ID for AI Verification <span style="color:var(--muted);font-weight:400">(Optional — can do later)</span></p>
                             <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Supports PDF, PNG, JPG (Max 5MB)</p>
                         </div>
                         <div id="scan-progress-box" style="display:none; padding: 10px 0;">
-                            <p id="scan-status" style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Scanning document...</p>
+                            <p id="scan-status" style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Uploading document...</p>
                             <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 100px; overflow: hidden;">
                                 <div id="scan-bar" class="progress-fill fill-cyan" style="width:0%; height: 100%; background: var(--accent); transition: width 0.3s ease;"></div>
                             </div>
                         </div>
+                        <div id="scan-done" style="display:none; color: var(--accent3); font-size: 13px; font-weight: 600;"><i class="fas fa-check-circle"></i> Document uploaded!</div>
+                        <div id="scan-err" style="display:none; color: var(--danger); font-size: 12px;"></div>
                     </div>
                 </div>
                 <button type="submit" id="reg-btn" class="btn btn-primary btn-full">
@@ -3617,6 +3619,50 @@
             let s = 0; if (val.length >= 8) s++; if (/[A-Z]/.test(val)) s++; if (/[a-z]/.test(val)) s++; if (/[0-9]/.test(val)) s++; if (/[@$!%*?&]/.test(val)) s++;
             const pct = [0, 20, 40, 60, 80, 100][s], colors = ['#ef4444', '#ef4444', '#f59e0b', '#f59e0b', '#10b981', '#10b981'], labels = ['', 'Weak', 'Fair', 'Medium', 'Strong', 'Very Strong'];
             fill.style.width = pct + '%'; fill.style.background = colors[s]; txt.textContent = labels[s]; txt.style.color = colors[s];
+        }
+
+        async function simulateVerification() {
+            const fileInput = document.getElementById('verif-doc');
+            const f = fileInput && fileInput.files[0];
+            if (!f) return;
+            const progressBox = document.getElementById('scan-progress-box');
+            const bar = document.getElementById('scan-bar');
+            const label = document.getElementById('scan-label');
+            const doneEl = document.getElementById('scan-done');
+            const errEl = document.getElementById('scan-err');
+            if (label) label.style.display = 'none';
+            if (progressBox) progressBox.style.display = 'block';
+            if (doneEl) doneEl.style.display = 'none';
+            if (errEl) errEl.style.display = 'none';
+            // Animate bar to 60% while uploading
+            if (bar) bar.style.width = '60%';
+            try {
+                const fd = new FormData();
+                fd.append('document', f);
+                fd.append('doc_type', 'college_id');
+                const csrf = getCsrfToken();
+                const res = await fetch('/api/verify/submit/', {
+                    method: 'POST',
+                    headers: csrf ? { 'X-CSRFToken': csrf } : {},
+                    credentials: 'include',
+                    body: fd
+                });
+                if (bar) bar.style.width = '100%';
+                if (res.ok) {
+                    if (progressBox) progressBox.style.display = 'none';
+                    if (doneEl) doneEl.style.display = 'block';
+                } else {
+                    let msg = 'Upload failed (status ' + res.status + ')';
+                    try { const d = await res.json(); msg = d.detail || d.error || msg; } catch(e) {}
+                    if (progressBox) progressBox.style.display = 'none';
+                    if (label) label.style.display = 'block';
+                    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+                }
+            } catch (err) {
+                if (progressBox) progressBox.style.display = 'none';
+                if (label) label.style.display = 'block';
+                if (errEl) { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; }
+            }
         }
 
         /* ============ NAVIGATION ============ */
