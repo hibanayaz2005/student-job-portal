@@ -23,6 +23,7 @@ class Job(models.Model):
 class Application(models.Model):
     student = models.ForeignKey('accounts.StudentProfile', on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    resume = models.FileField(upload_to='resumes/', null=True, blank=True)
     status = models.CharField(max_length=15, default='applied') 
     applied_at = models.DateTimeField(auto_now_add=True)
 

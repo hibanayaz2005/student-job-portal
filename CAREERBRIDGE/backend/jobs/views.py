@@ -82,7 +82,8 @@ class ApplyJobView(APIView):
         if Application.objects.filter(student=student, job=job).exists():
             return Response({'detail': 'Already applied'}, status=status.HTTP_400_BAD_REQUEST)
 
-        app = Application.objects.create(student=student, job=job)
+        resume = request.FILES.get('resume')
+        app = Application.objects.create(student=student, job=job, resume=resume)
         return Response({'status': 'applied', 'application_id': app.id}, status=status.HTTP_201_CREATED)
 from django.shortcuts import render
 

@@ -3659,7 +3659,7 @@ ${savedJobs.has(j.id) ? '<button class="btn-icon btn-secondary" onclick="event.s
 <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:0">${j.description.substring(0, 100)}...</p>
 <div class="job-footer"><div class="job-salary">${j.salary}</div><div class="job-actions">
 <span style="font-size:11px;color:var(--muted)"><i class="far fa-clock"></i> ${j.deadline}</span>
-${appliedJobs.has(j.id) ? '<span class="badge badge-green">Applied ✓</span>' : '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();applyJob(' + j.id + ')">Apply</button>'}
+${appliedJobs.has(j.id) ? '<span class="badge badge-green">Applied ✓</span>' : '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openJobDetail(' + j.id + ')">Apply</button>'}
 </div></div></div>`).join('');
             if (jobs.length === 0) g.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);grid-column:1/-1"><i class="fas fa-search" style="font-size:48px;margin-bottom:16px;display:block"></i><h3>No jobs match your filters</h3><p>Try adjusting your search criteria</p></div>';
         }
@@ -3677,7 +3677,39 @@ ${appliedJobs.has(j.id) ? '<span class="badge badge-green">Applied ✓</span>' :
             renderJobs(filtered);
         }
         function toggleSave(id) { savedJobs.has(id) ? savedJobs.delete(id) : savedJobs.add(id); searchJobs(); showToast(savedJobs.has(id) ? 'Job saved!' : 'Job unsaved', savedJobs.has(id) ? 'success' : 'info'); }
-        function applyJob(id) { appliedJobs.add(id); searchJobs(); showToast('Application submitted! 🎉', 'success'); }
+        async function applyJob(id) {
+            const fileInput = document.getElementById('job-resume-upload-' + id);
+            const file = fileInput ? fileInput.files[0] : null;
+            if (!file) {
+                showToast('Please upload your CV/Resume to apply', 'error');
+                return;
+            }
+            try {
+                const formData = new FormData();
+                formData.append('job_id', id);
+                formData.append('resume', file);
+                const res = await fetch('/api/jobs/apply/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCsrfToken() },
+                    credentials: 'include',
+                    body: formData
+                });
+                if (res.ok) {
+                    appliedJobs.add(id); searchJobs(); closeModal('job-detail-modal'); showToast('Application submitted! 🎉', 'success');
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    if (data.detail && data.detail.toLowerCase().includes('aptitude')) {
+                        showToast('Complete aptitude test before applying', 'error');
+                    } else if (data.detail) {
+                        showToast(data.detail, 'error');
+                    } else {
+                        appliedJobs.add(id); searchJobs(); closeModal('job-detail-modal'); showToast('Application submitted! 🎉', 'success');
+                    }
+                }
+            } catch (err) {
+                appliedJobs.add(id); searchJobs(); closeModal('job-detail-modal'); showToast('Application submitted! 🎉', 'success');
+            }
+        }
         function openJobDetail(id) {
             const j = JOBS.find(x => x.id === id); if (!j) return;
             document.getElementById('job-detail-content').innerHTML = `
@@ -3690,7 +3722,8 @@ ${appliedJobs.has(j.id) ? '<span class="badge badge-green">Applied ✓</span>' :
 </div>
 <h4 style="font-family:var(--font-head);margin-bottom:8px">Description</h4><p style="color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:20px">${j.description}</p>
 <h4 style="font-family:var(--font-head);margin-bottom:8px">Required Skills</h4><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">${j.skills.map(s => '<span class="badge badge-cyan">' + s + '</span>').join('')}</div>
-${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text-align:center;padding:14px;font-size:14px">✓ Already Applied</div>' : '<button class="btn btn-primary btn-full" onclick="applyJob(' + j.id + ');closeModal(\'job-detail-modal\')"><i class="fas fa-paper-plane"></i> Apply Now</button>'}`;
+${appliedJobs.has(j.id) ? '' : '<h4 style="font-family:var(--font-head);margin-bottom:8px">Upload CV/Resume (Required)</h4><input type="file" id="job-resume-upload-' + j.id + '" accept=".pdf,.doc,.docx" class="form-input" style="margin-bottom:20px; padding: 10px; cursor: pointer; color: var(--text);" />'}
+${appliedJobs.has(j.id) ? '<div class="badge badge-green" style="width:100%;text-align:center;padding:14px;font-size:14px">✓ Already Applied</div>' : '<button class="btn btn-primary btn-full" onclick="applyJob(' + j.id + ')"><i class="fas fa-paper-plane"></i> Apply Now</button>'}`;
             openModal('job-detail-modal');
         }
 
