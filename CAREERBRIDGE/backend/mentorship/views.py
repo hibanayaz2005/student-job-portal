@@ -24,17 +24,25 @@ from dashboard.models import Notification
 @permission_classes([IsAuthenticatedOrReadOnly])
 def mentor_list(request):
     """Get list of available mentors with their availability status."""
-    mentors = MentorProfile.objects.filter(is_approved=True, is_available=True)
+    mentors = MentorProfile.objects.filter(is_approved=True)
     
     mentor_data = []
+    demo_usernames = ['raj_patel', 'priya_sharma', 'amit_kumar', 'sneha_reddy']
+    
     for mentor in mentors:
+        is_demo = mentor.user.username in demo_usernames
+        actual_is_available = False if is_demo else mentor.is_available
+
         # Get current week availability
         current_day = timezone.now().weekday()
-        availabilities = MentorAvailability.objects.filter(
-            mentor=mentor,
-            day_of_week=current_day,
-            is_booked=False
-        )
+        if actual_is_available:
+            availabilities = MentorAvailability.objects.filter(
+                mentor=mentor,
+                day_of_week=current_day,
+                is_booked=False
+            )
+        else:
+            availabilities = MentorAvailability.objects.none()
         
         mentor_data.append({
             'id': mentor.id,
@@ -49,7 +57,8 @@ def mentor_list(request):
             'rating': mentor.rating,
             'sessions_completed': mentor.sessions_completed,
             'hourly_rate': mentor.hourly_rate,
-            'is_available': mentor.is_available,
+            'is_available': actual_is_available,
+            'is_demo': is_demo,
             'phone_number': mentor.phone_number,
             'today_available': availabilities.exists(),
             'today_slots': [

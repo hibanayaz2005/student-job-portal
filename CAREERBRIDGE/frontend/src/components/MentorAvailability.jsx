@@ -125,6 +125,14 @@ const MentorAvailability = () => {
   };
 
   const getAvailabilityStatus = (mentor) => {
+    if (mentor.is_demo || !mentor.is_available) {
+      return {
+        status: mentor.is_demo ? 'Unavailable - Demo Profile' : 'Unavailable',
+        color: '#ef4444',
+        type: 'unavailable',
+        slots: []
+      };
+    }
     if (mentor.today_available) {
       return {
         status: 'Available Today',
@@ -202,14 +210,19 @@ const MentorAvailability = () => {
         <div className="mentorship-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px', marginTop: '40px' }}>
           {/* Mentors List */}
           <div>
-            <h3 style={{ marginBottom: '20px', fontSize: '20px', fontWeight: '700' }}>Available Mentors</h3>
+            <h3 style={{ marginBottom: '20px', fontSize: '20px', fontWeight: '700' }}>Registered Mentors</h3>
             {loading && mentors.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: 'var(--muted)' }}>
                 Loading mentors...
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {mentors.map(mentor => {
+                {mentors.filter(m => !m.is_demo).length === 0 && (
+                  <div style={{ color: 'var(--muted)', textAlign: 'center', padding: '20px' }}>
+                    No registered mentors available.
+                  </div>
+                )}
+                {mentors.filter(m => !m.is_demo).map(mentor => {
                   const availability = getAvailabilityStatus(mentor);
                   return (
                     <div
@@ -331,6 +344,7 @@ const MentorAvailability = () => {
                           }}
                         >
                           {availability.type === 'available' ? 'Book Session' : 
+                           availability.type === 'unavailable' ? 'Unavailable' :
                            availability.type === 'busy' ? 'View Schedule' : 'View Schedule'}
                         </button>
                         <button
@@ -352,6 +366,62 @@ const MentorAvailability = () => {
                     </div>
                   );
                 })}
+
+                {mentors.filter(m => m.is_demo).length > 0 && (
+                  <>
+                    <h3 style={{ marginTop: '20px', marginBottom: '10px', fontSize: '20px', fontWeight: '700' }}>Demo Mentors</h3>
+                    {mentors.filter(m => m.is_demo).map(mentor => {
+                      const availability = getAvailabilityStatus(mentor);
+                      return (
+                        <div
+                          key={mentor.id}
+                          className="mentor-card"
+                          onClick={() => alert('This is a demo mentor and cannot be booked.')}
+                          style={{
+                            background: 'white',
+                            border: '1px solid var(--border)',
+                            borderRadius: '12px',
+                            padding: '20px',
+                            opacity: 0.6,
+                            cursor: 'not-allowed'
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                            <div>
+                              <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+                                {mentor.name}
+                              </h4>
+                              <p style={{ fontSize: '13px', color: 'var(--muted)', marginBottom: '8px' }}>
+                                {mentor.designation} {mentor.company && `@ ${mentor.company}`}
+                              </p>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ 
+                                fontSize: '12px', 
+                                fontWeight: '600', 
+                                color: availability.color,
+                                marginBottom: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                justifyContent: 'flex-end'
+                              }}>
+                                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: availability.color }}></span>
+                                {availability.status}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div style={{ marginBottom: '12px' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--muted)', marginBottom: '4px' }}>
+                              Expertise: {mentor.expertise.join(', ')}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
               </div>
             )}
           </div>
