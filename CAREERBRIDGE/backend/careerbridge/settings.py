@@ -137,6 +137,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Django 6.0 uses STORAGES dict instead of the removed STATICFILES_STORAGE setting
 # Using WhiteNoiseStaticFilesStorage for simple, reliable static file serving
 STORAGES = {

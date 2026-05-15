@@ -114,7 +114,7 @@ def mentor_availability(request, mentor_id):
 def book_session(request):
     """Book a mentorship session."""
     try:
-        data = json.loads(request.body)
+        data = request.data
         mentor_id = data.get('mentor_id')
         availability_id = data.get('availability_id')
         topic = data.get('topic')
