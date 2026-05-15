@@ -63,11 +63,24 @@ class ApplyJobView(APIView):
     def post(self, request):
         user = request.user
         student = getattr(user, 'student_profile', None)
-        if not student:
-            return Response({'detail': 'Only students can apply'}, status=status.HTTP_403_FORBIDDEN)
+        is_mentor = hasattr(user, 'mentor_profile')
 
-        # ensure student has passed aptitude test
-        if not getattr(student, 'aptitude_passed', False):
+        if not student:
+            if is_mentor:
+                from accounts.models import StudentProfile
+                student = StudentProfile.objects.create(
+                    user=user,
+                    college_name=getattr(user.mentor_profile, 'company', 'Mentor'),
+                    branch='Mentor',
+                    year_of_study=4,
+                    graduation_year=2026,
+                    aptitude_passed=True
+                )
+            else:
+                return Response({'detail': 'Only students can apply'}, status=status.HTTP_403_FORBIDDEN)
+
+        # ensure student has passed aptitude test (mentors are exempted)
+        if not is_mentor and not getattr(student, 'aptitude_passed', False):
             return Response({'detail': 'Must complete aptitude test before applying'}, status=status.HTTP_403_FORBIDDEN)
 
         job_id = request.data.get('job_id')
